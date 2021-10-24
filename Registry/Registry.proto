@@ -1,0 +1,16 @@
+syntax = "proto3";
+package com.registry.grpc;
+
+message RegistryRequest {    
+    int32 ID=1;
+    string name=2;
+    string password=3;
+}
+
+message RegistryResponse{
+    string response=1;
+}
+
+service RegistryService{
+    rpc Registry(RegistryRequest) returns (RegistryResponse);
+}
