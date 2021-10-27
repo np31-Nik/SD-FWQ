@@ -1,0 +1,14 @@
+syntax = "proto3";
+package com.WaitingTimeServer.grpc;
+
+message RegistryRequest {    
+
+}
+
+message RegistryResponse{
+    string message=1;
+}
+
+service RegistryService{
+    rpc Registry(RegistryRequest) returns (RegistryResponse);
+}
