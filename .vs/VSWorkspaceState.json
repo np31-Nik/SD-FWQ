@@ -2,8 +2,9 @@
   "ExpandedNodes": [
     "",
     "\\Engine",
-    "\\Registry"
+    "\\protos",
+    "\\Registry",
+    "\\Visitor"
   ],
-  "SelectedNode": "\\README.md",
   "PreviewInSolutionExplorer": false
 }
