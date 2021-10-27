@@ -9,6 +9,7 @@ for message in pasos:
     producer = KafkaProducer(bootstrap_servers='192.168.3.246:9092')
     producer.send('respuesta', b'hola!')
     print("Hola")
+
 from concurrent import futures
 
 import logging
