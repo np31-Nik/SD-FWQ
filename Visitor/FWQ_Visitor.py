@@ -3,10 +3,12 @@ from __future__ import print_function
 import logging
 
 import grpc
+
+
+import sys
+sys.path.append('C:/Users/serge/source/repos/SD-FWQ/Registry')
 import Registry_pb2
 import Registry_pb2_grpc
-
-
 
 def run():
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be

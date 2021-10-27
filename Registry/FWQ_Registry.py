@@ -8,6 +8,7 @@ import Registry_pb2_grpc
 #hola che
 class Registry(Registry_pb2_grpc.RegistryServiceServicer):
 	def Registry(self,request,context):
+		print("Recibiendo")
 		return Registry_pb2.RegistryResponse(response="Usuario anyadido a la base de datos(No)")
 
 
