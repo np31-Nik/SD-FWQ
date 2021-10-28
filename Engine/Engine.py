@@ -1,14 +1,27 @@
 from kafka import KafkaConsumer
 from kafka import KafkaProducer
+import time
 
 #mapa en bloc de notas (SI)
 
-pasos = KafkaConsumer('sample')
+
+pasos = KafkaConsumer(
+    'h',
+    bootstrap_servers=['192.168.3.246:9092'],
+)
+
 for message in pasos:
     print (message)
-    producer = KafkaProducer(bootstrap_servers='192.168.3.246:9092')
-    producer.send('respuesta', b'hola!')
+    time.sleep(1)
+    producer = KafkaProducer(bootstrap_servers=['192.168.3.246:9092'])
+    producer.send('respuesta', b'hola que tal')
+    producer.flush()
     print("Hola")
+pasos.close()
+
+
+#producer.send('respuesta', b'hola que tal')
+#producer.flush()
 
 from concurrent import futures
 
