@@ -5,7 +5,7 @@ import grpc
 import Registry_pb2
 import Registry_pb2_grpc
 
-#hola che
+#prueba 
 class Registry(Registry_pb2_grpc.RegistryServiceServicer):
 	def Registry(self,request,context):
 		print("Recibiendo")
