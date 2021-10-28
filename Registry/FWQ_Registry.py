@@ -4,11 +4,49 @@ import logging
 import grpc
 import Registry_pb2
 import Registry_pb2_grpc
+import sqlite3
 
-#prueba 
+conn = sqlite3.connect('db.db')
+c=conn.cursor()
+
+
+
+def usuarioEnBDLogin(name, password):
+	#conectranos a la BD
+	conn = sqlite3.connect('db.db')
+	c=conn.cursor()
+	c.execute("""SELECT nombre, password from usuarios""")
+	usuario=c.fetchall()
+	login=False
+	for i in usuario:
+		if i[0] == name and i[1]==password:
+			login=True 
+	if login:#consultamos BD con name
+		return "Bienvenido"
+	else: #la contraseña no es correcta
+		return "El usuario o la contraseña no son correctos"
+
+def Registro(name, password):
+	conn = sqlite3.connect('db.db')
+	c=conn.cursor()
+	c.execute("""SELECT nombreb from usuarios""")
+	usuario=c.fetchall()
+	yaExiste=False
+	for i in usuario:
+		if i[0] == name:
+			yaExiste=True 
+	if yaExiste:#consultamos BD con name
+		return "El nombre de usaurio ya esta registrado"
+	else:
+		Registry.siguienteUsuario=Registry.siguinteUsuario + 1 
+		c.execute("""INSERT INTO usuarios (id,name,password) VALUES (?,?,?)""",
+		(Registry.siguienteUsuario,name, password))
+
+
 class Registry(Registry_pb2_grpc.RegistryServiceServicer):
+	siguienteUsuario=2
 	def Registry(self,request,context):
-		print("Recibiendo")
+		Registro(request.name, request.password)
 		return Registry_pb2.RegistryResponse(response="Usuario anyadido a la base de datos(No)")
 
 
