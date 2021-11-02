@@ -7,13 +7,13 @@ import time
 
 pasos = KafkaConsumer(
     'h',
-    bootstrap_servers=['192.168.3.246:9092'],
+    bootstrap_servers=['192.168.3.77:9092'],
 )
 
 for message in pasos:
     print (message)
     time.sleep(1)
-    producer = KafkaProducer(bootstrap_servers=['192.168.3.246:9092'])
+    producer = KafkaProducer(bootstrap_servers=['192.168.3.77:9092'])
     producer.send('respuesta', b'hola que tal')
     producer.flush()
     print("Hola")

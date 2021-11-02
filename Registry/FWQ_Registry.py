@@ -15,7 +15,7 @@ def usuarioEnBDLogin(name, password):
 	#conectranos a la BD
 	conn = sqlite3.connect('db.db')
 	c=conn.cursor()
-	c.execute("""SELECT nombre, password from usuarios""")
+	c.execute("""SELECT username, password from usuarios""")
 	usuario=c.fetchall()
 	login=False
 	for i in usuario:
@@ -29,7 +29,7 @@ def usuarioEnBDLogin(name, password):
 def Registro(name, password):
 	conn = sqlite3.connect('db.db')
 	c=conn.cursor()
-	c.execute("""SELECT nombreb from usuarios""")
+	c.execute("""SELECT username from usuarios""")
 	usuario=c.fetchall()
 	yaExiste=False
 	for i in usuario:
@@ -38,8 +38,8 @@ def Registro(name, password):
 	if yaExiste:#consultamos BD con name
 		return "El nombre de usaurio ya esta registrado"
 	else:
-		Registry.siguienteUsuario=Registry.siguinteUsuario + 1 
-		c.execute("""INSERT INTO usuarios (id,name,password) VALUES (?,?,?)""",
+		Registry.siguienteUsuario=Registry.siguienteUsuario + 1 
+		c.execute("""INSERT INTO usuarios (id,username,password) VALUES (?,?,?)""",
 		(Registry.siguienteUsuario,name, password))
 
 
