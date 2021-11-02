@@ -27,7 +27,6 @@ def usuarioEnBDLogin(name, password):
 		return "El usuario o la contraseña no son correctos"
 
 def Registro(name, password):
-<<<<<<< HEAD
 	# conn = sqlite3.connect('db.db')
 	# c=conn.cursor()
 	# c.execute("""SELECT username from usuarios""")
@@ -43,23 +42,6 @@ def Registro(name, password):
 	# 	c.execute("""INSERT INTO usuarios (id,username,password) VALUES (?,?,?)""",
 	# 	(Registry.siguienteUsuario,name, password))
 	return "hola"
-=======
-	conn = sqlite3.connect('db.db')
-	c=conn.cursor()
-	c.execute("""SELECT username from usuarios""")
-	usuario=c.fetchall()
-	yaExiste=False
-	for i in usuario:
-		if i[0] == name:
-			yaExiste=True 
-	if yaExiste:#consultamos BD con name
-		return "El nombre de usaurio ya esta registrado"
-	else:
-		Registry.siguienteUsuario=Registry.siguienteUsuario + 1 
-		c.execute("""INSERT INTO usuarios (id,username,password) VALUES (?,?,?)""",
-		(Registry.siguienteUsuario,name, password))
->>>>>>> a6ad709b4e4e5385394f6259b762430856ff2906
-
 
 class Registry(Registry_pb2_grpc.RegistryServiceServicer):
 	siguienteUsuario=2
