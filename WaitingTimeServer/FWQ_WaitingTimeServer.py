@@ -3,7 +3,7 @@ from kafka import KafkaConsumer
 import logging
 import grpc
 import sys
-<<<<<<< HEAD
+
 sys.path.append('C:/Users/serge/source/repos/SD-FWQ/WaitingTimeServer')
 import TimeServer_pb2
 import TimeServer_pb2_grpc
@@ -18,7 +18,6 @@ def ObtenerTiempo():
 #     def WaitingTimeServer(self,request,context):
 # 		return WaitingTimeServer.WaitingTimeServerResponse(response=calcularTiempo())
 #     def calcularTiempo():
-=======
 
 # class WaitingTime(object):
 #     def WaitingTimeServer(self,request,context):
@@ -49,12 +48,6 @@ if __name__=="__main__":
 
 
 
-
-
-
-
-
->>>>>>> 0f1cd56ce797967580cdfc8469611509756309c2
 
 
 
