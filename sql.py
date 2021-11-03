@@ -1,6 +1,8 @@
 import sqlite3
 import random
 
+#from FWQ_Registry import usuarioEnBDLogin
+
 conn = sqlite3.connect('db.db')
 
 c=conn.cursor()
@@ -42,7 +44,10 @@ c=conn.cursor()
 #     # c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (%s,%s,%s,%s)""" %(id_mapa,str(x[i]),str(y[i]),atr))
 
 
-
+c.execute("Insert into usuarios (id,username,password) values(?,?,?)",("u1","alfonsox1","12345"))
+c.execute("Select * from usuarios")
+result=c.fetchall()
+print((result))
 
 conn.commit()
 conn.close()
