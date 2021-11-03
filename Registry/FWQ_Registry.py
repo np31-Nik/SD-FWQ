@@ -6,12 +6,9 @@ import Registry_pb2
 import Registry_pb2_grpc
 import sqlite3
 
-conn = sqlite3.connect('db.db')
-c=conn.cursor()
 
 
-
-def usuarioEnBDLogin(name, password):
+def IniciarSesion(username, password):
 	#conectranos a la BD
 	conn = sqlite3.connect('db.db')
 	c=conn.cursor()
@@ -19,12 +16,13 @@ def usuarioEnBDLogin(name, password):
 	usuario=c.fetchall()
 	login=False
 	for i in usuario:
-		if i[0] == name and i[1]==password:
+		if i[0] == username and i[1]==password:
 			login=True 
+			break
 	if login:#consultamos BD con name
-		return "Bienvenido"
+		return True
 	else: #la contraseña no es correcta
-		return "El usuario o la contraseña no son correctos"
+		return False
 
 def Registro(name, password):
 	conn = sqlite3.connect('db.db')
@@ -36,17 +34,37 @@ def Registro(name, password):
 		if i[0] == name:
 			yaExiste=True 
 	if yaExiste:#consultamos BD con name
+		conn.close()
 		return "El nombre de usaurio ya esta registrado"
 	else:
 		try:
 			Registry.siguienteUsuario=Registry.siguienteUsuario + 1 
 			c.execute("""Insert into usuarios (id,username,password) values(?,?,?)""",
-			#("u"+str(Registry.siguienteUsuario),name,password))
-			("u1","alfonsox1","12345"))
+			("u"+str(Registry.siguienteUsuario),name,password))
 			resultado="Usuario registrado"
+			conn.commit()
+			conn.close()
 		except:
-			resultado ="error al insertar"
+			resultado ="Error al insertar"
+			conn.close()
 		return resultado
+	
+
+def ModificarUsuario(username, newUsername, newPassword):
+	conn = sqlite3.connect('db.db')
+	c=conn.cursor()
+	try:
+		c.execute("""Update usuarios set username=?, password = ? where username=?""",
+		(newUsername,newPassword,username))
+		conn.commit()
+		conn.close()
+		return True
+	except:
+		conn.close()
+		return False
+
+
+
 
 class Registry(Registry_pb2_grpc.RegistryServiceServicer):
 	siguienteUsuario=2
@@ -54,10 +72,28 @@ class Registry(Registry_pb2_grpc.RegistryServiceServicer):
 		resul=Registro(request.name, request.password)
 		return Registry_pb2.RegistryResponse(response=resul)
 
+class Login(Registry_pb2_grpc.loginServicer):
+	def Login(self,request,context):
+		if IniciarSesion(request.username, request.password):
+			resul="Bienvenido"
+		else:
+			resul="El nombre de usuario o la contraseña no son correctos"
+		return Registry_pb2.RegistryResponse(response=resul)
+
+class Modify(Registry_pb2_grpc.modifyUserServicer):
+	def Modify(self,request,context):
+		if(IniciarSesion(request.username,request.password)):
+			ModificarUsuario(request.username, request.newUsername,request.newPassword)
+			resul="Informacion de usuario modificada"
+		else:
+			resul="El nombre de usuario o la contraseña no son correctos"
+		return Registry_pb2.RegistryResponse(response=resul)
 
 def serve():
 	server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 	Registry_pb2_grpc.add_RegistryServiceServicer_to_server(Registry(), server)
+	Registry_pb2_grpc.add_loginServicer_to_server(Login(), server)
+	Registry_pb2_grpc.add_modifyUserServicer_to_server(Modify(),server)
 	server.add_insecure_port('[::]:50051')
 	server.start()
 	server.wait_for_termination()
