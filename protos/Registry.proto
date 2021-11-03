@@ -11,6 +11,15 @@ message RegistryResponse{
     string response=1;
 }
 
+message loginRequest{
+    string username=1;
+    string password=2;
+}
+
 service RegistryService{
     rpc Registry(RegistryRequest) returns (RegistryResponse);
+}
+
+service login{
+    rpc Login(loginRequest) returns (RegistryResponse);
 }

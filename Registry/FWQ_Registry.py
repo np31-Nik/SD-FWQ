@@ -47,7 +47,7 @@ class Registry(Registry_pb2_grpc.RegistryServiceServicer):
 	siguienteUsuario=2
 	def Registry(self,request,context):
 		Registro(request.name, request.password)
-		return Registry_pb2.RegistryResponse(response="Usuario anyadido a la base de datos(hola)")
+		return Registry_pb2.RegistryResponse(response="Usuario anyadido a la base de datos(hola2)")
 
 
 def serve():
