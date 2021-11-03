@@ -2,10 +2,10 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import Engine_waitingTime_pb2 as Engine__waitingTime__pb2
+import TimeServer_pb2 as TimeServer__pb2
 
 
-class RegistryServiceStub(object):
+class CalculateTimeStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -15,13 +15,13 @@ class RegistryServiceStub(object):
             channel: A grpc.Channel.
         """
         self.Registry = channel.unary_unary(
-                '/com.WaitingTimeServer.grpc.RegistryService/Registry',
-                request_serializer=Engine__waitingTime__pb2.RegistryRequest.SerializeToString,
-                response_deserializer=Engine__waitingTime__pb2.RegistryResponse.FromString,
+                '/com.WaitingTimeServer.grpc.CalculateTime/Registry',
+                request_serializer=TimeServer__pb2.EstimatedTimeRequest.SerializeToString,
+                response_deserializer=TimeServer__pb2.TimeResponse.FromString,
                 )
 
 
-class RegistryServiceServicer(object):
+class CalculateTimeServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def Registry(self, request, context):
@@ -31,21 +31,21 @@ class RegistryServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_RegistryServiceServicer_to_server(servicer, server):
+def add_CalculateTimeServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Registry': grpc.unary_unary_rpc_method_handler(
                     servicer.Registry,
-                    request_deserializer=Engine__waitingTime__pb2.RegistryRequest.FromString,
-                    response_serializer=Engine__waitingTime__pb2.RegistryResponse.SerializeToString,
+                    request_deserializer=TimeServer__pb2.EstimatedTimeRequest.FromString,
+                    response_serializer=TimeServer__pb2.TimeResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'com.WaitingTimeServer.grpc.RegistryService', rpc_method_handlers)
+            'com.WaitingTimeServer.grpc.CalculateTime', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
  # This class is part of an EXPERIMENTAL API.
-class RegistryService(object):
+class CalculateTime(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
@@ -59,8 +59,8 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/com.WaitingTimeServer.grpc.RegistryService/Registry',
-            Engine__waitingTime__pb2.RegistryRequest.SerializeToString,
-            Engine__waitingTime__pb2.RegistryResponse.FromString,
+        return grpc.experimental.unary_unary(request, target, '/com.WaitingTimeServer.grpc.CalculateTime/Registry',
+            TimeServer__pb2.EstimatedTimeRequest.SerializeToString,
+            TimeServer__pb2.TimeResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
