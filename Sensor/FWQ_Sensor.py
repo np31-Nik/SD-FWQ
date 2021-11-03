@@ -4,41 +4,49 @@ import sys
 import random
 import time
 import threading
+import traceback
+
+personas = 0
 
 #Funcion para recibir mensajes de Engine
-def esperaEngine(id,server,puerto,personas):
-
-    #Usar paralelismo para escuchar y enviar a la vez??
-    #
-    #
-    #
-    
+def esperaEngine(id,server,puerto):
+    global personas
     consumer = KafkaConsumer(
         '%s' %(id),
         bootstrap_servers=['%s:%s'%(server,puerto)],
     )
-    waitTime = random.randInt(1,3)
-    t = threading.Timer(waitTime,enviarTiempos(id,server,puerto,personas))
 
     for msg in consumer:
         print(msg)
         personas += 1 
 
-    return personas
+    #return personas
 
 #Funcion para enviar mensajes al servidor de tiempos
-def enviarTiempos(id,server,puerto,personas):
-
+def enviarTiempos(id,server,puerto):
+    global personas
+    #print("Personas: %s" %(str(personas)))
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
     producer.send('sensorPersonas', b'%s:%s' %(id,str(personas)))
     producer.flush()
 
+#Funcion utilizada para threading
+#Crea un nuevo hilo que ejecuta la funcion enviarTiempos() cada x segundos aleatorios
+def every(id,server,puerto):
+    delay = random.randint(1,3)
+    next_time = time.time() + delay
+    while True:
+        time.sleep(max(0, next_time - time.time()))
+        try:
+            enviarTiempos(id,server,puerto)
+        except Exception:
+            traceback.print_exc()
+        delay = random.randint(1,3)
+        next_time += delay
+
 #Funcion principal
 def main():
 
-    # print(f"Arguments count: {len(sys.argv)}")
-    # for i, arg in enumerate(sys.argv):
-    #     print(f"Argument {i:>6}: {arg}")
     if(len(sys.argv) != 4):
         print("Para ejecutar utiliza: FWQ_Sensor.py |IP SERVER| |PUERTO| |ID ATRACCION|")
     else:
@@ -47,9 +55,9 @@ def main():
         id = sys.argv[3]
         personas = 0
 
-        personas = esperaEngine(id,server,puerto,personas)
-        enviarTiempos(id,server,puerto,personas)
+        threading.Thread(target=lambda: every(id,server,puerto)).start()
 
+        esperaEngine(id,server,puerto)
 
 
 #------------------------
