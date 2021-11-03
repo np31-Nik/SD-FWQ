@@ -27,27 +27,32 @@ def usuarioEnBDLogin(name, password):
 		return "El usuario o la contraseña no son correctos"
 
 def Registro(name, password):
-	# conn = sqlite3.connect('db.db')
-	# c=conn.cursor()
-	# c.execute("""SELECT username from usuarios""")
-	# usuario=c.fetchall()
-	# yaExiste=False
-	# for i in usuario:
-	# 	if i[0] == name:
-	# 		yaExiste=True 
-	# if yaExiste:#consultamos BD con name
-	# 	return "El nombre de usaurio ya esta registrado"
-	# else:
-	# 	Registry.siguienteUsuario=Registry.siguienteUsuario + 1 
-	# 	c.execute("""INSERT INTO usuarios (id,username,password) VALUES (?,?,?)""",
-	# 	(Registry.siguienteUsuario,name, password))
-	return "hola"
+	conn = sqlite3.connect('db.db')
+	c=conn.cursor()
+	c.execute("""SELECT username from usuarios""")
+	usuario=c.fetchall()
+	yaExiste=False
+	for i in usuario:
+		if i[0] == name:
+			yaExiste=True 
+	if yaExiste:#consultamos BD con name
+		return "El nombre de usaurio ya esta registrado"
+	else:
+		try:
+			Registry.siguienteUsuario=Registry.siguienteUsuario + 1 
+			c.execute("""Insert into usuarios (id,username,password) values(?,?,?)""",
+			#("u"+str(Registry.siguienteUsuario),name,password))
+			("u1","alfonsox1","12345"))
+			resultado="Usuario registrado"
+		except:
+			resultado ="error al insertar"
+		return resultado
 
 class Registry(Registry_pb2_grpc.RegistryServiceServicer):
 	siguienteUsuario=2
 	def Registry(self,request,context):
-		Registro(request.name, request.password)
-		return Registry_pb2.RegistryResponse(response="Usuario anyadido a la base de datos(hola2)")
+		resul=Registro(request.name, request.password)
+		return Registry_pb2.RegistryResponse(response=resul)
 
 
 def serve():

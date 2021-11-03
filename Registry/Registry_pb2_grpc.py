@@ -64,3 +64,125 @@ class RegistryService(object):
             Registry__pb2.RegistryResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+
+class loginStub(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.Login = channel.unary_unary(
+                '/com.registry.grpc.login/Login',
+                request_serializer=Registry__pb2.loginRequest.SerializeToString,
+                response_deserializer=Registry__pb2.RegistryResponse.FromString,
+                )
+
+
+class loginServicer(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def Login(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+
+def add_loginServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+            'Login': grpc.unary_unary_rpc_method_handler(
+                    servicer.Login,
+                    request_deserializer=Registry__pb2.loginRequest.FromString,
+                    response_serializer=Registry__pb2.RegistryResponse.SerializeToString,
+            ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+            'com.registry.grpc.login', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+
+
+ # This class is part of an EXPERIMENTAL API.
+class login(object):
+    """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def Login(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/com.registry.grpc.login/Login',
+            Registry__pb2.loginRequest.SerializeToString,
+            Registry__pb2.RegistryResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+
+class modifyUserStub(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.Modify = channel.unary_unary(
+                '/com.registry.grpc.modifyUser/Modify',
+                request_serializer=Registry__pb2.changeUserInfo.SerializeToString,
+                response_deserializer=Registry__pb2.RegistryResponse.FromString,
+                )
+
+
+class modifyUserServicer(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def Modify(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+
+def add_modifyUserServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+            'Modify': grpc.unary_unary_rpc_method_handler(
+                    servicer.Modify,
+                    request_deserializer=Registry__pb2.changeUserInfo.FromString,
+                    response_serializer=Registry__pb2.RegistryResponse.SerializeToString,
+            ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+            'com.registry.grpc.modifyUser', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+
+
+ # This class is part of an EXPERIMENTAL API.
+class modifyUser(object):
+    """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def Modify(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/com.registry.grpc.modifyUser/Modify',
+            Registry__pb2.changeUserInfo.SerializeToString,
+            Registry__pb2.RegistryResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

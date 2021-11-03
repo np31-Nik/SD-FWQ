@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0eRegistry.proto\x12\x11\x63om.registry.grpc\"=\n\x0fRegistryRequest\x12\n\n\x02ID\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\"$\n\x10RegistryResponse\x12\x10\n\x08response\x18\x01 \x01(\t2f\n\x0fRegistryService\x12S\n\x08Registry\x12\".com.registry.grpc.RegistryRequest\x1a#.com.registry.grpc.RegistryResponseb\x06proto3'
+  serialized_pb=b'\n\x0eRegistry.proto\x12\x11\x63om.registry.grpc\"=\n\x0fRegistryRequest\x12\n\n\x02ID\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\"$\n\x10RegistryResponse\x12\x10\n\x08response\x18\x01 \x01(\t\"2\n\x0cloginRequest\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"^\n\x0e\x63hangeUserInfo\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\x13\n\x0bnewUsername\x18\x03 \x01(\t\x12\x13\n\x0bnewPassword\x18\x04 \x01(\t2f\n\x0fRegistryService\x12S\n\x08Registry\x12\".com.registry.grpc.RegistryRequest\x1a#.com.registry.grpc.RegistryResponse2V\n\x05login\x12M\n\x05Login\x12\x1f.com.registry.grpc.loginRequest\x1a#.com.registry.grpc.RegistryResponse2^\n\nmodifyUser\x12P\n\x06Modify\x12!.com.registry.grpc.changeUserInfo\x1a#.com.registry.grpc.RegistryResponseb\x06proto3'
 )
 
 
@@ -102,8 +102,102 @@ _REGISTRYRESPONSE = _descriptor.Descriptor(
   serialized_end=136,
 )
 
+
+_LOGINREQUEST = _descriptor.Descriptor(
+  name='loginRequest',
+  full_name='com.registry.grpc.loginRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='username', full_name='com.registry.grpc.loginRequest.username', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='password', full_name='com.registry.grpc.loginRequest.password', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=138,
+  serialized_end=188,
+)
+
+
+_CHANGEUSERINFO = _descriptor.Descriptor(
+  name='changeUserInfo',
+  full_name='com.registry.grpc.changeUserInfo',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='username', full_name='com.registry.grpc.changeUserInfo.username', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='password', full_name='com.registry.grpc.changeUserInfo.password', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='newUsername', full_name='com.registry.grpc.changeUserInfo.newUsername', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='newPassword', full_name='com.registry.grpc.changeUserInfo.newPassword', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=190,
+  serialized_end=284,
+)
+
 DESCRIPTOR.message_types_by_name['RegistryRequest'] = _REGISTRYREQUEST
 DESCRIPTOR.message_types_by_name['RegistryResponse'] = _REGISTRYRESPONSE
+DESCRIPTOR.message_types_by_name['loginRequest'] = _LOGINREQUEST
+DESCRIPTOR.message_types_by_name['changeUserInfo'] = _CHANGEUSERINFO
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 RegistryRequest = _reflection.GeneratedProtocolMessageType('RegistryRequest', (_message.Message,), {
@@ -120,6 +214,20 @@ RegistryResponse = _reflection.GeneratedProtocolMessageType('RegistryResponse', 
   })
 _sym_db.RegisterMessage(RegistryResponse)
 
+loginRequest = _reflection.GeneratedProtocolMessageType('loginRequest', (_message.Message,), {
+  'DESCRIPTOR' : _LOGINREQUEST,
+  '__module__' : 'Registry_pb2'
+  # @@protoc_insertion_point(class_scope:com.registry.grpc.loginRequest)
+  })
+_sym_db.RegisterMessage(loginRequest)
+
+changeUserInfo = _reflection.GeneratedProtocolMessageType('changeUserInfo', (_message.Message,), {
+  'DESCRIPTOR' : _CHANGEUSERINFO,
+  '__module__' : 'Registry_pb2'
+  # @@protoc_insertion_point(class_scope:com.registry.grpc.changeUserInfo)
+  })
+_sym_db.RegisterMessage(changeUserInfo)
+
 
 
 _REGISTRYSERVICE = _descriptor.ServiceDescriptor(
@@ -129,8 +237,8 @@ _REGISTRYSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=138,
-  serialized_end=240,
+  serialized_start=286,
+  serialized_end=388,
   methods=[
   _descriptor.MethodDescriptor(
     name='Registry',
@@ -146,5 +254,57 @@ _REGISTRYSERVICE = _descriptor.ServiceDescriptor(
 _sym_db.RegisterServiceDescriptor(_REGISTRYSERVICE)
 
 DESCRIPTOR.services_by_name['RegistryService'] = _REGISTRYSERVICE
+
+
+_LOGIN = _descriptor.ServiceDescriptor(
+  name='login',
+  full_name='com.registry.grpc.login',
+  file=DESCRIPTOR,
+  index=1,
+  serialized_options=None,
+  create_key=_descriptor._internal_create_key,
+  serialized_start=390,
+  serialized_end=476,
+  methods=[
+  _descriptor.MethodDescriptor(
+    name='Login',
+    full_name='com.registry.grpc.login.Login',
+    index=0,
+    containing_service=None,
+    input_type=_LOGINREQUEST,
+    output_type=_REGISTRYRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+])
+_sym_db.RegisterServiceDescriptor(_LOGIN)
+
+DESCRIPTOR.services_by_name['login'] = _LOGIN
+
+
+_MODIFYUSER = _descriptor.ServiceDescriptor(
+  name='modifyUser',
+  full_name='com.registry.grpc.modifyUser',
+  file=DESCRIPTOR,
+  index=2,
+  serialized_options=None,
+  create_key=_descriptor._internal_create_key,
+  serialized_start=478,
+  serialized_end=572,
+  methods=[
+  _descriptor.MethodDescriptor(
+    name='Modify',
+    full_name='com.registry.grpc.modifyUser.Modify',
+    index=0,
+    containing_service=None,
+    input_type=_CHANGEUSERINFO,
+    output_type=_REGISTRYRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+])
+_sym_db.RegisterServiceDescriptor(_MODIFYUSER)
+
+DESCRIPTOR.services_by_name['modifyUser'] = _MODIFYUSER
 
 # @@protoc_insertion_point(module_scope)
