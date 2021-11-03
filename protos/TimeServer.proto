@@ -1,0 +1,14 @@
+syntax = "proto3";
+package com.WaitingTimeServer.grpc;
+
+message EstimatedTimeRequest {    
+	int32 num=1;
+}
+
+message TimeResponse{
+    string message=1;
+}
+
+service CalculateTime{
+    rpc Registry(EstimatedTimeRequest ) returns (TimeResponse);
+}
