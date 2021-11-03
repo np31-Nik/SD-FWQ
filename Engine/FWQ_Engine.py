@@ -4,7 +4,7 @@ import time
 import sqlite3
 import numpy as np
 
-#Funcion para conectarnos a la BD
+#Funcion para conectarnos a la BD.
 def create_connection(db_file):
 
     conn = None
