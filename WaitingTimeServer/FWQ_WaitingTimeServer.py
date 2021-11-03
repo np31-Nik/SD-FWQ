@@ -20,7 +20,6 @@ def main():
 		puerto_escucha = sys.argv[1]
 		ip_gestor = sys.argv[2]
 		puerto_gestor = sys.argv[3]
-		personas = 0
 
 		escuchaSensor()
 
