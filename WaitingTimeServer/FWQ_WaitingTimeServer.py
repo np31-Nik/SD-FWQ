@@ -3,7 +3,6 @@ from kafka import KafkaConsumer
 import logging
 import grpc
 import sys
-
 sys.path.append('C:/Users/serge/source/repos/SD-FWQ/WaitingTimeServer')
 import TimeServer_pb2
 import TimeServer_pb2_grpc
@@ -19,11 +18,9 @@ def ObtenerTiempo():
 # 		return WaitingTimeServer.WaitingTimeServerResponse(response=calcularTiempo())
 #     def calcularTiempo():
 
-# class WaitingTime(object):
-#     def WaitingTimeServer(self,request,context):
-# 		return WaitingTimeServer.WaitingTimeServerResponse(response=calcularTiempo())
 
-#     def calcularTiempo():
+
+
 
 def escuchaSensor():
   	print("hola q tal")
@@ -35,6 +32,7 @@ def main():
 		puerto_escucha = sys.argv[1]
 		ip_gestor = sys.argv[2]
 		puerto_gestor = sys.argv[3]
+		personas = 0
 
 		escuchaSensor()
 
@@ -45,9 +43,6 @@ def main():
 #------------------------
 if __name__=="__main__":
     main()
-
-
-
 
 
 
