@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x10TimeServer.proto\x12\x1a\x63om.WaitingTimeServer.grpc\"#\n\x14\x45stimatedTimeRequest\x12\x0b\n\x03num\x18\x01 \x01(\x05\"\x1f\n\x0cTimeResponse\x12\x0f\n\x07message\x18\x01 \x01(\t2s\n\rCalculateTime\x12\x62\n\x04Time\x12\x30.com.WaitingTimeServer.grpc.EstimatedTimeRequest\x1a(.com.WaitingTimeServer.grpc.TimeResponseb\x06proto3'
+  serialized_pb=b'\n\x10TimeServer.proto\x12\x1a\x63om.WaitingTimeServer.grpc\"#\n\x14\x45stimatedTimeRequest\x12\x0b\n\x03num\x18\x01 \x01(\x05\"\x1d\n\x0cTimeResponse\x12\r\n\x05times\x18\x01 \x01(\x0c\x32s\n\rCalculateTime\x12\x62\n\x04Time\x12\x30.com.WaitingTimeServer.grpc.EstimatedTimeRequest\x1a(.com.WaitingTimeServer.grpc.TimeResponseb\x06proto3'
 )
 
 
@@ -66,9 +66,9 @@ _TIMERESPONSE = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='message', full_name='com.WaitingTimeServer.grpc.TimeResponse.message', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
+      name='times', full_name='com.WaitingTimeServer.grpc.TimeResponse.times', index=0,
+      number=1, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -85,7 +85,7 @@ _TIMERESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=85,
-  serialized_end=116,
+  serialized_end=114,
 )
 
 DESCRIPTOR.message_types_by_name['EstimatedTimeRequest'] = _ESTIMATEDTIMEREQUEST
@@ -115,8 +115,8 @@ _CALCULATETIME = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=118,
-  serialized_end=233,
+  serialized_start=116,
+  serialized_end=231,
   methods=[
   _descriptor.MethodDescriptor(
     name='Time',
