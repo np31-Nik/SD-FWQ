@@ -30,8 +30,17 @@ class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 
 
 
-def escuchaSensor():
-  	print("hola q tal")
+def escuchaSensor(server,puerto):
+	global personas
+	consumer = KafkaConsumer(
+        'sensorPersonas',
+        bootstrap_servers=['%s:%s'%(server,puerto)],
+    )
+
+	for msg in consumer:
+		#print(msg)
+		datos=msg.value.decode('UTF-8').split(':')
+		print(datos)
 
 def main():
 	server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
