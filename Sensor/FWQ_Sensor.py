@@ -20,25 +20,24 @@ def esperaEngine(id,server,puerto):
         print(msg)
         personas += 1 
 
-    #return personas
-
 #Funcion para enviar mensajes al servidor de tiempos
-def enviarTiempos(id,server,puerto):
+def enviarPersonas(id,server,puerto):
     global personas
-    #print("Personas: %s" %(str(personas)))
+
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
-    producer.send('sensorPersonas', b'%s:%s' %(id,str(personas)))
+    mensaje = '%s:%s' %(id,str(personas))
+    producer.send('sensorPersonas', bytes(mensaje,'UTF-8'))
     producer.flush()
 
 #Funcion utilizada para threading
-#Crea un nuevo hilo que ejecuta la funcion enviarTiempos() cada x segundos aleatorios
+#Crea un nuevo hilo que ejecuta la funcion enviarPersonas() cada x segundos aleatorios
 def every(id,server,puerto):
     delay = random.randint(1,3)
     next_time = time.time() + delay
     while True:
         time.sleep(max(0, next_time - time.time()))
         try:
-            enviarTiempos(id,server,puerto)
+            enviarPersonas(id,server,puerto)
         except Exception:
             traceback.print_exc()
         delay = random.randint(1,3)
