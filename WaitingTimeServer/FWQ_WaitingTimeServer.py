@@ -14,13 +14,13 @@ def CalcularTiempo():
 	message = 'Python is fun'
 	# convert string to bytes
 	byte_message = bytes(message, 'utf-8')
-	print(byte_message)
+	#print(byte_message)
 	return byte_message
 
 class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 	def Time(self,request,context):
 		resul=CalcularTiempo()
-		return TimeServer_pb2_grpc.TimeResponse(message=resul)
+		return TimeServer_pb2.TimeResponse(message=resul)
 # def ObtenerTiempo():
 #     channel = grpc.insecure_channel('localhost:50051')
 #     #channel = grpc.insecure_channel('192.168.4.246:50051')
