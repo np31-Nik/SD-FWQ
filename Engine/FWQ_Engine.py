@@ -75,6 +75,25 @@ def rellenar_mapa(mapa):
 
     return matriz
 
+#Funcion que crea la lista de atracciones
+def crearListaAtr(num_atr,atr):
+    lista_atr=[]
+    
+    for i in range(num_atr):
+        lista_atr.append()
+    return lista_atr
+
+#Funcion que crea la cola de atracciones
+def crearCola(num_atr,lista_atr):
+    mat = []
+    for i in range (num_atr):
+        rowList = []
+        for j in range (1):
+            rowList.append(lista_atr[j])
+        mat.append(rowList)
+
+    return mat 
+
 #Funcion principal
 def main():
 
