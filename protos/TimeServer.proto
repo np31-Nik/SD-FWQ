@@ -6,9 +6,9 @@ message EstimatedTimeRequest {
 }
 
 message TimeResponse{
-    string message=1;
+    bytes times=1;
 }
 
 service CalculateTime{
-    rpc Registry(EstimatedTimeRequest ) returns (TimeResponse);
+    rpc Time(EstimatedTimeRequest ) returns (TimeResponse);
 }
