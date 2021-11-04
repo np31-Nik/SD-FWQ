@@ -7,7 +7,9 @@ import sys
 sys.path.append('C:/Users/serge/source/repos/SD-FWQ/WaitingTimeServer')
 import TimeServer_pb2
 import TimeServer_pb2_grpc
+import numpy as np
 
+tiempos = []
 def CalcularTiempo():
     return 1
 
@@ -27,10 +29,23 @@ class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 # 		return WaitingTimeServer.WaitingTimeServerResponse(response=calcularTiempo())
 #     def calcularTiempo():
 
+def generarTiempos(num_atr,atracciones):
+	global tiempos
+	tiempos = np.full((num_atr,2),0)
+	for i in range(num_atr):
+		tiempos[i][0] = atracciones[i]
 
+	print(tiempos)
 
+def actualizarTiempos(id_atr,num_atr,atr):
+	global tiempos
+	datos = atr[np.where(atr[:,0] == id_atr)]
 
+	for i in range(num_atr):
+		if tiempos[i][0] == id_atr:
+			print("hola")
 
+			
 def escuchaSensor(server,puerto):
 	global personas
 	consumer = KafkaConsumer(
