@@ -7,7 +7,8 @@ import sys
 from concurrent import futures
 import logging
 import grpc
-sys.path.append('C:/Users/serge/source/repos/SD-FWQ/WaitingTimeServer')
+#sys.path.append('C:/Users/serge/source/repos/SD-FWQ/WaitingTimeServer')
+#sys.path.append('C:/Users/niktr/Desktop/SD-FWQ/SD-FWQ/WaitingTimeServer')
 import TimeServer_pb2
 import TimeServer_pb2_grpc
 
@@ -44,14 +45,15 @@ def get_mapa(c,id_mapa):
 
 #Funcion que obtiene el array de atracciones desde la BD
 def get_atracciones(c,mapa):
-
+    num_atr=0
     atracciones = []
     for atr in mapa:
         c.execute("""SELECT * FROM atracciones where id='%s'""" %(atr[3]))
         query = c.fetchall()
         atracciones.append(query[0])
+        num_atr+=1
 
-    return atracciones
+    return (atracciones,num_atr)
 
 #Funcion que imprime el mapa por consola
 def print_mapa(matriz):
@@ -82,13 +84,13 @@ def main():
     id_mapa = 'm1'
 
     mapa = get_mapa(c,id_mapa)
-    atracciones = get_atracciones(c,mapa)
+    (atracciones,num_atr) = get_atracciones(c,mapa)
 
     matriz = rellenar_mapa(mapa)
     conn.close()
-    print(ObtenerTiempo())
+    #print(ObtenerTiempo())
     #print_mapa(matriz)
-
+    print(matriz)
 
 
 
