@@ -3,6 +3,26 @@ from kafka import KafkaProducer
 import time
 import sqlite3
 import numpy as np
+import sys
+from concurrent import futures
+import logging
+import grpc
+sys.path.append('C:/Users/serge/source/repos/SD-FWQ/WaitingTimeServer')
+import TimeServer_pb2
+import TimeServer_pb2_grpc
+
+
+
+#Llamada GRPC al servidor de tiempos de espera
+def ObtenerTiempo():
+    #CAMBIAR PORT Y IP
+    channel = grpc.insecure_channel('localhost:50051')
+    #channel = grpc.insecure_channel('192.168.4.246:50051')
+    stub = TimeServer_pb2_grpc.CalculateTimeStub(channel)
+    response = stub.CalcularTiempo(TimeServer_pb2.EstimatedTimeRequest(num=2))
+    print("Client received: " + response.message)
+
+
 
 #Funcion para conectarnos a la BD.
 def create_connection(db_file):
@@ -65,6 +85,8 @@ def main():
     atracciones = get_atracciones(c,mapa)
 
     matriz = rellenar_mapa(mapa)
+    conn.close()
+    print(ObtenerTiempo())
     #print_mapa(matriz)
 
 
@@ -88,10 +110,7 @@ def main():
 #producer.send('respuesta', b'hola que tal')
 #producer.flush()
 
-from concurrent import futures
 
-import logging
-import grpc
 
 #Le pasa el mapa a WaitingTimeServer al conectarse.
 #Registra los pasos de los visitantes en el mapa.
