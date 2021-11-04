@@ -78,9 +78,9 @@ def rellenar_mapa(mapa):
 #Funcion que crea la lista de atracciones
 def crearListaAtr(num_atr,atr):
     lista_atr=[]
-    
+
     for i in range(num_atr):
-        lista_atr.append()
+        lista_atr.append(atr[i][0])
     return lista_atr
 
 #Funcion que crea la cola de atracciones
