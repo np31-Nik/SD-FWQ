@@ -9,7 +9,11 @@ import TimeServer_pb2
 import TimeServer_pb2_grpc
 
 def CalcularTiempo():
-    return 1
+	message = 'Python is fun'
+	# convert string to bytes
+	byte_message = bytes(message, 'utf-8')
+	print(byte_message)
+	return byte_message
 
 class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 	def Time(self,request,context):
