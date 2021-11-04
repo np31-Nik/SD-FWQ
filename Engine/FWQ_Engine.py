@@ -78,19 +78,20 @@ def rellenar_mapa(mapa):
 #Funcion principal
 def main():
 
-    # conn = create_connection('db.db')
-    # c=conn.cursor()
+    conn = create_connection('db.db')
+    c=conn.cursor()
 
-    # id_mapa = 'm1'
+    id_mapa = 'm1'
 
-    # mapa = get_mapa(c,id_mapa)
-    # (atracciones,num_atr) = get_atracciones(c,mapa)
+    mapa = get_mapa(c,id_mapa)
+    (atracciones,num_atr) = get_atracciones(c,mapa)
 
-    # matriz = rellenar_mapa(mapa)
-    # conn.close()
-    print(ObtenerTiempo())
-    #print_mapa(matriz)
-    #print(matriz)
+    matriz = rellenar_mapa(mapa)
+    conn.close()
+    #print(ObtenerTiempo())
+    
+    print_mapa(matriz)
+    print(matriz)
 
 
 
