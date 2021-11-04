@@ -19,7 +19,7 @@ def CalcularTiempo():
 	message = 'Python is fun'
 	# convert string to bytes
 	byte_message = bytes(message, 'utf-8')
-	print(byte_message)
+	#print(byte_message)
 	return byte_message
 
 class Time(TimeServer_pb2_grpc.CalculateTimeServicer):

@@ -10,22 +10,28 @@ import sqlite3
 
 def IniciarSesion(username, password):
 	#conectranos a la BD
-	conn = sqlite3.connect('db.db')
+	conn = sqlite3.connect('../db.db')
 	c=conn.cursor()
-	c.execute("""SELECT username, password from usuarios""")
-	usuario=c.fetchall()
-	login=False
-	for i in usuario:
-		if i[0] == username and i[1]==password:
-			login=True 
-			break
-	if login:#consultamos BD con name
-		return True
-	else: #la contraseña no es correcta
+	try:
+		c.execute("""SELECT username, password from usuarios""")
+		usuario=c.fetchall()
+		login=False
+		for i in usuario:
+			if i[0] == username and i[1]==password:
+				login=True 
+				break
+		if login:#consultamos BD con name
+			return True
+		else: #la contraseña no es correcta
+			return False
+	except:
+		print ("Ha ocurrido un errror al conectarse a la base de datos(Iniciar Sesion)")
 		return False
+		
+
 
 def Registro(name, password):
-	conn = sqlite3.connect('db.db')
+	conn = sqlite3.connect('../db.db')
 	c=conn.cursor()
 	c.execute("""SELECT username from usuarios""")
 	usuario=c.fetchall()
@@ -51,7 +57,7 @@ def Registro(name, password):
 	
 
 def ModificarUsuario(username, newUsername, newPassword):
-	conn = sqlite3.connect('db.db')
+	conn = sqlite3.connect('../db.db')
 	c=conn.cursor()
 	try:
 		c.execute("""Update usuarios set username=?, password = ? where username=?""",

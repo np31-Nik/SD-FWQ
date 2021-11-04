@@ -7,7 +7,7 @@ import sys
 from concurrent import futures
 import logging
 import grpc
-#sys.path.append('C:/Users/serge/source/repos/SD-FWQ/WaitingTimeServer')
+sys.path.append('C:/Users/serge/source/repos/SD-FWQ/WaitingTimeServer')
 #sys.path.append('C:/Users/niktr/Desktop/SD-FWQ/SD-FWQ/WaitingTimeServer')
 import TimeServer_pb2
 import TimeServer_pb2_grpc
@@ -17,12 +17,12 @@ import TimeServer_pb2_grpc
 #Llamada GRPC al servidor de tiempos de espera
 def ObtenerTiempo():
     #CAMBIAR PORT Y IP
-    channel = grpc.insecure_channel('localhost:50051')
-    #channel = grpc.insecure_channel('192.168.4.246:50051')
+    #channel = grpc.insecure_channel('localhost:50051')
+    channel = grpc.insecure_channel('192.168.4.246:50051')
     stub = TimeServer_pb2_grpc.CalculateTimeStub(channel)
     response = stub.Time(TimeServer_pb2.EstimatedTimeRequest(num=2))
-    print("Client received: " + response.message)
-    return response.message
+    print("Client received: " + response.times.decode('utf-8'))
+    return response.times
 
 
 
@@ -108,7 +108,8 @@ def main():
     matriz = rellenar_mapa(mapa)
     conn.close()
     #print(ObtenerTiempo())
-    #print_mapa(matriz)
+    
+    print_mapa(matriz)
     print(matriz)
 
 
