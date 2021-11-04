@@ -10,5 +10,5 @@ message TimeResponse{
 }
 
 service CalculateTime{
-    rpc Registry(EstimatedTimeRequest ) returns (TimeResponse);
+    rpc Time(EstimatedTimeRequest ) returns (TimeResponse);
 }

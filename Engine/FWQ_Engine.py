@@ -19,8 +19,9 @@ def ObtenerTiempo():
     channel = grpc.insecure_channel('localhost:50051')
     #channel = grpc.insecure_channel('192.168.4.246:50051')
     stub = TimeServer_pb2_grpc.CalculateTimeStub(channel)
-    response = stub.CalcularTiempo(TimeServer_pb2.EstimatedTimeRequest(num=2))
+    response = stub.Time(TimeServer_pb2.EstimatedTimeRequest(num=2))
     print("Client received: " + response.message)
+    return response.message
 
 
 
@@ -37,7 +38,6 @@ def create_connection(db_file):
 
 #Funcion que obtiene el array del mapa desde la BD
 def get_mapa(c,id_mapa):
-
     c.execute("""SELECT * FROM Mapa where id='%s'""" %(id_mapa))
     mapa = c.fetchall()
     return mapa
@@ -76,17 +76,17 @@ def rellenar_mapa(mapa):
 #Funcion principal
 def main():
 
-    conn = create_connection('db.db')
-    c=conn.cursor()
+    # conn = create_connection('db.db')
+    # c=conn.cursor()
 
-    id_mapa = 'm1'
+    # id_mapa = 'm1'
 
-    mapa = get_mapa(c,id_mapa)
-    atracciones = get_atracciones(c,mapa)
+    # mapa = get_mapa(c,id_mapa)
+    # atracciones = get_atracciones(c,mapa)
 
-    matriz = rellenar_mapa(mapa)
-    conn.close()
-    print(ObtenerTiempo())
+    # matriz = rellenar_mapa(mapa)
+    # conn.close()
+    ObtenerTiempo()
     #print_mapa(matriz)
 
 

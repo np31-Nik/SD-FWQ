@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x10TimeServer.proto\x12\x1a\x63om.WaitingTimeServer.grpc\"#\n\x14\x45stimatedTimeRequest\x12\x0b\n\x03num\x18\x01 \x01(\x05\"\x1f\n\x0cTimeResponse\x12\x0f\n\x07message\x18\x01 \x01(\t2w\n\rCalculateTime\x12\x66\n\x08Registry\x12\x30.com.WaitingTimeServer.grpc.EstimatedTimeRequest\x1a(.com.WaitingTimeServer.grpc.TimeResponseb\x06proto3'
+  serialized_pb=b'\n\x10TimeServer.proto\x12\x1a\x63om.WaitingTimeServer.grpc\"#\n\x14\x45stimatedTimeRequest\x12\x0b\n\x03num\x18\x01 \x01(\x05\"\x1f\n\x0cTimeResponse\x12\x0f\n\x07message\x18\x01 \x01(\t2s\n\rCalculateTime\x12\x62\n\x04Time\x12\x30.com.WaitingTimeServer.grpc.EstimatedTimeRequest\x1a(.com.WaitingTimeServer.grpc.TimeResponseb\x06proto3'
 )
 
 
@@ -116,11 +116,11 @@ _CALCULATETIME = _descriptor.ServiceDescriptor(
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
   serialized_start=118,
-  serialized_end=237,
+  serialized_end=233,
   methods=[
   _descriptor.MethodDescriptor(
-    name='Registry',
-    full_name='com.WaitingTimeServer.grpc.CalculateTime.Registry',
+    name='Time',
+    full_name='com.WaitingTimeServer.grpc.CalculateTime.Time',
     index=0,
     containing_service=None,
     input_type=_ESTIMATEDTIMEREQUEST,

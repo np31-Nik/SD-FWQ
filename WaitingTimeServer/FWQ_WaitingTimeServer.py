@@ -12,10 +12,9 @@ def CalcularTiempo():
     return 1
 
 class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
-	siguienteUsuario=2
 	def Time(self,request,context):
 		resul=CalcularTiempo()
-		return TimeServer_pb2_grpc.TimeResponse(message=resul)
+		return TimeServer_pb2.TimeResponse(message=str(resul))
 # def ObtenerTiempo():
 #     channel = grpc.insecure_channel('localhost:50051')
 #     #channel = grpc.insecure_channel('192.168.4.246:50051')
@@ -35,6 +34,13 @@ def escuchaSensor():
   	print("hola q tal")
 
 def main():
+	server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+	TimeServer_pb2_grpc.add_CalculateTimeServicer_to_server(Time(),server)
+	server.add_insecure_port('[::]:50051')
+	server.start()
+	server.wait_for_termination()
+
+	return True
 	# if(len(sys.argv) != 4):
 	# 	print("Para ejecutar utiliza: FWQ_WaitingTimeServer.py |PUERTO ESCUCHA| |IP GESTOR| |PUERTO GESTOR|")
   	# else:

@@ -14,8 +14,8 @@ class CalculateTimeStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.Registry = channel.unary_unary(
-                '/com.WaitingTimeServer.grpc.CalculateTime/Registry',
+        self.Time = channel.unary_unary(
+                '/com.WaitingTimeServer.grpc.CalculateTime/Time',
                 request_serializer=TimeServer__pb2.EstimatedTimeRequest.SerializeToString,
                 response_deserializer=TimeServer__pb2.TimeResponse.FromString,
                 )
@@ -24,7 +24,7 @@ class CalculateTimeStub(object):
 class CalculateTimeServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def Registry(self, request, context):
+    def Time(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -33,8 +33,8 @@ class CalculateTimeServicer(object):
 
 def add_CalculateTimeServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'Registry': grpc.unary_unary_rpc_method_handler(
-                    servicer.Registry,
+            'Time': grpc.unary_unary_rpc_method_handler(
+                    servicer.Time,
                     request_deserializer=TimeServer__pb2.EstimatedTimeRequest.FromString,
                     response_serializer=TimeServer__pb2.TimeResponse.SerializeToString,
             ),
@@ -49,7 +49,7 @@ class CalculateTime(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def Registry(request,
+    def Time(request,
             target,
             options=(),
             channel_credentials=None,
@@ -59,7 +59,7 @@ class CalculateTime(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/com.WaitingTimeServer.grpc.CalculateTime/Registry',
+        return grpc.experimental.unary_unary(request, target, '/com.WaitingTimeServer.grpc.CalculateTime/Time',
             TimeServer__pb2.EstimatedTimeRequest.SerializeToString,
             TimeServer__pb2.TimeResponse.FromString,
             options, channel_credentials,
