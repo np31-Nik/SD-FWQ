@@ -7,7 +7,9 @@ import sys
 sys.path.append('C:/Users/serge/source/repos/SD-FWQ/WaitingTimeServer')
 import TimeServer_pb2
 import TimeServer_pb2_grpc
+import numpy as np
 
+tiempos = []
 def CalcularTiempo():
 	message = 'Python is fun'
 	# convert string to bytes
@@ -18,8 +20,35 @@ def CalcularTiempo():
 class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 	def Time(self,request,context):
 		resul=CalcularTiempo()
-		return TimeServer_pb2.TimeResponse(message=str(resul))
+		return TimeServer_pb2_grpc.TimeResponse(message=resul)
+# def ObtenerTiempo():
+#     channel = grpc.insecure_channel('localhost:50051')
+#     #channel = grpc.insecure_channel('192.168.4.246:50051')
+#     stub = TimeServer_pb2_grpc.CalculateTimeStub(channel)
+#     response = stub.Registry(TimeServer_pb2.RegistryRequest(ID=1,name="you",password="12345"))
+#     print("Client received: " + response.response)
+# class WaitingTime(object):
+#     def WaitingTimeServer(self,request,context):
+# 		return WaitingTimeServer.WaitingTimeServerResponse(response=calcularTiempo())
+#     def calcularTiempo():
 
+def generarTiempos(num_atr,atracciones):
+	global tiempos
+	tiempos = np.full((num_atr,2),0)
+	for i in range(num_atr):
+		tiempos[i][0] = atracciones[i]
+
+	print(tiempos)
+
+def actualizarTiempos(id_atr,num_atr,atr):
+	global tiempos
+	datos = atr[np.where(atr[:,0] == id_atr)]
+
+	for i in range(num_atr):
+		if tiempos[i][0] == id_atr:
+			print("hola")
+
+			
 def escuchaSensor(server,puerto):
 	global personas
 	consumer = KafkaConsumer(
