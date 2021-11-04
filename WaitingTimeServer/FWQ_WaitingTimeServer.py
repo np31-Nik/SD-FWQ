@@ -56,7 +56,10 @@ def actualizarTiempos(id_atr,personas,anyadir):
 				tiempo = ciclos * datos[2]
 				tiempos[i][1] += datos[2]
 			else:
-				if tiempos[i][1] %
+				#calcular y actualizar tiempos
+				#tambien para cada usuario, crear una lista de usuarios con el tiempo de espera?
+				#
+				#if tiempos[i][1] %
 				tiempos[i][1] -= datos[1]
 
 def every(id,server,puerto):
