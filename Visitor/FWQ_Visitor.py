@@ -34,7 +34,7 @@ def modificarUsuario():
     #channel = grpc.insecure_channel('192.168.4.246:50051')
     stub = Registry_pb2_grpc.modifyUserStub(channel)
     response = stub.Modify(Registry_pb2.changeUserInfo
-        (username="alfonsox1",password="12345",newUsername="alfonsox1",newPassword="12346"))
+        (username="alfonsox1",password="12346",newUsername="alfonsox1",newPassword="12345"))
     print("Client received: " + response.response)
     return response.response
 
