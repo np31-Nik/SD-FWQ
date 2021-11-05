@@ -13,17 +13,19 @@ def IniciarSesion(username, password):
 	conn = sqlite3.connect('../db.db')
 	c=conn.cursor()
 	try:
-		c.execute("""SELECT username, password from usuarios""")
+		c.execute("""SELECT username, password, id from usuarios""")
 		usuario=c.fetchall()
 		login=False
+		id="-1"
 		for i in usuario:
 			if i[0] == username and i[1]==password:
-				login=True 
+				login=True
+				id= i[2]
 				break
 		if login:#consultamos BD con name
-			return True
+			return id
 		else: #la contraseña no es correcta
-			return False
+			return id
 	except:
 		print ("Ha ocurrido un errror al conectarse a la base de datos(Iniciar Sesion)")
 		return False
@@ -80,8 +82,9 @@ class Registry(Registry_pb2_grpc.RegistryServiceServicer):
 
 class Login(Registry_pb2_grpc.loginServicer):
 	def Login(self,request,context):
-		if IniciarSesion(request.username, request.password):
-			resul="Bienvenido"
+		id=IniciarSesion(request.username, request.password)
+		if id!="-1":
+			resul=id
 		else:
 			resul="El nombre de usuario o la contraseña no son correctos"
 		return Registry_pb2.RegistryResponse(response=resul)
