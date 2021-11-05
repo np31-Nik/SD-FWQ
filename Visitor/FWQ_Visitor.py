@@ -65,6 +65,17 @@ def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
             fila=fila-1
 
 
+def enviarPaso(id,server,puerto):
+    
+    global personas
+    consumer = KafkaConsumer(
+        '%s' %(id),
+        bootstrap_servers=['%s:%s'%(server,puerto)],
+    )
+
+    for msg in consumer:
+        print(msg)
+        personas += 1 
 
 
 @atexit.register
@@ -79,7 +90,6 @@ def run():
 
     fila=0
     columna=0
-
 
     #FALTA RECIBIR POR ARGUMENTO LOS IP Y PUETOS
     #Elige al azar una de las atracciones con menos de 60 minutos de espera y va hacia ella
