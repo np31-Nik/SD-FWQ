@@ -13,6 +13,84 @@ sys.path.append('C:/Users/serg2/source/repos/SD-FWQ/Registry')
 import Registry_pb2
 import Registry_pb2_grpc
 
+#Revisar
+def enviarPaso(id,fila,columna,server,puerto):
+    producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
+    mensaje = '%s:%s:%s' %(id,str(fila),str(columna))
+    producer.send('sensorPersonas', bytes(mensaje,'UTF-8'))
+    producer.flush()
+    #print(msg) ????
+
+
+#falta hacer
+def recibirMapa():
+    return True
+
+
+def buscarAtraccion(mapa):
+
+
+
+    return 0,0
+
+def moverse(id,server,port):
+    fila=0
+    columna=0
+    filaAtraccion=0 
+    colAtraccion=0
+    while(True):
+        map=recibirMapa()
+        filaAtraccion,colAtraccion=buscarAtraccion(map)
+        fila,columna=calcularPaso(fila,columna)
+        enviarPaso(id,fila,columna,server,port)
+
+
+    #----En bucle:
+    #2) Esperar a recibir el mapa
+    #3) comprobar tiempo de espera de una atraccion
+    #4) Calcular el siguiente paso con funcion CalcularPaso
+    #5) Enviar el paso cada segundo
+
+
+def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
+    if fila==filaAtraccion:
+        if columna<colAtraccion:
+            columna=columna+1
+            #return 'E' #East
+        else:
+            columna=columna-1
+            #return 'W' #West
+
+    if columna==colAtraccion:
+        if fila<filaAtraccion:
+            fila=fila+1
+            #return 'N' #North
+        else:
+            fila=fila-1
+            #return 'S' #South
+
+    else:   
+        if columna<colAtraccion and fila<filaAtraccion:
+            columna=columna+1
+            fila=fila+1
+            #return 'NE' #North-East
+        elif columna<colAtraccion and fila>filaAtraccion:
+            columna=columna+1
+            fila=fila-1
+            #return 'SE' #South-East
+        elif columna>colAtraccion and fila<filaAtraccion:
+            columna=columna-1
+            fila=fila+1
+            #return 'NW' #North-West
+        elif columna>colAtraccion and fila>filaAtraccion:
+            columna=columna-1
+            fila=fila-1
+            #return 'SW' #South-West
+
+    return fila,columna
+
+
+
 
 def AskNamePassword():
     print("Introduzca el nombre de usuario:")
@@ -21,6 +99,7 @@ def AskNamePassword():
     password=input()
 
     return username, password
+
 
 
 def registarse():
@@ -33,7 +112,7 @@ def registarse():
     print("Client received: " + response.response)
 
 
-def iniciarSesion():
+def iniciarSesion(UserID):
     channel = grpc.insecure_channel('localhost:50051')
     #channel = grpc.insecure_channel('192.168.4.246:50051')
     stub = Registry_pb2_grpc.loginStub(channel)
@@ -41,15 +120,14 @@ def iniciarSesion():
     response = stub.Login(Registry_pb2.loginRequest(username=username,password=password))
     #response = stub.Login(Registry_pb2.loginRequest(username="alfonsox1",password="12345"))
     print("Client received: " + response.response)
+    if response.response!="El nombre de usuario o la contraseña no son correctos":
+        UserID=response.response
+        return True
+    else:
+        print(response.response)
+        return False
 
-    #Continuacio:
-    #1) Esperar a recibir el mapa
-    #2) Elegir atraccion
-    #----En bucle:
-    #3) comprobar tiempo de espera de una atraccion
-    #4) Calcular el siguiente paso con funcion CalcularPaso
-    #5) Enviar el paso cada segundo
-    
+
 
     
 def modificarUsuario():
@@ -72,43 +150,7 @@ def modificarUsuario():
     print("Client received: " + response.response)
     return response.response
 
-def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
-    if fila==filaAtraccion:
-        if columna<colAtraccion:
-            columna=columna+1
-        else:
-            columna=columna-1
 
-    if columna==colAtraccion:
-        if fila<filaAtraccion:
-            fila=fila+1
-        else:
-            fila=fila-1
-    else:
-        if columna<colAtraccion and fila<filaAtraccion:
-            columna=columna+1
-            fila=fila+1
-        elif columna<colAtraccion and fila>filaAtraccion:
-            columna=columna+1
-            fila=fila-1
-        elif columna>colAtraccion and fila<filaAtraccion:
-            columna=columna-1
-            fila=fila+1
-        elif columna>colAtraccion and fila>filaAtraccion:
-            columna=columna-1
-            fila=fila-1
-
-
-def enviarPaso(id,server,puerto):
-    
-    global personas
-    consumer = KafkaConsumer(
-        '%s' %(id),
-        bootstrap_servers=['%s:%s'%(server,puerto)],
-    )
-
-    for msg in consumer:
-        print(msg)
 
 
 @atexit.register
@@ -126,15 +168,8 @@ def run():
         # serverKafka = sys.argv[3]
         # puertoKafa=sys.argv[4]
 
-        # fila=0
-        # columna=0
 
-        #Lo que falta por hacer:
-        #
-        #Elige al azar una de las atracciones con menos de 60 minutos de espera y va hacia ella
-        #Si en el camino cambia a tener 60 minuos o mas elige otra.
-        #Cada segundo dara un paso en una de la 8 direcciones
-        #LLamar desde iniciar sesion a una funcion que haga pasos en bucle
+        UserID="-1"
 
         matriz = np.full((20,20), '---')
         matriz[2][2]='a1'
@@ -145,13 +180,20 @@ def run():
         print(matriz)
 
         opcion=0
-        while(opcion!=1 or opcion!= 2 or opcion!=3):
+        while True:
             print("Eliga una opcion: \n 1) Registrarse; \n 2) Iniciar sesion y entrar al parque; \n 3) Modificar usuario;\n 4) Salir;")
             opcion = input()
             if opcion == "1":
                 registarse()
             if opcion == "2":
-                iniciarSesion()
+
+                #****Luego quitar****
+                serverKafka=1
+                puertoKafka=2
+
+                if iniciarSesion(UserID,serverKafka,puertoKafka):
+                    moverse(UserID,serverKafka,puertoKafka)
+                
             if opcion == "3":
                 modificarUsuario()
             if opcion =="4":
