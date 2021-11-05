@@ -1,12 +1,11 @@
 from __future__ import print_function
 from kafka import KafkaConsumer
 from kafka import KafkaProducer
-import logging
-
-import grpc
-
-import atexit
 import numpy as np
+from numpy import random
+import logging
+import grpc
+import atexit
 import sys
 
 sys.path.append('C:/Users/serg2/source/repos/SD-FWQ/Registry')
@@ -27,21 +26,35 @@ def recibirMapa():
     return True
 
 
-def buscarAtraccion(mapa):
 
+#Cuenta numero de atracciones y luego elige una random
+def buscarAtraccion(mapa): 
+    contador =0 #Contador de atracciones
+    for row in mapa:
+        for col in mapa:
+            if mapa[row][col]!='---':
+                contador=contador+1
 
+    atraccion=random.randint(contador) #comprobar si funciona
+    contador =0
+    for row in mapa:
+        for col in mapa:
+            if mapa[row][col]!='---':
+                contador=contador+1
+                if contador==atraccion: 
+                    return row,col
 
-    return 0,0
 
 def moverse(id,server,port):
     fila=0
     columna=0
-    filaAtraccion=0 
-    colAtraccion=0
+    filaAtraccion=-1 
+    colAtraccion=-1
     while(True):
         map=recibirMapa()
-        filaAtraccion,colAtraccion=buscarAtraccion(map)
-        fila,columna=calcularPaso(fila,columna)
+        while filaAtraccion==-1:
+            filaAtraccion,colAtraccion=buscarAtraccion(map)
+        fila,columna=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
         enviarPaso(id,fila,columna,server,port)
 
 
