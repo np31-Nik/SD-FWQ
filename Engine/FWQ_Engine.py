@@ -12,7 +12,8 @@ sys.path.append('C:/Users/serge/source/repos/SD-FWQ/WaitingTimeServer')
 import TimeServer_pb2
 import TimeServer_pb2_grpc
 
-
+#Variable global que almacena las posiciones de los usuarios
+posiciones = []
 
 #Llamada GRPC al servidor de tiempos de espera
 def ObtenerTiempo():
@@ -78,9 +79,9 @@ def rellenar_mapa(mapa):
 #Funcion que crea la lista de atracciones
 def crearListaAtr(num_atr,atr):
     lista_atr=[]
-    
+
     for i in range(num_atr):
-        lista_atr.append()
+        lista_atr.append(atr[i][0])
     return lista_atr
 
 #Funcion que crea la cola de atracciones
@@ -94,8 +95,34 @@ def crearCola(num_atr,lista_atr):
 
     return mat 
 
+#Funcion que esta a la escucha de los usuarios
+def escuchaVisitante(server,puerto):
+    consumer = KafkaConsumer(
+        'movimiento',
+        bootstrap_servers=['%s:%s'%(server,puerto)],
+    )
+
+    for msg in consumer:
+        print(msg)
+        #movimiento()
+
+#Funcion que registra el movimiento del usuario
+def movimiento(usuario,x,y):
+    global posiciones
+    
+
+
+
 #Funcion principal
 def main():
+	# if(len(sys.argv) != 6):
+	# 	print("Para ejecutar utiliza: FWQ_Engine.py |IP GESTOR| |PUERTO GESTOR| |NUM MAX VISITANTES| |IP WaitingTimeServer| |PUERTO WaitingTimeServer|")
+  	# else:
+	# 	ip_gestor = sys.argv[1]
+	# 	puerto_gestor = sys.argv[2]
+    # 	num_max_visitantes = sys.argv[3]
+    #   ip_wts = sys.argv[4]
+    #   puerto_wts = sys.argv[5]
 
     conn = create_connection('db.db')
     c=conn.cursor()
@@ -103,9 +130,11 @@ def main():
     id_mapa = 'm1'
 
     mapa = get_mapa(c,id_mapa)
-    (atracciones,num_atr) = get_atracciones(c,mapa)
-
+    (atr,num_atr) = get_atracciones(c,mapa)
+    lista_atr = crearListaAtr(num_atr,atr)
+    cola = crearCola(num_atr,lista_atr)
     matriz = rellenar_mapa(mapa)
+
     conn.close()
     #print(ObtenerTiempo())
     
