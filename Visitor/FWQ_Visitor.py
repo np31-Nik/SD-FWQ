@@ -12,20 +12,42 @@ sys.path.append('C:/Users/serg2/source/repos/SD-FWQ/Registry')
 import Registry_pb2
 import Registry_pb2_grpc
 
-#Revisar
+UserID = -1
+matriz = []
+
+#Funcion que envia el movimiento del usuario al engine, y luego imprime el mapa
 def enviarPaso(id,fila,columna,server,puerto):
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
     mensaje = '%s:%s:%s' %(id,str(fila),str(columna))
-    producer.send('sensorPersonas', bytes(mensaje,'UTF-8'))
+    producer.send('movimiento', bytes(mensaje,'UTF-8'))
     producer.flush()
-    #print(msg) ????
+
+    recibirMapa(server,puerto)
+    print_mapa(matriz)
 
 
-#falta hacer
-def recibirMapa():
-    return True
+#Funcion que recibe el mapa desde engine
+def recibirMapa(server,puerto):
+    consumer = KafkaConsumer(
+        '%s'%(UserID),
+        bootstrap_servers=['%s:%s'%(server,puerto)],
+        )
+
+    global matriz
+    ej = np.full((20,20),'---')
+
+    for msg in consumer:
+        matriz = np.frombuffer(msg.value, dtype=ej.dtype).reshape(20,20)
+        break
 
 
+#Funcion que imprime el mapa por consola
+def print_mapa(matriz):
+
+    for i in range(0,19):
+        for j in range(0,19):
+            print("\t{0}".format(matriz[i][j]),sep=',',end='')
+        print('')
 
 #Cuenta numero de atracciones y luego elige una random
 def buscarAtraccion(mapa): 
@@ -119,7 +141,7 @@ def registarse():
     channel = grpc.insecure_channel('localhost:50051')
     #channel = grpc.insecure_channel('192.168.4.246:50051')
     stub = Registry_pb2_grpc.RegistryServiceStub(channel)
-    name,password=usernamePassword()
+    name,password=AskNamePassword()
     #response = stub.Registry(Registry_pb2.RegistryRequest(ID=1,name="you",password="12345"))
     response = stub.Registry(Registry_pb2.RegistryRequest(ID=1,name=name,password=password))
     print("Client received: " + response.response)
@@ -174,14 +196,14 @@ def goodbye():
 def run():
     if False:
     #if(len(sys.argv) != 5):
-        print("Para ejecutar utiliza: FWQ_Sensor.py |IP GRPC SERVER| |PUERTO| |IP BROCKER SERVER| |PUERTO|")
+        print("Para ejecutar utiliza: FWQ_Sensor.py |IP GRPC SERVER| |PUERTO| |IP BROKER SERVER| |PUERTO|")
     else:
         # serverGrpc = sys.argv[1]
         # puertoGrpc = sys.argv[2]
         # serverKafka = sys.argv[3]
         # puertoKafa=sys.argv[4]
 
-
+        global UserID
         UserID="-1"
 
         matriz = np.full((20,20), '---')
