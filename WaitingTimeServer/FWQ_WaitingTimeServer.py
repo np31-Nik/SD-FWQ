@@ -13,6 +13,7 @@ import traceback
 
 tiempos = []
 atr = []
+usuariosEspera = []
 num_atr=0
 
 def CalcularTiempo():
