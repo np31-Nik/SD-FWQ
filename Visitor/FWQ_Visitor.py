@@ -14,11 +14,13 @@ import Registry_pb2_grpc
 
 UserID = -1
 matriz = []
+serverK = 0
+puertoK = 0 
 
 #Funcion que envia el movimiento del usuario al engine, y luego imprime el mapa
-def enviarPaso(id,fila,columna,server,puerto):
+def enviarPaso(fila,columna,server,puerto):
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
-    mensaje = '%s:%s:%s' %(id,str(fila),str(columna))
+    mensaje = '%s:%s:%s' %(UserID,str(fila),str(columna))
     producer.send('movimiento', bytes(mensaje,'UTF-8'))
     producer.flush()
 
@@ -50,34 +52,33 @@ def print_mapa(matriz):
         print('')
 
 #Cuenta numero de atracciones y luego elige una random
-def buscarAtraccion(mapa): 
+def buscarAtraccion(): 
     contador =0 #Contador de atracciones
-    for row in mapa:
-        for col in mapa:
-            if mapa[row][col]!='---':
+    for row in matriz:
+        for col in matriz:
+            if matriz[row][col]!='---':
                 contador=contador+1
 
     atraccion=random.randint(contador) #comprobar si funciona
     contador =0
-    for row in mapa:
-        for col in mapa:
-            if mapa[row][col]!='---':
+    for row in matriz:
+        for col in matriz:
+            if matriz[row][col]!='---':
                 contador=contador+1
                 if contador==atraccion: 
                     return row,col
 
 
-def moverse(id,server,port):
+def moverse(server,port):
     fila=0
     columna=0
     filaAtraccion=-1 
     colAtraccion=-1
     while(True):
-        map=recibirMapa()
         while filaAtraccion==-1:
-            filaAtraccion,colAtraccion=buscarAtraccion(map)
+            filaAtraccion,colAtraccion=buscarAtraccion()
         fila,columna=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
-        enviarPaso(id,fila,columna,server,port)
+        enviarPaso(fila,columna,server,port)
 
 
     #----En bucle:
@@ -147,7 +148,8 @@ def registarse():
     print("Client received: " + response.response)
 
 
-def iniciarSesion(UserID):
+def iniciarSesion():
+    global UserID
     channel = grpc.insecure_channel('localhost:50051')
     #channel = grpc.insecure_channel('192.168.4.246:50051')
     stub = Registry_pb2_grpc.loginStub(channel)
@@ -163,8 +165,6 @@ def iniciarSesion(UserID):
         return False
 
 
-
-    
 def modificarUsuario():
     channel = grpc.insecure_channel('localhost:50051')
     #channel = grpc.insecure_channel('192.168.4.246:50051')
@@ -186,24 +186,47 @@ def modificarUsuario():
     return response.response
 
 
+def enviaEntradaParque(server,puerto):
+    producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
+    mensaje = matriz.tobytes()
+    producer.send('loginAttempt', '%s' %(UserID))
+    producer.flush()
+    recibeEntradaParque(server,puerto)
 
 
-@atexit.register
-#HACER QUE DESAPAREZCA O SE DESCONECTE DE ENGINE AL SALIR
-def goodbye():
-    print('You are now leaving the Python sector.')
+def recibeEntradaParque(server,puerto):
+    consumer = KafkaConsumer(
+        'loginResponse:%s'%(UserID),
+        bootstrap_servers=['%s:%s'%(server,puerto)],
+        )
 
+    for msg in consumer:
+        datos = msg.value.decode('UTF-8')
+
+        if datos == '1':
+            print('Has entrado al parque.')
+            break
+        else:
+            print('Hay una cola para entrar al parque, espera tu turno...')
+
+    moverse(server,puerto)
+
+#Funcion principal
 def run():
-    if False:
-    #if(len(sys.argv) != 5):
+    if(len(sys.argv) != 5):
         print("Para ejecutar utiliza: FWQ_Sensor.py |IP GRPC SERVER| |PUERTO| |IP BROKER SERVER| |PUERTO|")
     else:
-        # serverGrpc = sys.argv[1]
-        # puertoGrpc = sys.argv[2]
-        # serverKafka = sys.argv[3]
-        # puertoKafa=sys.argv[4]
+        serverGrpc = sys.argv[1]
+        puertoGrpc = sys.argv[2]
+        serverKafka = sys.argv[3]
+        puertoKafka=sys.argv[4]
 
         global UserID
+        global serverK
+        global puertoK
+
+        serverK = serverKafka
+        puertoK = puertoKafka
         UserID="-1"
 
         matriz = np.full((20,20), '---')
@@ -226,15 +249,29 @@ def run():
                 serverKafka=1
                 puertoKafka=2
 
-                if iniciarSesion(UserID,serverKafka,puertoKafka):
-                    moverse(UserID,serverKafka,puertoKafka)
+                if iniciarSesion(UserID,serverGrpc,puertoGrpc):
+                    enviaEntradaParque(serverKafka,puertoKafka)
                 
             if opcion == "3":
                 modificarUsuario()
             if opcion =="4":
+                handle_exit()
                 break
         
-        print("Hasta pronto!")
+        
+
+
+import signal
+#Funcion que se ejecuta al salir del programa
+def handle_exit():
+    producer = KafkaProducer(bootstrap_servers=['%s:%s' %(serverK,puertoK)])
+    mensaje = '%s' %(UserID)
+    producer.send('logout', mensaje)
+    producer.flush()
+
+atexit.register(handle_exit)
+signal.signal(signal.SIGTERM, handle_exit)
+signal.signal(signal.SIGINT, handle_exit)
 
 if __name__ == "__main__":
     logging.basicConfig()
