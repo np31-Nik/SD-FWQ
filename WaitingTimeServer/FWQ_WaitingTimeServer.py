@@ -70,7 +70,8 @@ def actualizarTiempos(id_atr,personas,anyadir):
 					# 		del usuariosEspera[i]
 
 
-def reloj(id,server,puerto):
+def reloj():
+	#print("reloj")
 	delay = 1
 	next_time = time.time() + delay
 	while True:
@@ -84,6 +85,7 @@ def reloj(id,server,puerto):
 
 			
 def escuchaSensor(server,puerto):
+	#print("escuchaSensor")
 	consumer = KafkaConsumer(
         'sensorPersonas',
         bootstrap_servers=['%s:%s'%(server,puerto)],
@@ -94,11 +96,9 @@ def escuchaSensor(server,puerto):
 		actualizarTiempos(datos[0],datos[1],True)
 		print(datos)
 
-#def conexionInicial():
-	#serhii
 
-#def escuchaEngine():
-	#serhii
+def escuchaEngine(puerto_escucha):
+	print("escuchaEngine")
 
 
 
@@ -115,18 +115,15 @@ def main():
 		
 	if(len(sys.argv) != 4):
 		print("Para ejecutar utiliza: FWQ_WaitingTimeServer.py |PUERTO ESCUCHA| |IP GESTOR| |PUERTO GESTOR|")
-  	else:
+	else:
 		puerto_escucha = sys.argv[1]
 		ip_gestor = sys.argv[2]
 		puerto_gestor = sys.argv[3]
 		personas = 0
 
-		#conexionInicial(puerto_escucha)
-
 		threading.Thread(target = escuchaSensor, args=(ip_gestor,puerto_gestor)).start()
-		threading.Thread(target = reloj, args=(ip_gestor,puerto_gestor)).start()
-
-        #threading.Thread(target = escuchaEngine, args=(puerto_escucha)).start()
+		threading.Thread(target = reloj).start()
+		threading.Thread(target = escuchaEngine, args=(puerto_escucha,)).start()
 
 
 
