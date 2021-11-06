@@ -10,6 +10,7 @@ import TimeServer_pb2_grpc
 import numpy as np
 import time
 import traceback
+import threading
 
 tiempos = []
 atr = []
@@ -48,22 +49,28 @@ def generarTiempos(num_atr,atracciones):
 
 def actualizarTiempos(id_atr,personas,anyadir):
 	global tiempos
+	global usuariosEspera
 	datos = atr[np.where(atr[:,0] == id_atr)]
 
 	for i in range(num_atr):
 		if tiempos[i][0] == id_atr:
 			if anyadir:
-				ciclos = round(personas/datos[1])
+				ciclos = round(len(personas)/datos[1])
 				tiempo = ciclos * datos[2]
 				tiempos[i][1] += datos[2]
 			else:
-				#calcular y actualizar tiempos
-				#tambien para cada usuario, crear una lista de usuarios con el tiempo de espera?
-				#
-				#if tiempos[i][1] %
-				tiempos[i][1] -= datos[1]
+				if tiempos[i][1] > 0:
+					tiempos[i][1] -= 1
 
-def every(id,server,puerto):
+					#esto depende de si hay que mostrar el tiempo para cada usuario:
+					# for i in len(usuariosEspera):
+					# 	if usuariosEspera[i][1] > 0:
+					# 		usuariosEspera[i][1] -= 1
+					# 	else:
+					# 		del usuariosEspera[i]
+
+
+def reloj(id,server,puerto):
 	delay = 1
 	next_time = time.time() + delay
 	while True:
@@ -77,7 +84,6 @@ def every(id,server,puerto):
 
 			
 def escuchaSensor(server,puerto):
-	global personas
 	consumer = KafkaConsumer(
         'sensorPersonas',
         bootstrap_servers=['%s:%s'%(server,puerto)],
@@ -88,25 +94,43 @@ def escuchaSensor(server,puerto):
 		actualizarTiempos(datos[0],datos[1],True)
 		print(datos)
 
+#def conexionInicial():
+	#serhii
+
+#def escuchaEngine():
+	#serhii
+
+
+
 def main():
-	server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-	TimeServer_pb2_grpc.add_CalculateTimeServicer_to_server(Time(),server)
-	server.add_insecure_port('[::]:50051')
-	server.start()
-	server.wait_for_termination()
 
-	return True
-	# if(len(sys.argv) != 4):
-	# 	print("Para ejecutar utiliza: FWQ_WaitingTimeServer.py |PUERTO ESCUCHA| |IP GESTOR| |PUERTO GESTOR|")
-  	# else:
-	# 	puerto_escucha = sys.argv[1]
-	# 	ip_gestor = sys.argv[2]
-	# 	puerto_gestor = sys.argv[3]
-	# 	personas = 0
+		# server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+		# TimeServer_pb2_grpc.add_CalculateTimeServicer_to_server(Time(),server)
+		# server.add_insecure_port('[::]:50051')
+		# server.start()
+		# server.wait_for_termination()
 
-	# 	escuchaSensor()
+		#return True
 
-	# 	#escuchaEngine()
+		
+	if(len(sys.argv) != 4):
+		print("Para ejecutar utiliza: FWQ_WaitingTimeServer.py |PUERTO ESCUCHA| |IP GESTOR| |PUERTO GESTOR|")
+  	else:
+		puerto_escucha = sys.argv[1]
+		ip_gestor = sys.argv[2]
+		puerto_gestor = sys.argv[3]
+		personas = 0
+
+		#conexionInicial(puerto_escucha)
+
+		threading.Thread(target = escuchaSensor, args=(ip_gestor,puerto_gestor)).start()
+		threading.Thread(target = reloj, args=(ip_gestor,puerto_gestor)).start()
+
+        #threading.Thread(target = escuchaEngine, args=(puerto_escucha)).start()
+
+
+
+
 
 
 
