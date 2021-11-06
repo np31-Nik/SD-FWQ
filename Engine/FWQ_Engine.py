@@ -14,6 +14,7 @@ import TimeServer_pb2_grpc
 
 #Variable global que almacena las posiciones de los usuarios
 posiciones = []
+matriz = []
 
 #Llamada GRPC al servidor de tiempos de espera
 def ObtenerTiempo():
@@ -104,12 +105,26 @@ def escuchaVisitante(server,puerto):
 
     for msg in consumer:
         print(msg)
-        #movimiento()
+        datos=msg.value.decode('UTF-8').split(':')
+        movimiento(datos[0],datos[1],datos[2])
+        enviarMapa(server,puerto,datos[0])
+
+#Funcion que envia el mapa actualizado al visitante
+def enviarMapa(server,puerto,id_visitante):
+    producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
+    mensaje = matriz.tobytes()
+    producer.send('%s' %(id_visitante), mensaje)
+    producer.flush()
 
 #Funcion que registra el movimiento del usuario
 def movimiento(usuario,x,y):
-    global posiciones
-    
+    global posiciones, matriz
+    existente = posiciones[np.where(posiciones[:,0] == usuario)]
+    posiciones = np.delete(posiciones, existente)
+    posiciones.append([usuario,x,y])
+
+    if matriz[x][y] == '---':
+        matriz[x][y] == usuario
 
 
 
@@ -133,6 +148,7 @@ def main():
     (atr,num_atr) = get_atracciones(c,mapa)
     lista_atr = crearListaAtr(num_atr,atr)
     cola = crearCola(num_atr,lista_atr)
+    global matriz 
     matriz = rellenar_mapa(mapa)
 
     conn.close()
