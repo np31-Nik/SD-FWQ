@@ -7,25 +7,30 @@ import sys
 from concurrent import futures
 import logging
 import grpc
-sys.path.append('C:/Users/serge/source/repos/SD-FWQ/WaitingTimeServer')
-#sys.path.append('C:/Users/niktr/Desktop/SD-FWQ/SD-FWQ/WaitingTimeServer')
+#sys.path.append('C:/Users/serge/source/repos/SD-FWQ/WaitingTimeServer')
+sys.path.append('C:/Users/niktr/Desktop/SD-FWQ/SD-FWQ/WaitingTimeServer')
 import TimeServer_pb2
 import TimeServer_pb2_grpc
+import traceback
+import threading
 
 #Variable global que almacena las posiciones de los usuarios
 posiciones = []
 matriz = []
+cola_entrada = []
+usuarios_espera = []
+visitantes_max = 0
+visitantes_actual = 0
+tiempo_atr = []
 
 #Llamada GRPC al servidor de tiempos de espera
-def ObtenerTiempo():
-    #CAMBIAR PORT Y IP
+def ObtenerTiempo(ip,port):
     #channel = grpc.insecure_channel('localhost:50051')
-    channel = grpc.insecure_channel('192.168.4.246:50051')
+    channel = grpc.insecure_channel('%s:%s' %(ip,port))
     stub = TimeServer_pb2_grpc.CalculateTimeStub(channel)
     response = stub.Time(TimeServer_pb2.EstimatedTimeRequest(num=2))
     print("Client received: " + response.times.decode('utf-8'))
     return response.times
-
 
 
 #Funcion para conectarnos a la BD.
@@ -116,6 +121,84 @@ def enviarMapa(server,puerto,id_visitante):
     producer.send('%s' %(id_visitante), mensaje)
     producer.flush()
 
+#Funcion que recibe las entradas de los visitantes
+def entradaVisitante(server,puerto):
+    consumer = KafkaConsumer(
+        'loginAttempt',
+        bootstrap_servers=['%s:%s'%(server,puerto)],
+    )
+    global visitantes_actual
+    global cola_entrada
+
+    for msg in consumer:
+        #print(msg)
+        datos=msg.value.decode('UTF-8')
+
+        if not cola_entrada:
+            if visitantes_actual < visitantes_max:
+                visitantes_actual+=1
+                matriz[0][0] = datos
+                posiciones.append([datos,0,0])
+
+                respuestaEntradaVisitante(server,puerto,datos,True)
+            else:
+                cola_entrada.append(datos)
+                respuestaEntradaVisitante(server,puerto,datos,False)
+        else:
+            cola_entrada.append(datos)
+            respuestaEntradaVisitante(server,puerto,datos,False)
+
+#Funcion que envia la respuesta al usuario que intenta entrar al parque
+def respuestaEntradaVisitante(server,puerto,user,bool):
+    if bool:
+        respuesta = b'1'
+    else:
+        respuesta = b'0'
+
+    producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
+    producer.send('loginResponse:%s' %(user), respuesta)
+    producer.flush()
+
+    if bool:
+        enviarMapa(server,puerto,user)
+
+#Funcion que se ejecuta cada segundo para verificar si un usuario en cola puede entrar al parque
+def colaParque(server,puerto):
+    global visitantes_actual
+    delay = 1
+    next_time = time.time() + delay
+    while True:
+        time.sleep(max(0, next_time - time.time()))
+        try:
+            if cola_entrada:
+                if visitantes_actual < visitantes_max:
+                    user = cola_entrada[0]
+                    del cola_entrada[0]
+                    posiciones.append([user,0,0])
+                    matriz[0][0] = user
+                    visitantes_actual += 1
+                    respuestaEntradaVisitante(server,puerto,user,True)
+
+        except Exception:
+            traceback.print_exc()
+        next_time += delay
+
+#Funcion que recibe las salidas de los visitantes
+def salidaVisitante(server,puerto):
+    consumer = KafkaConsumer(
+        'logout',
+        bootstrap_servers=['%s:%s'%(server,puerto)],
+        )
+
+    global visitantes_actual
+
+    for msg in consumer:
+        user = msg.value.decode('UTF-8')
+        indexpos = posiciones[np.where(posiciones[:,0] == user)]
+        posiciones = np.delete(posiciones, indexpos)
+        visitantes_actual-=1
+
+
 #Funcion que registra el movimiento del usuario
 def movimiento(usuario,x,y):
     global posiciones, matriz
@@ -123,72 +206,50 @@ def movimiento(usuario,x,y):
     posiciones = np.delete(posiciones, existente)
     posiciones.append([usuario,x,y])
 
+    matriz[existente[1]][existente[2]] = '---'
+
     if matriz[x][y] == '---':
         matriz[x][y] == usuario
 
 
-
 #Funcion principal
 def main():
-	# if(len(sys.argv) != 6):
-	# 	print("Para ejecutar utiliza: FWQ_Engine.py |IP GESTOR| |PUERTO GESTOR| |NUM MAX VISITANTES| |IP WaitingTimeServer| |PUERTO WaitingTimeServer|")
-  	# else:
-	# 	ip_gestor = sys.argv[1]
-	# 	puerto_gestor = sys.argv[2]
-    # 	num_max_visitantes = sys.argv[3]
-    #   ip_wts = sys.argv[4]
-    #   puerto_wts = sys.argv[5]
+    if(len(sys.argv) != 6):
+        print("Para ejecutar utiliza: FWQ_Engine.py |IP GESTOR| |PUERTO GESTOR| |NUM MAX VISITANTES| |IP WaitingTimeServer| |PUERTO WaitingTimeServer|")
+    else:
+        global visitantes_max
 
-    conn = create_connection('db.db')
-    c=conn.cursor()
+        ip_gestor = sys.argv[1]
+        puerto_gestor = sys.argv[2]
+        visitantes_max = sys.argv[3]
+        ip_wts = sys.argv[4]
+        puerto_wts = sys.argv[5]
 
-    id_mapa = 'm1'
+        #direccion de la BD
+        conn = create_connection('C:\\Users\\niktr\\Desktop\\SD-FWQ\\SD-FWQ\\db.db')
+        c=conn.cursor()
 
-    mapa = get_mapa(c,id_mapa)
-    (atr,num_atr) = get_atracciones(c,mapa)
-    lista_atr = crearListaAtr(num_atr,atr)
-    cola = crearCola(num_atr,lista_atr)
-    global matriz 
-    matriz = rellenar_mapa(mapa)
+        id_mapa = 'm1'
 
-    conn.close()
-    #print(ObtenerTiempo())
-    
-    print_mapa(matriz)
-    print(matriz)
+        mapa = get_mapa(c,id_mapa)
+        (atr,num_atr) = get_atracciones(c,mapa)
+        conn.close()
 
+        lista_atr = crearListaAtr(num_atr,atr)
+        cola = crearCola(num_atr,lista_atr)
+        global matriz 
+        matriz = rellenar_mapa(mapa)
 
+        
+        #print(ObtenerTiempo(ip_wts,puerto_wts))
+        
+        #print_mapa(matriz)
+        #print(matriz)
 
-# pasos = KafkaConsumer(
-#     'h',
-#     bootstrap_servers=['192.168.3.77:9092'],
-# )
-
-# for message in pasos:
-#     print (message)
-#     time.sleep(1)
-#     producer = KafkaProducer(bootstrap_servers=['192.168.3.77:9092'])
-#     producer.send('respuesta', b'hola que tal')
-#     producer.flush()
-#     print("Hola")
-# pasos.close()
-
-
-#producer.send('respuesta', b'hola que tal')
-#producer.flush()
-
-
-
-#Le pasa el mapa a WaitingTimeServer al conectarse.
-#Registra los pasos de los visitantes en el mapa.
-#Envía el mapa actualizado a los usuarios.
-
-
-#argumentos:
-#o IP y puerto del broker/Bootstrap-server del gestor de colas
-#o Número máximo de visitantes
-#o IP y puerto del FWQ_WatingTimeServer
-
+        threading.Thread(target = entradaVisitante, args=(ip_gestor,puerto_gestor)).start()
+        threading.Thread(target = colaParque, args=(ip_gestor,puerto_gestor)).start()
+        threading.Thread(target = escuchaVisitante, args=(ip_gestor,puerto_gestor)).start()
+        threading.Thread(target = salidaVisitante, args=(ip_gestor,puerto_gestor)).start()
 
 
 #------------------------
