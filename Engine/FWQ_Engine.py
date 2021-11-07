@@ -180,6 +180,7 @@ def entradaVisitante(server,puerto):
                 matriz[0][0] = datos
                 np.append(posiciones,[datos,0,0])
                 print("respuesta enviada")
+                print(posiciones)
                 respuestaEntradaVisitante(server,puerto,datos,True)
                 
             else:
@@ -246,10 +247,14 @@ def movimiento(usuario,x,y):
     global posiciones, matriz
     indexpos=np.where(posiciones[:,0] == usuario)
     existente = posiciones[indexpos]
+    print('existente:?',existente)
+    print('indexpos:?',indexpos)
+    print('posiciones:?',posiciones)
+    matriz[existente[1]][existente[2]] = '---'
+
     posiciones = np.delete(posiciones, indexpos)
     np.append(posiciones,[usuario,x,y])
-    print(existente)
-    matriz[existente[1]][existente[2]] = '---'
+    
 
     if matriz[x][y] == '---':
         matriz[x][y] == usuario

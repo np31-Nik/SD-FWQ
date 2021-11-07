@@ -22,9 +22,8 @@ num_atr=0
 
 
 class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
-	global atr
 	def Time(self,request,context):
-		global num_atr
+		global num_atr,atr
 		resul=tiempos.tobytes()
 		ej = np.full((num_atr,3),'---')
 		num_atr=request.num_atra
@@ -56,8 +55,18 @@ def generarTiempos(num_atr,atracciones):
 def actualizarTiempos(id_atr,personas,anyadir):
 	global tiempos
 	global usuariosEspera
-	index = np.where(atr[:,0] == id_atr)
-	datos = atr[index]
+	if anyadir:
+		index = -1
+		print(id_atr)
+		print(num_atr)
+		print(atr)
+		for i in range(0,num_atr):
+			print(atr[i][0])
+			if atr[i][0] ==id_atr:
+				index = i
+				break
+		#index = np.where(atr[:,0] == id_atr)
+		datos = atr[index]
 
 	for i in range(num_atr):
 		if tiempos[i][0] == id_atr:

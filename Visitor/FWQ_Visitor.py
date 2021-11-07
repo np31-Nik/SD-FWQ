@@ -67,9 +67,10 @@ def buscarAtraccion():
     for row in range(len(matriz)):
         for col in range(len(matriz[row])):
             if matriz[row][col]!='---':
-                contador=contador+1
+                
                 if contador==atraccion: 
                     return row,col
+                contador=contador+1
 
 
 def moverse(server,port):
@@ -80,10 +81,10 @@ def moverse(server,port):
     colAtraccion=-1
     while(True):
         while filaAtraccion==-1:
-            filaAtraccion,colAtraccion=buscarAtraccion()
-        fila,columna=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
+            (filaAtraccion,colAtraccion)=buscarAtraccion()
+        (fila,columna)=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
         enviarPaso(fila,columna,server,port)
-        print(matriz)
+        print_mapa(matriz)
 
 
     #----En bucle:
@@ -128,7 +129,7 @@ def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
             fila=fila-1
             #return 'SW' #South-West
 
-    return fila,columna
+    return (fila,columna)
 
 
 
