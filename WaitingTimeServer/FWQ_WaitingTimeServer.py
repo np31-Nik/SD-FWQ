@@ -16,7 +16,7 @@ import threading
 tiempos = np.full((3,3),0)
 #tiempos = [["a1",0],["a2",0]]
 usuariosEspera = []
-num_atr=2
+num_atr=0
 atr = np.full((num_atr,3),'---')
 
 
