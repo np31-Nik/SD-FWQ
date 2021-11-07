@@ -48,10 +48,14 @@ def recibirMapa(server,puerto):
 #Funcion que imprime el mapa por consola
 def print_mapa(matriz):
 
+    print('Tu ID: ?',UserID)
     for i in range(0,19):
         for j in range(0,19):
             print("\t{0}".format(matriz[i][j]),sep=',',end='')
         print('')
+
+    print('')
+    print('')
 
 #Cuenta numero de atracciones y luego elige una random
 def buscarAtraccion(): 
