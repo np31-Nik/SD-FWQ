@@ -48,6 +48,7 @@ def Registro(name, password):
 	c=conn.cursor()
 	c.execute("""SELECT username from usuarios""")
 	usuario=c.fetchall()
+	cantUsuarios=len(usuario)
 	yaExiste=False
 	for i in usuario:
 		if i[0] == name:
@@ -59,7 +60,7 @@ def Registro(name, password):
 		try:
 			Registry.siguienteUsuario=Registry.siguienteUsuario + 1 
 			c.execute("""Insert into usuarios (id,username,password) values(?,?,?)""",
-			("u"+str(Registry.siguienteUsuario),name,password))
+			("u"+str(cantUsuarios+1),name,password))
 			resultado="Usuario registrado"
 			conn.commit()
 			conn.close()

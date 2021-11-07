@@ -45,7 +45,9 @@ c=conn.cursor()
 #     # c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (%s,%s,%s,%s)""" %(id_mapa,str(x[i]),str(y[i]),atr))
 
 
-c.execute("Select valor,x,y from mapa")
+c.execute("Delete from usuarios where id='u3'")
+
+#c.execute("Select valor,x,y from mapa")
 # lista=[[]]
 # cont=0
 # result=c.fetchall()
@@ -58,10 +60,10 @@ c.execute("Select valor,x,y from mapa")
 # #     cont=cont+1
 # print((lista[0][0]))
 
-ej = np.full((3,3),1)
-for i in range(len(ej)):
-    #for j in range(len(ej[i])):
-    print(ej[i])
+# ej = np.full((3,3),1)
+# for i in range(len(ej)):
+#     #for j in range(len(ej[i])):
+#     print(ej[i])
 
 conn.commit()
 conn.close()
