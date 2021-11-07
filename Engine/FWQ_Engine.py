@@ -192,7 +192,7 @@ def respuestaEntradaVisitante(server,puerto,user,bool):
     else:
         respuesta = b'0'
 
-    producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
+    producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)], group_id='login')
     producer.send('loginResponse:%s' %(user), respuesta)
     producer.flush()
 
