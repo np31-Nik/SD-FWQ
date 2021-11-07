@@ -25,6 +25,7 @@ class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 	def Time(self,request,context):
 		global num_atr,atr
 		resul=tiempos.tobytes()
+		print (num_atr)
 		ej = np.full((num_atr,3),'---')
 		num_atr=request.num_atra
 		#print (num_atr)
