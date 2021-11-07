@@ -24,7 +24,21 @@ cola_entrada = []
 usuarios_espera = []
 visitantes_max = 0
 visitantes_actual = 0
-tiempo_atr = []
+pos_atr = []
+
+def reloj(ip,puerto):
+	#print("reloj")
+	delay = 1
+	next_time = time.time() + delay
+	while True:
+		time.sleep(max(0, next_time - time.time()))
+		try:
+			ObtenerTiempo(ip,puerto)
+		except Exception:
+			traceback.print_exc()
+		next_time += delay
+
+
 
 #Llamada GRPC al servidor de tiempos de espera
 def ObtenerTiempo(ip,port):
@@ -32,12 +46,28 @@ def ObtenerTiempo(ip,port):
     channel = grpc.insecure_channel('%s:%s' %(ip,port))
     stub = TimeServer_pb2_grpc.CalculateTimeStub(channel)
     response = stub.Time(TimeServer_pb2.EstimatedTimeRequest(num=0))
-    ej = np.full((3,3),1)
-    length=response.len
-    tiempos = np.frombuffer(response.times, dtype=ej.dtype).reshape(3,3)
-    print(tiempos)
-    print("Client received: " + response.times.decode('utf-8'))
-    return response.times
+    ej = np.full((response.len,3),1)
+    tiempos = np.frombuffer(response.times, dtype=ej.dtype).reshape(response.len,3)
+    ponerTiemposEnMapa(tiempos)
+    #print(tiempos)
+    #print("Client received: " + response.times.decode('utf-8'))
+
+
+def leerPosicionAtracciones():
+    global pos_atr
+    conn = sqlite3.connect('../db.db')
+    c=conn.cursor()
+    c.execute("""SELECT valor, x, y from mapa""")
+    pos_atr=c.fetchall()
+
+def ponerTiemposEnMapa(tiempos):
+    global matriz
+    global pos_atr
+
+    for i in range(len(tiempos)):
+        for j in range(len(pos_atr)):
+            if tiempos[i][0]==pos_atr[j][0]:
+                matriz[pos_atr[j][2]][[pos_atr[j][1]]]=tiempos[i][1]
 
 
 #Funcion para conectarnos a la BD.
@@ -232,7 +262,7 @@ def main():
         ip_wts = sys.argv[4]
         puerto_wts = sys.argv[5]
 
-        print(ObtenerTiempo(ip_wts,puerto_wts))
+        #print(ObtenerTiempo(ip_wts,puerto_wts))
 
         #direccion de la BD
         #conn = create_connection('C:\\Users\\niktr\\Desktop\\SD-FWQ\\SD-FWQ\\db.db')
@@ -244,6 +274,8 @@ def main():
 
         id_mapa = 'm1'
 
+        leerPosicionAtracciones() #Guardamos las posiciones de atracciones en la lista
+
         mapa = get_mapa(c,id_mapa)
         (atr,num_atr) = get_atracciones(c,mapa)
         conn.close()
@@ -253,11 +285,12 @@ def main():
         global matriz 
         matriz = rellenar_mapa(mapa)
 
-
+        
         threading.Thread(target = entradaVisitante, args=(ip_gestor,puerto_gestor)).start()
         threading.Thread(target = colaParque, args=(ip_gestor,puerto_gestor)).start()
         threading.Thread(target = escuchaVisitante, args=(ip_gestor,puerto_gestor)).start()
         threading.Thread(target = salidaVisitante, args=(ip_gestor,puerto_gestor)).start()
+        threading.Thread(target = reloj, args=(ip_wts,puerto_wts)).start()
 
 
 #------------------------

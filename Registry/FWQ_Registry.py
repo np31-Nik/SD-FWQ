@@ -106,7 +106,7 @@ def serve():
 	else:
 		puertoGrpc = sys.argv[1]
 	
-		server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+		server = grpc.server(futures.ThreadPoolExecutor(max_workers=100))
 		Registry_pb2_grpc.add_RegistryServiceServicer_to_server(Registry(), server)
 		Registry_pb2_grpc.add_loginServicer_to_server(Login(), server)
 		Registry_pb2_grpc.add_modifyUserServicer_to_server(Modify(),server)

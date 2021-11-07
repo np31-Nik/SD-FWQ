@@ -1,5 +1,6 @@
 import sqlite3
 import random
+import numpy as np
 
 #from FWQ_Registry import usuarioEnBDLogin
 
@@ -44,10 +45,23 @@ c=conn.cursor()
 #     # c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (%s,%s,%s,%s)""" %(id_mapa,str(x[i]),str(y[i]),atr))
 
 
-c.execute("Insert into usuarios (id,username,password) values(?,?,?)",("u1","alfonsox1","12345"))
-c.execute("Select * from usuarios")
-result=c.fetchall()
-print((result))
+c.execute("Select valor,x,y from mapa")
+# lista=[[]]
+# cont=0
+# result=c.fetchall()
+# lista=result
+# print(result)
+# # for val in result:
+# #     lista[cont][0]=val[0]
+# #     lista[cont][1]=val[1]
+# #     lista[cont][2]=val[2]
+# #     cont=cont+1
+# print((lista[0][0]))
+
+ej = np.full((3,3),1)
+for i in range(len(ej)):
+    #for j in range(len(ej[i])):
+    print(ej[i])
 
 conn.commit()
 conn.close()

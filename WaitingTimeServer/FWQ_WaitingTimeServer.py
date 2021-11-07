@@ -36,7 +36,7 @@ class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 		# 	resul=bytes('-1', 'utf-8')
 		#resul=bytes(tiempos,'utf-8')
 		print(resul)
-		return TimeServer_pb2.TimeResponse(times=tiempos.tobytes(),len=len(tiempos))
+		return TimeServer_pb2.TimeResponse(times=tiempos.tobytes(),len=bytes(len(tiempos)))
 
 
 # def ObtenerTiempo():
@@ -114,7 +114,7 @@ def escuchaEngine(puerto_escucha):
 
 def escuchaEngine(puerto):
 
-	server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+	server = grpc.server(futures.ThreadPoolExecutor(max_workers=100))
 	TimeServer_pb2_grpc.add_CalculateTimeServicer_to_server(Time(),server)
 	server.add_insecure_port('[::]:%s'%(puerto))
 	#server.add_insecure_port('[::]:50051')
@@ -133,8 +133,8 @@ def main():
 		puerto_gestor = sys.argv[3]
 		personas = 0
 
-		#threading.Thread(target = escuchaSensor, args=(ip_gestor,puerto_gestor)).start()
-		#threading.Thread(target = reloj).start()
+		threading.Thread(target = escuchaSensor, args=(ip_gestor,puerto_gestor)).start()
+		threading.Thread(target = reloj).start()
 		t=threading.Thread(target = escuchaEngine, args=(puerto_escucha,))
 		t.start()
 		t.join()
