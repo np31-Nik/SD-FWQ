@@ -54,8 +54,8 @@ def ObtenerTiempo(ip,port):
 
 
 def leerPosicionAtracciones():
-    global pos_atr
-    conn = sqlite3.connect('../db.db')
+    dir = os.path.join(os.path.dirname(__file__),'..','db.db')
+    conn = create_connection(dir)
     c=conn.cursor()
     c.execute("""SELECT valor, x, y from mapa""")
     pos_atr=c.fetchall()

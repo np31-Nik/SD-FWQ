@@ -2,16 +2,19 @@ from concurrent import futures
 
 import logging
 import grpc
+from FWQ_Engine import create_connection
 import Registry_pb2
 import Registry_pb2_grpc
 import sqlite3
 import sys
+import os
 
 
 
 def IniciarSesion(username, password):
 	#conectranos a la BD
-	conn = sqlite3.connect('../db.db')
+	dir = os.path.join(os.path.dirname(__file__),'..','db.db')
+	conn = create_connection(dir)
 	c=conn.cursor()
 	try:
 		c.execute("""SELECT username, password, id from usuarios""")
@@ -22,19 +25,20 @@ def IniciarSesion(username, password):
 			if i[0] == username and i[1]==password:
 				login=True
 				id= i[2]
-				break
+			break
 		if login:#consultamos BD con name
 			return id
 		else: #la contraseña no es correcta
 			return id
 	except:
 		print ("Ha ocurrido un errror al conectarse a la base de datos(Iniciar Sesion)")
-		return False
+	return False
 		
 
 
 def Registro(name, password):
-	conn = sqlite3.connect('../db.db')
+	dir = os.path.join(os.path.dirname(__file__),'..','db.db')
+	conn = create_connection(dir)
 	c=conn.cursor()
 	c.execute("""SELECT username from usuarios""")
 	usuario=c.fetchall()
@@ -60,7 +64,8 @@ def Registro(name, password):
 	
 
 def ModificarUsuario(username, newUsername, newPassword):
-	conn = sqlite3.connect('../db.db')
+	dir = os.path.join(os.path.dirname(__file__),'..','db.db')
+	conn = create_connection(dir)
 	c=conn.cursor()
 	try:
 		c.execute("""Update usuarios set username=?, password = ? where username=?""",
