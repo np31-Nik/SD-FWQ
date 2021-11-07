@@ -71,6 +71,7 @@ def buscarAtraccion():
 
 
 def moverse(server,port):
+    print("movemos")
     fila=0
     columna=0
     filaAtraccion=-1 
@@ -80,6 +81,7 @@ def moverse(server,port):
             filaAtraccion,colAtraccion=buscarAtraccion()
         fila,columna=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
         enviarPaso(fila,columna,server,port)
+        print(matriz)
 
 
     #----En bucle:
@@ -195,15 +197,18 @@ def enviaEntradaParque(server,puerto):
     id=bytes(UserID, 'utf-8')
     producer.send('loginAttempt', b'%s' %(id))
     producer.flush()
+    producer.close()
+    print("Entrada enviada")
     recibeEntradaParque(server,puerto)
 
 
 def recibeEntradaParque(server,puerto):
     consumer = KafkaConsumer(
-        'loginResponse:%s'%(UserID),
+        'loginResponse%s'%(UserID),
+        group_id='login',
         bootstrap_servers=['%s:%s'%(server,puerto)],
         )
-
+    print("Entrada recibida de Engine")
     for msg in consumer:
         datos = msg.value.decode('UTF-8')
 

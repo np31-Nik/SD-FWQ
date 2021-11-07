@@ -172,7 +172,7 @@ def entradaVisitante(server,puerto):
         datos=msg.value.decode('UTF-8')
 
         if not cola_entrada:
-            if visitantes_actual < visitantes_max:
+            if visitantes_actual < int(visitantes_max):
                 visitantes_actual+=1
                 matriz[0][0] = datos
                 posiciones.append([datos,0,0])
