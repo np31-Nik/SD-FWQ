@@ -49,7 +49,7 @@ def ObtenerTiempo(ip,port):
     ej = np.full((response.len,3),1)
     tiempos = np.frombuffer(response.times, dtype=ej.dtype).reshape(response.len,3)
     ponerTiemposEnMapa(tiempos)
-    #print(tiempos)
+    
     #print("Client received: " + response.times.decode('utf-8'))
 
 

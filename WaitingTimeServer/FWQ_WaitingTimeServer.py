@@ -13,30 +13,17 @@ import time
 import traceback
 import threading
 
-tiempos = np.full((3,3),0)
-#tiempos = []
+#tiempos = np.full((3,3),0)
+tiempos = []
 atr = []
 usuariosEspera = []
 num_atr=0
 
-def CalcularTiempo():
-	message = 'Python is fun'
-	# convert string to bytes
-	byte_message = bytes(message, 'utf-8')
-	#print(byte_message)
-	return byte_message
 
 class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 	def Time(self,request,context):
-		#resul=bytes('hola','utf-8')
 		resul=tiempos.tobytes()
-		# if tiempos:
-		# 	resul=tiempos.tobytes()
-		# else:
-		# 	resul=bytes('-1', 'utf-8')
-		#resul=bytes(tiempos,'utf-8')
-		print(resul)
-		return TimeServer_pb2.TimeResponse(times=tiempos.tobytes(),len=bytes(len(tiempos)))
+		return TimeServer_pb2.TimeResponse(times=resul,len=len(tiempos))
 
 
 # def ObtenerTiempo():

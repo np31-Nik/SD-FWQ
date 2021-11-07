@@ -2,14 +2,21 @@ from concurrent import futures
 
 import logging
 import grpc
-from FWQ_Engine import create_connection
 import Registry_pb2
 import Registry_pb2_grpc
 import sqlite3
 import sys
 import os
 
+def create_connection(db_file):
 
+    conn = None
+    try:
+        conn = sqlite3.connect(db_file)
+    except:
+        print('Hubo un problema conectando a la BD.')
+
+    return conn
 
 def IniciarSesion(username, password):
 	#conectranos a la BD
