@@ -7,12 +7,15 @@ import sys
 from concurrent import futures
 import logging
 import grpc
-#sys.path.append('C:/Users/serge/source/repos/SD-FWQ/WaitingTimeServer')
-sys.path.append('C:/Users/niktr/Desktop/SD-FWQ/SD-FWQ/WaitingTimeServer')
+
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'WaitingTimeServer'))
 import TimeServer_pb2
 import TimeServer_pb2_grpc
+
 import traceback
 import threading
+
 
 #Variable global que almacena las posiciones de los usuarios
 posiciones = []
@@ -226,7 +229,11 @@ def main():
         puerto_wts = sys.argv[5]
 
         #direccion de la BD
-        conn = create_connection('C:\\Users\\niktr\\Desktop\\SD-FWQ\\SD-FWQ\\db.db')
+        #conn = create_connection('C:\\Users\\niktr\\Desktop\\SD-FWQ\\SD-FWQ\\db.db')
+
+        dir = os.path.join(os.path.dirname(__file__),'..','db.db')
+        conn = create_connection(dir)
+
         c=conn.cursor()
 
         id_mapa = 'm1'
