@@ -36,7 +36,7 @@ class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 		# 	resul=bytes('-1', 'utf-8')
 		#resul=bytes(tiempos,'utf-8')
 		print(resul)
-		return TimeServer_pb2.TimeResponse(times=resul)
+		return TimeServer_pb2.TimeResponse(times=tiempos.tobytes(),len=len(tiempos))
 
 
 # def ObtenerTiempo():
