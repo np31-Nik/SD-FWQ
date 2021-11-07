@@ -13,7 +13,8 @@ import time
 import traceback
 import threading
 
-tiempos = []
+tiempos = np.full((3,3),0)
+#tiempos = []
 atr = []
 usuariosEspera = []
 num_atr=0
@@ -27,7 +28,14 @@ def CalcularTiempo():
 
 class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 	def Time(self,request,context):
-		resul=bytes("hola",'utf-8')
+		#resul=bytes('hola','utf-8')
+		resul=tiempos.tobytes()
+		# if tiempos:
+		# 	resul=tiempos.tobytes()
+		# else:
+		# 	resul=bytes('-1', 'utf-8')
+		#resul=bytes(tiempos,'utf-8')
+		print(resul)
 		return TimeServer_pb2.TimeResponse(times=resul)
 
 
@@ -125,9 +133,11 @@ def main():
 		puerto_gestor = sys.argv[3]
 		personas = 0
 
-		threading.Thread(target = escuchaSensor, args=(ip_gestor,puerto_gestor)).start()
-		threading.Thread(target = reloj).start()
-		threading.Thread(target = escuchaEngine, args=(puerto_escucha,)).start()
+		#threading.Thread(target = escuchaSensor, args=(ip_gestor,puerto_gestor)).start()
+		#threading.Thread(target = reloj).start()
+		t=threading.Thread(target = escuchaEngine, args=(puerto_escucha,))
+		t.start()
+		t.join()
 
 
 

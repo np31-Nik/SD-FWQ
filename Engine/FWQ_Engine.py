@@ -31,8 +31,10 @@ def ObtenerTiempo(ip,port):
     #channel = grpc.insecure_channel('localhost:50051')
     channel = grpc.insecure_channel('%s:%s' %(ip,port))
     stub = TimeServer_pb2_grpc.CalculateTimeStub(channel)
-    response = stub.Time(TimeServer_pb2.EstimatedTimeRequest(num=2))
-    
+    response = stub.Time(TimeServer_pb2.EstimatedTimeRequest(num=0))
+    ej = np.full((3,3),1)
+    tiempos = np.frombuffer(response.times, dtype=ej.dtype).reshape(3,3)
+    print(tiempos)
     print("Client received: " + response.times.decode('utf-8'))
     return response.times
 
