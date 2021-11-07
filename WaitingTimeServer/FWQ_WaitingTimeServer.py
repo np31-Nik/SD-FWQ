@@ -16,7 +16,7 @@ import threading
 tiempos = np.full((3,3),0)
 #tiempos = [["a1",0],["a2",0]]
 usuariosEspera = []
-num_atr=0
+num_atr=2
 atr = np.full((num_atr,3),'---')
 
 
@@ -25,6 +25,7 @@ class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 	def Time(self,request,context):
 		resul=tiempos.tobytes()
 		ej = np.full((num_atr,3),'---')
+		print (num_atr)
 		atr= np.frombuffer(request.atr, dtype=ej.dtype).reshape(num_atr,3)
 		print(atr)
 		return TimeServer_pb2.TimeResponse(times=resul,len=len(tiempos))
