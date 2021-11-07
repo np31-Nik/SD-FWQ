@@ -25,6 +25,7 @@ usuarios_espera = []
 visitantes_max = 0
 visitantes_actual = 0
 pos_atr = []
+num_atr=0
 
 
 def reloj(ip,puerto,atr):
@@ -46,8 +47,8 @@ def ObtenerTiempo(ip,port,atr):
     #channel = grpc.insecure_channel('localhost:50051')
     channel = grpc.insecure_channel('%s:%s' %(ip,port))
     stub = TimeServer_pb2_grpc.CalculateTimeStub(channel)
-
-    response = stub.Time(TimeServer_pb2.EstimatedTimeRequest(bytes(atr, 'utf-8')))
+    #print(atr)
+    response = stub.Time(TimeServer_pb2.EstimatedTimeRequest(atr.tobytes()))
     ej = np.full((response.len,3),1)
     tiempos = np.frombuffer(response.times, dtype=ej.dtype).reshape(response.len,3)
     ponerTiemposEnMapa(tiempos)
@@ -91,15 +92,15 @@ def get_mapa(c,id_mapa):
 
 #Funcion que obtiene el array de atracciones desde la BD
 def get_atracciones(c,mapa):
-    num_atr=0
-    atracciones = []
+    atracciones = np.full((num_atr,3),'---')
+    i=0
     for atr in mapa:
         c.execute("""SELECT * FROM atracciones where id='%s'""" %(atr[3]))
         query = c.fetchall()
-        atracciones.append(query[0])
-        num_atr+=1
+        atracciones[i] = [query[0][0],query[0][1],query[0][2]]
+        i+=1
 
-    return (atracciones,num_atr)
+    return atracciones
 
 #Funcion que imprime el mapa por consola
 def print_mapa(matriz):
@@ -113,16 +114,16 @@ def print_mapa(matriz):
 def rellenar_mapa(mapa):
 
     matriz = np.full((20,20), '---')
-
+    global num_atr
     for atr in mapa:
         x = atr[1]
         y = atr[2]
         matriz[x][y] = atr[3]
-
+        num_atr+=1
     return matriz
 
 #Funcion que crea la lista de atracciones
-def crearListaAtr(num_atr,atr):
+def crearListaAtr(atr):
     lista_atr=[]
 
     for i in range(num_atr):
@@ -130,7 +131,7 @@ def crearListaAtr(num_atr,atr):
     return lista_atr
 
 #Funcion que crea la cola de atracciones
-def crearCola(num_atr,lista_atr):
+def crearCola(lista_atr):
     mat = []
     for i in range (num_atr):
         rowList = []
@@ -276,18 +277,19 @@ def main():
 
         c=conn.cursor()
 
-        id_mapa = 'm1'
+        id_mapa = 'm2'
 
         leerPosicionAtracciones() #Guardamos las posiciones de atracciones en la lista
 
         mapa = get_mapa(c,id_mapa)
-        (atr,num_atr) = get_atracciones(c,mapa)
-        conn.close()
-
-        lista_atr = crearListaAtr(num_atr,atr)
-        cola = crearCola(num_atr,lista_atr)
         global matriz 
         matriz = rellenar_mapa(mapa)
+        atr= get_atracciones(c,mapa)
+        conn.close()
+
+        lista_atr = crearListaAtr(atr)
+        cola = crearCola(lista_atr)
+        
 
         
         threading.Thread(target = entradaVisitante, args=(ip_gestor,puerto_gestor)).start()
