@@ -5,6 +5,7 @@ import grpc
 import Registry_pb2
 import Registry_pb2_grpc
 import sqlite3
+import sys
 
 
 
@@ -99,13 +100,19 @@ class Modify(Registry_pb2_grpc.modifyUserServicer):
 		return Registry_pb2.RegistryResponse(response=resul)
 
 def serve():
-	server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-	Registry_pb2_grpc.add_RegistryServiceServicer_to_server(Registry(), server)
-	Registry_pb2_grpc.add_loginServicer_to_server(Login(), server)
-	Registry_pb2_grpc.add_modifyUserServicer_to_server(Modify(),server)
-	server.add_insecure_port('[::]:50051')
-	server.start()
-	server.wait_for_termination()
+
+	if(len(sys.argv) != 5):
+		print("Para ejecutar utiliza: FWQ_Sensor.py |PUERTO GRPC|")
+	else:
+		puertoGrpc = sys.argv[1]
+	
+		server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+		Registry_pb2_grpc.add_RegistryServiceServicer_to_server(Registry(), server)
+		Registry_pb2_grpc.add_loginServicer_to_server(Login(), server)
+		Registry_pb2_grpc.add_modifyUserServicer_to_server(Modify(),server)
+		server.add_insecure_port('[::]:%s'%(puertoGrpc))
+		server.start()
+		server.wait_for_termination()
 
 
 if __name__ == '__main__':

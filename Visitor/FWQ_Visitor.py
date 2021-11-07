@@ -9,6 +9,7 @@ import atexit
 import sys
 
 sys.path.append('C:/Users/serg2/source/repos/SD-FWQ/Registry')
+#sys.path.append("..\\")
 import Registry_pb2
 import Registry_pb2_grpc
 
@@ -244,11 +245,6 @@ def run():
             if opcion == "1":
                 registarse()
             if opcion == "2":
-
-                #****Luego quitar****
-                serverKafka=1
-                puertoKafka=2
-
                 if iniciarSesion(UserID,serverGrpc,puertoGrpc):
                     enviaEntradaParque(serverKafka,puertoKafka)
                 
