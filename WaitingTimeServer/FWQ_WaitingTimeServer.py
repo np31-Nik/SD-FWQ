@@ -30,7 +30,7 @@ class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 		num_atr=request.num_atra
 		#print (num_atr)
 		atr= np.frombuffer(request.atr, dtype=ej.dtype).reshape(num_atr,3)
-		print(atr)
+		#print(atr)
 		return TimeServer_pb2.TimeResponse(times=resul,len=len(tiempos))
 
 

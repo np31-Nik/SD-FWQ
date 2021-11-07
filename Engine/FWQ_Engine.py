@@ -18,7 +18,7 @@ import threading
 
 
 #Variable global que almacena las posiciones de los usuarios
-posiciones = []
+posiciones = np.full((1,1),'---')
 matriz = []
 cola_entrada = []
 usuarios_espera = []
@@ -178,7 +178,7 @@ def entradaVisitante(server,puerto):
             if visitantes_actual < int(visitantes_max):
                 visitantes_actual+=1
                 matriz[0][0] = datos
-                posiciones.append([datos,0,0])
+                np.append(posiciones,[datos,0,0])
                 print("respuesta enviada")
                 respuestaEntradaVisitante(server,puerto,datos,True)
                 
@@ -197,7 +197,7 @@ def respuestaEntradaVisitante(server,puerto,user,bool):
         respuesta = b'0'
     print("Engine antes de send")
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
-    producer.send('loginResponse:%s' %(user), respuesta)
+    producer.send('loginResponse.%s' %(user), respuesta)
     
     producer.flush()
 
@@ -216,7 +216,7 @@ def colaParque(server,puerto):
                 if visitantes_actual < visitantes_max:
                     user = cola_entrada[0]
                     del cola_entrada[0]
-                    posiciones.append([user,0,0])
+                    np.append(posiciones,[user,0,0])
                     matriz[0][0] = user
                     visitantes_actual += 1
                     respuestaEntradaVisitante(server,puerto,user,True)
@@ -236,7 +236,7 @@ def salidaVisitante(server,puerto):
 
     for msg in consumer:
         user = msg.value.decode('UTF-8')
-        indexpos = posiciones[np.where(posiciones[:,0] == user)]
+        indexpos = np.where(posiciones[:,0] == user)
         posiciones = np.delete(posiciones, indexpos)
         visitantes_actual-=1
 
@@ -244,10 +244,11 @@ def salidaVisitante(server,puerto):
 #Funcion que registra el movimiento del usuario
 def movimiento(usuario,x,y):
     global posiciones, matriz
-    existente = posiciones[np.where(posiciones[:,0] == usuario)]
-    posiciones = np.delete(posiciones, existente)
-    posiciones.append([usuario,x,y])
-
+    indexpos=np.where(posiciones[:,0] == usuario)
+    existente = posiciones[indexpos]
+    posiciones = np.delete(posiciones, indexpos)
+    np.append(posiciones,[usuario,x,y])
+    print(existente)
     matriz[existente[1]][existente[2]] = '---'
 
     if matriz[x][y] == '---':

@@ -33,7 +33,7 @@ def enviarPaso(fila,columna,server,puerto):
 def recibirMapa(server,puerto):
     consumer = KafkaConsumer(
         '%s'%(UserID),
-        #group_id='RecibirMapa',
+        group_id='RecibirMapa',
         bootstrap_servers=['%s:%s'%(server,puerto)],
         )
 
@@ -206,7 +206,7 @@ def enviaEntradaParque(server,puerto):
 
 def recibeEntradaParque(server,puerto):
     consumer = KafkaConsumer(
-        'loginResponse%s'%(UserID),
+        'loginResponse.%s'%(UserID),
         group_id='login',
         bootstrap_servers=['%s:%s'%(server,puerto)],
         )
