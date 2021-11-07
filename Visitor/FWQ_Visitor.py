@@ -33,6 +33,7 @@ def enviarPaso(fila,columna,server,puerto):
 def recibirMapa(server,puerto):
     consumer = KafkaConsumer(
         '%s'%(UserID),
+        #group_id='RecibirMapa',
         bootstrap_servers=['%s:%s'%(server,puerto)],
         )
 
@@ -55,15 +56,16 @@ def print_mapa(matriz):
 #Cuenta numero de atracciones y luego elige una random
 def buscarAtraccion(): 
     contador =0 #Contador de atracciones
-    for row in matriz:
-        for col in matriz:
+    for row in range(len(matriz)):
+        for col in range(len(matriz[row])):
             if matriz[row][col]!='---':
                 contador=contador+1
 
     atraccion=random.randint(contador) #comprobar si funciona
+    print(atraccion)
     contador =0
-    for row in matriz:
-        for col in matriz:
+    for row in range(len(matriz)):
+        for col in range(len(matriz[row])):
             if matriz[row][col]!='---':
                 contador=contador+1
                 if contador==atraccion: 
@@ -209,15 +211,16 @@ def recibeEntradaParque(server,puerto):
         bootstrap_servers=['%s:%s'%(server,puerto)],
         )
     print("Entrada recibida de Engine")
-    for msg in consumer:
-        datos = msg.value.decode('UTF-8')
+    # for msg in consumer:
+    #     print("bucle")
+    #     datos = msg.value.decode('UTF-8')
 
-        if datos == '1':
-            print('Has entrado al parque.')
-            break
-        else:
-            print('Hay una cola para entrar al parque, espera tu turno...')
-
+    #     if datos == '1':
+    #         print('Has entrado al parque.')
+    #         break
+    #     else:
+    #         print('Hay una cola para entrar al parque, espera tu turno...')
+    print("Despues de for")
     moverse(server,puerto)
 
 #Funcion principal
@@ -233,12 +236,12 @@ def run():
         global UserID
         global serverK
         global puertoK
+        global matriz
 
         serverK = serverKafka
         puertoK = puertoKafka
         UserID="-1"
 
-        matriz = np.full((20,20), '---')
         matriz[2][2]='a1'
         matriz[4][9]='a2'
         matriz[13][18]='a3'

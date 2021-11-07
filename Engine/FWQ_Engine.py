@@ -176,8 +176,9 @@ def entradaVisitante(server,puerto):
                 visitantes_actual+=1
                 matriz[0][0] = datos
                 posiciones.append([datos,0,0])
-
+                print("respuesta enviada")
                 respuestaEntradaVisitante(server,puerto,datos,True)
+                
             else:
                 cola_entrada.append(datos)
                 respuestaEntradaVisitante(server,puerto,datos,False)
@@ -191,9 +192,10 @@ def respuestaEntradaVisitante(server,puerto,user,bool):
         respuesta = b'1'
     else:
         respuesta = b'0'
-
-    producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)], group_id='login')
+    print("Engine antes de send")
+    producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
     producer.send('loginResponse:%s' %(user), respuesta)
+    
     producer.flush()
 
     if bool:
