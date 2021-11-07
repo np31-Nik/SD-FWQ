@@ -2,7 +2,7 @@ syntax = "proto3";
 package com.WaitingTimeServer.grpc;
 
 message EstimatedTimeRequest {    
-	int32 num=1;
+	bytes atr=1;
 }
 
 message TimeResponse{

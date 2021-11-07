@@ -26,14 +26,15 @@ visitantes_max = 0
 visitantes_actual = 0
 pos_atr = []
 
-def reloj(ip,puerto):
+
+def reloj(ip,puerto,atr):
 	#print("reloj")
 	delay = 1
 	next_time = time.time() + delay
 	while True:
 		time.sleep(max(0, next_time - time.time()))
 		try:
-			ObtenerTiempo(ip,puerto)
+			ObtenerTiempo(ip,puerto,atr)
 		except Exception:
 			traceback.print_exc()
 		next_time += delay
@@ -41,11 +42,12 @@ def reloj(ip,puerto):
 
 
 #Llamada GRPC al servidor de tiempos de espera
-def ObtenerTiempo(ip,port):
+def ObtenerTiempo(ip,port,atr):
     #channel = grpc.insecure_channel('localhost:50051')
     channel = grpc.insecure_channel('%s:%s' %(ip,port))
     stub = TimeServer_pb2_grpc.CalculateTimeStub(channel)
-    response = stub.Time(TimeServer_pb2.EstimatedTimeRequest(num=0))
+
+    response = stub.Time(TimeServer_pb2.EstimatedTimeRequest(bytes(atr, 'utf-8')))
     ej = np.full((response.len,3),1)
     tiempos = np.frombuffer(response.times, dtype=ej.dtype).reshape(response.len,3)
     ponerTiemposEnMapa(tiempos)
@@ -292,7 +294,7 @@ def main():
         threading.Thread(target = colaParque, args=(ip_gestor,puerto_gestor)).start()
         threading.Thread(target = escuchaVisitante, args=(ip_gestor,puerto_gestor)).start()
         threading.Thread(target = salidaVisitante, args=(ip_gestor,puerto_gestor)).start()
-        threading.Thread(target = reloj, args=(ip_wts,puerto_wts)).start()
+        threading.Thread(target = reloj, args=(ip_wts,puerto_wts,atr)).start()
 
 
 #------------------------
