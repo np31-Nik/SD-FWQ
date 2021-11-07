@@ -101,7 +101,7 @@ class Modify(Registry_pb2_grpc.modifyUserServicer):
 
 def serve():
 
-	if(len(sys.argv) != 5):
+	if(len(sys.argv) != 2):
 		print("Para ejecutar utiliza: FWQ_Sensor.py |PUERTO GRPC|")
 	else:
 		puertoGrpc = sys.argv[1]
