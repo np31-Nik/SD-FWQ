@@ -95,10 +95,6 @@ def escuchaSensor(server,puerto):
 		actualizarTiempos(datos[0],datos[1],True)
 		print(datos)
 
-
-def escuchaEngine(puerto_escucha):
-	print("escuchaEngine")
-
 def escuchaEngine(puerto):
 
 	server = grpc.server(futures.ThreadPoolExecutor(max_workers=100))
@@ -120,9 +116,9 @@ def main():
 		puerto_gestor = sys.argv[3]
 		personas = 0
 
+		t=threading.Thread(target = escuchaEngine, args=(puerto_escucha,))
 		threading.Thread(target = escuchaSensor, args=(ip_gestor,puerto_gestor)).start()
 		threading.Thread(target = reloj).start()
-		t=threading.Thread(target = escuchaEngine, args=(puerto_escucha,))
 		t.start()
 		t.join()
 
