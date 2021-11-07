@@ -18,7 +18,7 @@ import threading
 
 
 #Variable global que almacena las posiciones de los usuarios
-posiciones = np.full((1,1),'---')
+posiciones = np.full((2,3),'---')
 matriz = []
 cola_entrada = []
 usuarios_espera = []
@@ -169,6 +169,7 @@ def entradaVisitante(server,puerto):
     )
     global visitantes_actual
     global cola_entrada
+    global posiciones
 
     for msg in consumer:
         #print(msg)
@@ -178,7 +179,7 @@ def entradaVisitante(server,puerto):
             if visitantes_actual < int(visitantes_max):
                 visitantes_actual+=1
                 matriz[0][0] = datos
-                np.append(posiciones,[datos,0,0])
+                posiciones = np.append(posiciones,[datos,0,0]).reshape(len(posiciones)+1,3)
                 print("respuesta enviada")
                 print(posiciones)
                 respuestaEntradaVisitante(server,puerto,datos,True)
@@ -207,7 +208,7 @@ def respuestaEntradaVisitante(server,puerto,user,bool):
 
 #Funcion que se ejecuta cada segundo para verificar si un usuario en cola puede entrar al parque
 def colaParque(server,puerto):
-    global visitantes_actual
+    global visitantes_actual,posiciones
     delay = 1
     next_time = time.time() + delay
     while True:
@@ -217,7 +218,7 @@ def colaParque(server,puerto):
                 if visitantes_actual < visitantes_max:
                     user = cola_entrada[0]
                     del cola_entrada[0]
-                    np.append(posiciones,[user,0,0])
+                    posiciones = np.append(posiciones,[user,0,0]).reshape(len(posiciones)+1,3)
                     matriz[0][0] = user
                     visitantes_actual += 1
                     respuestaEntradaVisitante(server,puerto,user,True)
@@ -233,27 +234,33 @@ def salidaVisitante(server,puerto):
         bootstrap_servers=['%s:%s'%(server,puerto)],
         )
 
-    global visitantes_actual
+    global visitantes_actual,posiciones
 
     for msg in consumer:
         user = msg.value.decode('UTF-8')
-        indexpos = np.where(posiciones[:,0] == user)
-        posiciones = np.delete(posiciones, indexpos)
+        borrarPos(user)
         visitantes_actual-=1
 
+def borrarPos(id_user):
+    global posiciones
+    newMat=[]
+
+    for i in range(0,len(posiciones)):
+        if posiciones[i][0] == id_user:
+            rem = posiciones[i]
+        else:
+            newMat = np.append(newMat,posiciones[i]).reshape(len(newMat)+1,3)
+    posiciones = newMat
+
+    return rem
 
 #Funcion que registra el movimiento del usuario
 def movimiento(usuario,x,y):
     global posiciones, matriz
-    indexpos=np.where(posiciones[:,0] == usuario)
-    existente = posiciones[indexpos]
-    print('existente:?',existente)
-    print('indexpos:?',indexpos)
-    print('posiciones:?',posiciones)
-    matriz[existente[1]][existente[2]] = '---'
 
-    posiciones = np.delete(posiciones, indexpos)
-    np.append(posiciones,[usuario,x,y])
+    pos_ant = borrarPos(usuario)
+    matriz[pos_ant[1]][pos_ant[2]]='---'
+    posiciones = np.append(posiciones,[usuario,x,y]).reshape(len(posiciones)+1,3)
     
 
     if matriz[x][y] == '---':
