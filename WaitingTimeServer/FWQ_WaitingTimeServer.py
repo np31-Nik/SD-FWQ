@@ -15,16 +15,18 @@ import threading
 
 tiempos = np.full((3,3),0)
 #tiempos = [["a1",0],["a2",0]]
-atr = []
 usuariosEspera = []
 num_atr=0
+atr = np.full((num_atr,3),'---')
 
 
 class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 	global atr
 	def Time(self,request,context):
 		resul=tiempos.tobytes()
-		atr=request.atr.decode('utf-8')
+		ej = np.full((num_atr,3),'---')
+		atr= np.frombuffer(request.atr, dtype=ej.dtype).reshape(num_atr,3)
+		print(atr)
 		return TimeServer_pb2.TimeResponse(times=resul,len=len(tiempos))
 
 
@@ -41,7 +43,7 @@ class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 
 def generarTiempos(num_atr,atracciones):
 	global tiempos
-	tiempos = np.full((num_atr,3),0)
+	tiempos = np.full((num_atr,3),'---')
 	for i in range(num_atr):
 		tiempos[i][0] = atracciones[i]
 
@@ -50,7 +52,8 @@ def generarTiempos(num_atr,atracciones):
 def actualizarTiempos(id_atr,personas,anyadir):
 	global tiempos
 	global usuariosEspera
-	datos = atr[np.where(atr[:,0] == id_atr)]
+	index = np.where(atr[:,0] == id_atr)
+	datos = atr[index]
 
 	for i in range(num_atr):
 		if tiempos[i][0] == id_atr:
