@@ -4,7 +4,8 @@ from kafka import KafkaConsumer
 import logging
 import grpc
 import sys
-sys.path.append('C:/Users/Serg2/source/repos/SD-FWQ/WaitingTimeServer')
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'WaitingTimeServer'))
 import TimeServer_pb2
 import TimeServer_pb2_grpc
 import numpy as np

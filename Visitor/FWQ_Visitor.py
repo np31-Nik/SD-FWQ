@@ -8,8 +8,8 @@ import grpc
 import atexit
 import sys
 
-sys.path.append('C:/Users/serg2/source/repos/SD-FWQ/Registry')
-#sys.path.append("..\\")
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'Registry'))
 import Registry_pb2
 import Registry_pb2_grpc
 
