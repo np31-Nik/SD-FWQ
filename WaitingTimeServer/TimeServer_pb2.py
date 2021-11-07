@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x10TimeServer.proto\x12\x1a\x63om.WaitingTimeServer.grpc\"#\n\x14\x45stimatedTimeRequest\x12\x0b\n\x03\x61tr\x18\x01 \x01(\x0c\"*\n\x0cTimeResponse\x12\r\n\x05times\x18\x01 \x01(\x0c\x12\x0b\n\x03len\x18\x02 \x01(\x05\x32s\n\rCalculateTime\x12\x62\n\x04Time\x12\x30.com.WaitingTimeServer.grpc.EstimatedTimeRequest\x1a(.com.WaitingTimeServer.grpc.TimeResponseb\x06proto3'
+  serialized_pb=b'\n\x10TimeServer.proto\x12\x1a\x63om.WaitingTimeServer.grpc\"5\n\x14\x45stimatedTimeRequest\x12\x0b\n\x03\x61tr\x18\x01 \x01(\x0c\x12\x10\n\x08num_atra\x18\x02 \x01(\x05\"*\n\x0cTimeResponse\x12\r\n\x05times\x18\x01 \x01(\x0c\x12\x0b\n\x03len\x18\x02 \x01(\x05\x32s\n\rCalculateTime\x12\x62\n\x04Time\x12\x30.com.WaitingTimeServer.grpc.EstimatedTimeRequest\x1a(.com.WaitingTimeServer.grpc.TimeResponseb\x06proto3'
 )
 
 
@@ -40,6 +40,13 @@ _ESTIMATEDTIMEREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='num_atra', full_name='com.WaitingTimeServer.grpc.EstimatedTimeRequest.num_atra', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -53,7 +60,7 @@ _ESTIMATEDTIMEREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=48,
-  serialized_end=83,
+  serialized_end=101,
 )
 
 
@@ -91,8 +98,8 @@ _TIMERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=85,
-  serialized_end=127,
+  serialized_start=103,
+  serialized_end=145,
 )
 
 DESCRIPTOR.message_types_by_name['EstimatedTimeRequest'] = _ESTIMATEDTIMEREQUEST
@@ -122,8 +129,8 @@ _CALCULATETIME = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=129,
-  serialized_end=244,
+  serialized_start=147,
+  serialized_end=262,
   methods=[
   _descriptor.MethodDescriptor(
     name='Time',
