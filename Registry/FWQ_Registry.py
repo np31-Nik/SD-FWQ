@@ -32,14 +32,13 @@ def IniciarSesion(username, password):
 			if i[0] == username and i[1]==password:
 				login=True
 				id= i[2]
-			break
+				break
 		if login:#consultamos BD con name
 			return id
 		else: #la contraseña no es correcta
 			return id
 	except:
 		print ("Ha ocurrido un errror al conectarse a la base de datos(Iniciar Sesion)")
-	return False
 		
 
 
@@ -81,6 +80,7 @@ def ModificarUsuario(username, newUsername, newPassword):
 		conn.close()
 		return True
 	except:
+		print("Hubo un problema a la hora de modificar usuario")
 		conn.close()
 		return False
 
@@ -96,6 +96,7 @@ class Registry(Registry_pb2_grpc.RegistryServiceServicer):
 class Login(Registry_pb2_grpc.loginServicer):
 	def Login(self,request,context):
 		id=IniciarSesion(request.username, request.password)
+		print(id)
 		if id!="-1":
 			resul=id
 		else:
@@ -105,8 +106,11 @@ class Login(Registry_pb2_grpc.loginServicer):
 class Modify(Registry_pb2_grpc.modifyUserServicer):
 	def Modify(self,request,context):
 		if(IniciarSesion(request.username,request.password)):
-			ModificarUsuario(request.username, request.newUsername,request.newPassword)
-			resul="Informacion de usuario modificada"
+			if ModificarUsuario(request.username, request.newUsername,request.newPassword):
+				resul="Informacion de usuario modificada"
+			else:
+				resul="hubo un problema a la hora de modificar usuario"
+				print(resul)
 		else:
 			resul="El nombre de usuario o la contraseña no son correctos"
 		return Registry_pb2.RegistryResponse(response=resul)

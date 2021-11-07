@@ -14,7 +14,7 @@ import Registry_pb2
 import Registry_pb2_grpc
 
 UserID = -1
-matriz = []
+matriz = Matriz = np.full((20,20), '---')
 serverK = 0
 puertoK = 0 
 
@@ -139,8 +139,9 @@ def AskNamePassword():
 
 
 
-def registarse():
-    channel = grpc.insecure_channel('localhost:50051')
+def registarse(ip,puerto):
+    channel = grpc.insecure_channel('%s:%s'%(ip,puerto))
+    #channel = grpc.insecure_channel('localhost:50051')
     #channel = grpc.insecure_channel('192.168.4.246:50051')
     stub = Registry_pb2_grpc.RegistryServiceStub(channel)
     name,password=AskNamePassword()
@@ -149,24 +150,25 @@ def registarse():
     print("Client received: " + response.response)
 
 
-def iniciarSesion():
+def iniciarSesion(ip,puerto):
     global UserID
-    channel = grpc.insecure_channel('localhost:50051')
+    channel = grpc.insecure_channel('%s:%s'%(ip,puerto))
+    #channel = grpc.insecure_channel('localhost:50051')
     #channel = grpc.insecure_channel('192.168.4.246:50051')
     stub = Registry_pb2_grpc.loginStub(channel)
     username,password=AskNamePassword()
     response = stub.Login(Registry_pb2.loginRequest(username=username,password=password))
-    #response = stub.Login(Registry_pb2.loginRequest(username="alfonsox1",password="12345"))
     print("Client received: " + response.response)
     if response.response!="El nombre de usuario o la contraseña no son correctos":
         UserID=response.response
         return True
     else:
-        print(response.response)
+        #print(response.response)
         return False
 
 
-def modificarUsuario():
+def modificarUsuario(ip,puerto):
+    channel = grpc.insecure_channel('%s:%s'%(ip,puerto))
     channel = grpc.insecure_channel('localhost:50051')
     #channel = grpc.insecure_channel('192.168.4.246:50051')
     stub = Registry_pb2_grpc.modifyUserStub(channel)
@@ -190,7 +192,8 @@ def modificarUsuario():
 def enviaEntradaParque(server,puerto):
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
     mensaje = matriz.tobytes()
-    producer.send('loginAttempt', '%s' %(UserID))
+    id=bytes(UserID, 'utf-8')
+    producer.send('loginAttempt', b'%s' %(id))
     producer.flush()
     recibeEntradaParque(server,puerto)
 
@@ -243,13 +246,13 @@ def run():
             print("Eliga una opcion: \n 1) Registrarse; \n 2) Iniciar sesion y entrar al parque; \n 3) Modificar usuario;\n 4) Salir;")
             opcion = input()
             if opcion == "1":
-                registarse()
+                registarse(serverGrpc,puertoGrpc)
             if opcion == "2":
-                if iniciarSesion(UserID,serverGrpc,puertoGrpc):
+                if iniciarSesion(serverGrpc,puertoGrpc):
                     enviaEntradaParque(serverKafka,puertoKafka)
                 
             if opcion == "3":
-                modificarUsuario()
+                modificarUsuario(serverGrpc,puertoGrpc)
             if opcion =="4":
                 handle_exit()
                 break

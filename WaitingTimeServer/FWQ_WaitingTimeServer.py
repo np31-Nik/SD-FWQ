@@ -13,8 +13,8 @@ import time
 import traceback
 import threading
 
-#tiempos = np.full((3,3),0)
-tiempos = []
+tiempos = np.full((3,3),0)
+#tiempos = [["a1",0],["a2",0]]
 atr = []
 usuariosEspera = []
 num_atr=0
