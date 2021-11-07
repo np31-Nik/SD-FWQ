@@ -8,7 +8,8 @@ from concurrent import futures
 import logging
 import grpc
 #sys.path.append('C:/Users/serge/source/repos/SD-FWQ/WaitingTimeServer')
-sys.path.append('C:/Users/niktr/Desktop/SD-FWQ/SD-FWQ/WaitingTimeServer')
+sys.path.append('C:/Users/Serg2/source/repos/SD-FWQ/WaitingTimeServer')
+#sys.path.append('C:/Users/niktr/Desktop/SD-FWQ/SD-FWQ/WaitingTimeServer')
 import TimeServer_pb2
 import TimeServer_pb2_grpc
 import traceback
@@ -29,6 +30,7 @@ def ObtenerTiempo(ip,port):
     channel = grpc.insecure_channel('%s:%s' %(ip,port))
     stub = TimeServer_pb2_grpc.CalculateTimeStub(channel)
     response = stub.Time(TimeServer_pb2.EstimatedTimeRequest(num=2))
+    
     print("Client received: " + response.times.decode('utf-8'))
     return response.times
 
@@ -225,8 +227,11 @@ def main():
         ip_wts = sys.argv[4]
         puerto_wts = sys.argv[5]
 
+        print(ObtenerTiempo(ip_wts,puerto_wts))
+
         #direccion de la BD
-        conn = create_connection('C:\\Users\\niktr\\Desktop\\SD-FWQ\\SD-FWQ\\db.db')
+        conn = create_connection('C:\\Users\\Serg2\\source\\repos\\SD-FWQ\\db.db')
+        #conn = create_connection('C:\\Users\\niktr\\Desktop\\SD-FWQ\\SD-FWQ\\db.db')
         c=conn.cursor()
 
         id_mapa = 'm1'
@@ -240,11 +245,6 @@ def main():
         global matriz 
         matriz = rellenar_mapa(mapa)
 
-        
-        #print(ObtenerTiempo(ip_wts,puerto_wts))
-        
-        #print_mapa(matriz)
-        #print(matriz)
 
         threading.Thread(target = entradaVisitante, args=(ip_gestor,puerto_gestor)).start()
         threading.Thread(target = colaParque, args=(ip_gestor,puerto_gestor)).start()

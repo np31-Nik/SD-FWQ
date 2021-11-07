@@ -4,7 +4,7 @@ from kafka import KafkaConsumer
 import logging
 import grpc
 import sys
-sys.path.append('C:/Users/serge/source/repos/SD-FWQ/WaitingTimeServer')
+sys.path.append('C:/Users/Serg2/source/repos/SD-FWQ/WaitingTimeServer')
 import TimeServer_pb2
 import TimeServer_pb2_grpc
 import numpy as np
@@ -26,8 +26,10 @@ def CalcularTiempo():
 
 class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 	def Time(self,request,context):
-		resul=CalcularTiempo()
+		resul=bytes("hola",'utf-8')
 		return TimeServer_pb2.TimeResponse(times=resul)
+
+
 # def ObtenerTiempo():
 #     channel = grpc.insecure_channel('localhost:50051')
 #     #channel = grpc.insecure_channel('192.168.4.246:50051')
@@ -57,7 +59,8 @@ def actualizarTiempos(id_atr,personas,anyadir):
 			if anyadir:
 				ciclos = round(len(personas)/datos[1])
 				tiempo = ciclos * datos[2]
-				tiempos[i][1] += datos[2]
+				tiempos[i][1]=tiempo
+				#tiempos[i][1] += datos[2]
 			else:
 				if tiempos[i][1] > 0:
 					tiempos[i][1] -= 1
@@ -70,7 +73,7 @@ def actualizarTiempos(id_atr,personas,anyadir):
 					# 		del usuariosEspera[i]
 
 
-def reloj(id,server,puerto):
+def reloj():
 	delay = 1
 	next_time = time.time() + delay
 	while True:
@@ -94,44 +97,31 @@ def escuchaSensor(server,puerto):
 		actualizarTiempos(datos[0],datos[1],True)
 		print(datos)
 
-#def conexionInicial():
-	#serhii
 
-#def escuchaEngine():
-	#serhii
+def escuchaEngine(puerto):
+
+	server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+	TimeServer_pb2_grpc.add_CalculateTimeServicer_to_server(Time(),server)
+	server.add_insecure_port('[::]:%s'%(puerto))
+	#server.add_insecure_port('[::]:50051')
+	server.start()
+	server.wait_for_termination()
 
 
 
 def main():
 
-		# server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-		# TimeServer_pb2_grpc.add_CalculateTimeServicer_to_server(Time(),server)
-		# server.add_insecure_port('[::]:50051')
-		# server.start()
-		# server.wait_for_termination()
-
-		#return True
-
-		
 	if(len(sys.argv) != 4):
 		print("Para ejecutar utiliza: FWQ_WaitingTimeServer.py |PUERTO ESCUCHA| |IP GESTOR| |PUERTO GESTOR|")
-  	else:
+	else:
 		puerto_escucha = sys.argv[1]
 		ip_gestor = sys.argv[2]
 		puerto_gestor = sys.argv[3]
 		personas = 0
 
-		#conexionInicial(puerto_escucha)
-
 		threading.Thread(target = escuchaSensor, args=(ip_gestor,puerto_gestor)).start()
 		threading.Thread(target = reloj, args=(ip_gestor,puerto_gestor)).start()
-
-        #threading.Thread(target = escuchaEngine, args=(puerto_escucha)).start()
-
-
-
-
-
+		t=threading.Thread(target = escuchaEngine, args=(puerto_escucha,)).start()
 
 
 #------------------------
