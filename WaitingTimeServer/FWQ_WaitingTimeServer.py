@@ -74,6 +74,10 @@ def actualizarTiempos(id_atr,personas,anyadir):
 
 
 def reloj():
+<<<<<<< HEAD
+=======
+	#print("reloj")
+>>>>>>> 03d9775a712bd624d3057cd3c6d2a2d013b0ec2b
 	delay = 1
 	next_time = time.time() + delay
 	while True:
@@ -87,6 +91,7 @@ def reloj():
 
 			
 def escuchaSensor(server,puerto):
+	#print("escuchaSensor")
 	consumer = KafkaConsumer(
         'sensorPersonas',
         bootstrap_servers=['%s:%s'%(server,puerto)],
@@ -97,6 +102,12 @@ def escuchaSensor(server,puerto):
 		actualizarTiempos(datos[0],datos[1],True)
 		print(datos)
 
+<<<<<<< HEAD
+=======
+
+def escuchaEngine(puerto_escucha):
+	print("escuchaEngine")
+>>>>>>> 03d9775a712bd624d3057cd3c6d2a2d013b0ec2b
 
 def escuchaEngine(puerto):
 
@@ -120,8 +131,13 @@ def main():
 		personas = 0
 
 		threading.Thread(target = escuchaSensor, args=(ip_gestor,puerto_gestor)).start()
-		threading.Thread(target = reloj, args=(ip_gestor,puerto_gestor)).start()
-		t=threading.Thread(target = escuchaEngine, args=(puerto_escucha,)).start()
+		threading.Thread(target = reloj).start()
+		threading.Thread(target = escuchaEngine, args=(puerto_escucha,)).start()
+
+
+
+
+
 
 
 #------------------------
