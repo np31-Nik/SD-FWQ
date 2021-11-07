@@ -3,6 +3,7 @@ package com.WaitingTimeServer.grpc;
 
 message EstimatedTimeRequest {    
 	bytes atr=1;
+    int32 num_atra=2;
 }
 
 message TimeResponse{
