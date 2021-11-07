@@ -244,6 +244,7 @@ def salidaVisitante(server,puerto):
 def borrarPos(id_user):
     global posiciones
     newMat=[]
+    rem=[]
 
     for i in range(0,len(posiciones)):
         if posiciones[i][0] == id_user:
@@ -257,14 +258,16 @@ def borrarPos(id_user):
 #Funcion que registra el movimiento del usuario
 def movimiento(usuario,x,y):
     global posiciones, matriz
-
+    print('usuario:?',usuario)
     pos_ant = borrarPos(usuario)
-    matriz[pos_ant[1]][pos_ant[2]]='---'
+    print('pos_ant:?',pos_ant)
+
+    matriz[int(pos_ant[1])][int(pos_ant[2])]='---'
     posiciones = np.append(posiciones,[usuario,x,y]).reshape(len(posiciones)+1,3)
     
 
-    if matriz[x][y] == '---':
-        matriz[x][y] == usuario
+    if matriz[int(x)][int(y)] == '---':
+        matriz[int(x)][int(y)] == usuario
 
 
 #Funcion principal
