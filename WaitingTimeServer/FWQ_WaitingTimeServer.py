@@ -18,19 +18,19 @@ tiempos = np.full((3,3),0)
 usuariosEspera = []
 num_atr=0
 atr = np.full((num_atr,3),'---')
+num_atr=0
 
 
 class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 	def Time(self,request,context):
 		global num_atr
-		global atr
 		resul=tiempos.tobytes()
 		print (num_atr)
 		ej = np.full((num_atr,3),'---')
 		num_atr=request.num_atra
-		print (num_atr)
+		#print (num_atr)
 		atr= np.frombuffer(request.atr, dtype=ej.dtype).reshape(num_atr,3)
-		print(atr)
+		#print(atr)
 		return TimeServer_pb2.TimeResponse(times=resul,len=len(tiempos))
 
 
