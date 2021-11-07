@@ -21,8 +21,10 @@ num_atr=0
 
 
 class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
+	global atr
 	def Time(self,request,context):
 		resul=tiempos.tobytes()
+		atr=request.atr.decode('utf-8')
 		return TimeServer_pb2.TimeResponse(times=resul,len=len(tiempos))
 
 

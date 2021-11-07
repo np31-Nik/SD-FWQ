@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x10TimeServer.proto\x12\x1a\x63om.WaitingTimeServer.grpc\"#\n\x14\x45stimatedTimeRequest\x12\x0b\n\x03num\x18\x01 \x01(\x05\"*\n\x0cTimeResponse\x12\r\n\x05times\x18\x01 \x01(\x0c\x12\x0b\n\x03len\x18\x02 \x01(\x05\x32s\n\rCalculateTime\x12\x62\n\x04Time\x12\x30.com.WaitingTimeServer.grpc.EstimatedTimeRequest\x1a(.com.WaitingTimeServer.grpc.TimeResponseb\x06proto3'
+  serialized_pb=b'\n\x10TimeServer.proto\x12\x1a\x63om.WaitingTimeServer.grpc\"#\n\x14\x45stimatedTimeRequest\x12\x0b\n\x03\x61tr\x18\x01 \x01(\x0c\"*\n\x0cTimeResponse\x12\r\n\x05times\x18\x01 \x01(\x0c\x12\x0b\n\x03len\x18\x02 \x01(\x05\x32s\n\rCalculateTime\x12\x62\n\x04Time\x12\x30.com.WaitingTimeServer.grpc.EstimatedTimeRequest\x1a(.com.WaitingTimeServer.grpc.TimeResponseb\x06proto3'
 )
 
 
@@ -34,9 +34,9 @@ _ESTIMATEDTIMEREQUEST = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='num', full_name='com.WaitingTimeServer.grpc.EstimatedTimeRequest.num', index=0,
-      number=1, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      name='atr', full_name='com.WaitingTimeServer.grpc.EstimatedTimeRequest.atr', index=0,
+      number=1, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
