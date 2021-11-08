@@ -90,6 +90,8 @@ def moverse(server,port):
             print("Buscando atraccion")
             (filaAtraccion,colAtraccion)=buscarAtraccion()
     while(True):
+        time.sleep(3)
+        print("damos paso")
         (fila,columna)=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
         enviarPaso(fila,columna,server,port)
         recibirMapa(server,port)
@@ -112,7 +114,7 @@ def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
             columna=columna-1
             #return 'W' #West
 
-    if columna==colAtraccion:
+    elif columna==colAtraccion:
         if fila<filaAtraccion:
             fila=fila+1
             #return 'N' #North
