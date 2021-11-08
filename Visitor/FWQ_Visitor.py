@@ -36,6 +36,7 @@ def recibirMapa(server,puerto):
         '%s'%(UserID),
         group_id='RecibirMapa',
         bootstrap_servers=['%s:%s'%(server,puerto)],
+        #enable_auto_commit=False
         )
     print('esperando mapa...')
     global matriz
@@ -59,7 +60,7 @@ def recibirMapa(server,puerto):
             print('mapa asignado')
             matriz = np.frombuffer(msg.value, dtype=ej.dtype).reshape(20,20)
         break
-    print('salimos del for (recibirMapa)')
+    #print('salimos del for (recibirMapa)')
     consumer.close()
     print_mapa(matriz)
 
@@ -83,12 +84,12 @@ def buscarAtraccion():
         for col in range(len(matriz[row])):
             if matriz[row][col]!='---' and matriz[row][col].find('u')==-1:
                 contador=contador+1
-    print("Matriz de Buscar Atraccion")
+    #print("Matriz de Buscar Atraccion")
     print(matriz)
     atraccion=1
-    print('contador:',contador)
+    #print('contador:',contador)
     atraccion=random.randint(contador) #comprobar si funciona
-    print(str(atraccion)+'contador: '+ str(contador))
+    #print(str(atraccion)+'contador: '+ str(contador))
     contador =0
     for row in range(len(matriz)):
         for col in range(len(matriz[row])):
@@ -109,11 +110,11 @@ def moverse(server,port):
         print("Buscando atraccion")
         filaAtraccion,colAtraccion=buscarAtraccion()
         while(True):
-            print(str(filaAtraccion)+':::'+str(colAtraccion))
-            time.sleep(3)
-            print("damos paso hacia"+str(filaAtraccion)+str(colAtraccion))
+            #print(str(filaAtraccion)+':::'+str(colAtraccion))
+            time.sleep(1)
+            #print("damos paso hacia"+str(filaAtraccion)+str(colAtraccion))
             fila,columna=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
-            print("fila, columna"+str(fila)+ ";" +str(columna))
+            #print("fila, columna"+str(fila)+ ";" +str(columna))
             enviarPaso(fila,columna,server,port)
             recibirMapa(server,port)
             #print_mapa(matriz)
@@ -240,9 +241,11 @@ def enviaEntradaParque(server,puerto):
 
 def recibeEntradaParque(server,puerto):
     consumer = KafkaConsumer(
-        'loginResponse.%s'%(UserID),
+        'loginResponseX%s'%(UserID),
         group_id='login',
         bootstrap_servers=['%s:%s'%(server,puerto)],
+        #enable_auto_commit=False
+
         )
     print("Entrada recibida de Engine")
     print('user:?',UserID)

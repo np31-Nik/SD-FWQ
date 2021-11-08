@@ -192,6 +192,7 @@ def enviarMapa(server,puerto,id_visitante):
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
     mensaje = matriz.tobytes()
     print_mapa()
+    time.sleep(1)
     producer.send('%s' %(id_visitante), mensaje)
     producer.flush()
     print('mapa enviado!')
@@ -242,7 +243,8 @@ def respuestaEntradaVisitante(server,puerto,user,resp):
     print("Engine antes de send")
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
     #print('user: ',user, ' resp:',resp)
-    producer.send('loginResponse.%s' %(user), resp)
+    time.sleep(1)
+    producer.send('loginResponseX%s' %(user), resp)
     
     producer.flush()
 
