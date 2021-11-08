@@ -61,7 +61,6 @@ def recibirMapa(server,puerto):
             print('mapa asignado')
             matriz = np.frombuffer(msg.value, dtype=ej.dtype).reshape(20,20)
         break
-    #print('salimos del for (recibirMapa)')
     consumer.close()
     print_mapa(matriz)
 
@@ -85,12 +84,9 @@ def buscarAtraccion():
         for col in range(len(matriz[row])):
             if matriz[row][col]!='---' and matriz[row][col].find('u')==-1:
                 contador=contador+1
-    #print("Matriz de Buscar Atraccion")
-    #print(matriz)
-    #atraccion=1
-    #print('contador:',contador)
+
     atraccion=random.randint(0,contador) #comprobar si funciona
-    #print(str(atraccion)+'contador: '+ str(contador))
+    
     contador =0
     for row in range(len(matriz)):
         for col in range(len(matriz[row])):
@@ -200,7 +196,6 @@ def iniciarSesion(ip,puerto):
         UserID=response.response
         return True
     else:
-        #print(response.response)
         return False
 
 
@@ -282,14 +277,7 @@ def run():
         serverK = serverKafka
         puertoK = puertoKafka
         UserID="-1"
-
-        # matriz[2][2]='a1'
-        # matriz[4][9]='a2'
-        # matriz[13][18]='a3'
-        # matriz[5][1]='a4'
-        # matriz[8][8]='a5'
-        #print(matriz)
-
+        
         opcion=0
         while True:
             print("Eliga una opcion: \n 1) Registrarse; \n 2) Iniciar sesion y entrar al parque; \n 3) Modificar usuario;\n 4) Salir;")

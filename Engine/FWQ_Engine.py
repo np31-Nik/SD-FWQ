@@ -209,7 +209,6 @@ def entradaVisitante(server,puerto):
     global matriz
 
     for msg in consumer:
-        #print(msg)
         datos=msg.value.decode('UTF-8')
         print('usuario ha entrado: ',datos)
         repetido=False
@@ -226,8 +225,6 @@ def entradaVisitante(server,puerto):
                     
                     posiciones = np.append(posiciones,[datos,0,0]).reshape(len(posiciones)+1,3)
                     print("respuesta enviada")
-                    #print_mapa()                    
-                    #print(posiciones)
                     respuestaEntradaVisitante(server,puerto,datos,1)
                 
             else:
