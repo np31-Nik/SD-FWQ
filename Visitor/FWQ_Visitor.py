@@ -185,7 +185,7 @@ def registarse(ip,puerto):
     name,password=AskNamePassword()
     #response = stub.Registry(Registry_pb2.RegistryRequest(ID=1,name="you",password="12345"))
     response = stub.Registry(Registry_pb2.RegistryRequest(ID=1,name=name,password=password))
-    print("Client received: " + response.response)
+    print(response.response)
 
 
 def iniciarSesion(ip,puerto):
@@ -196,7 +196,7 @@ def iniciarSesion(ip,puerto):
     stub = Registry_pb2_grpc.loginStub(channel)
     username,password=AskNamePassword()
     response = stub.Login(Registry_pb2.loginRequest(username=username,password=password))
-    print("Client received: " + response.response)
+    print(response.response)
     if response.response!="El nombre de usuario o la contraseña no son correctos":
         UserID=response.response
         return True
@@ -223,7 +223,7 @@ def modificarUsuario(ip,puerto):
         (username=username,password=password,newUsername=newUsername,newPassword=newPassword))
     #response = stub.Modify(Registry_pb2.changeUserInfo
     #    (username="alfonsox1",password="12346",newUsername="alfonsox1",newPassword="12345"))
-    print("Client received: " + response.response)
+    print(response.response)
     return response.response
 
 
@@ -246,7 +246,7 @@ def recibeEntradaParque(server,puerto):
 
         )
     print("Entrada recibida de Engine")
-    print('user:?',UserID)
+    print('userID:',UserID)
     for msg in consumer:
         print("bucle")
         datos = msg.value.decode('UTF-8')

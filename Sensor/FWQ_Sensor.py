@@ -17,7 +17,7 @@ def esperaEngine(id,server,puerto):
     )
 
     for msg in consumer:
-        print(msg)
+        print(msg.value)
         personas += 1 
 
 #Funcion para enviar mensajes al servidor de tiempos
