@@ -7,7 +7,7 @@ import logging
 import grpc
 import atexit
 import sys
-
+import time
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'Registry'))
 import Registry_pb2
@@ -25,8 +25,6 @@ def enviarPaso(fila,columna,server,puerto):
     producer.send('movimiento', bytes(mensaje,'UTF-8'))
     producer.flush()
     producer.close()
-    recibirMapa(server,puerto)
-    #print_mapa(matriz)
 
 
 #Funcion que recibe el mapa desde engine
@@ -36,13 +34,15 @@ def recibirMapa(server,puerto):
         group_id='RecibirMapa',
         bootstrap_servers=['%s:%s'%(server,puerto)],
         )
-
+    print('esperando mapa...')
     global matriz
     ej = np.full((20,20),'---')
 
     for msg in consumer:
+        print('mapa recibido!')
         matriz = np.frombuffer(msg.value, dtype=ej.dtype).reshape(20,20)
         break
+    print('salimos del for (recibirMapa)')
     consumer.close()
     print_mapa(matriz)
 
@@ -50,7 +50,7 @@ def recibirMapa(server,puerto):
 #Funcion que imprime el mapa por consola
 def print_mapa(matriz):
 
-    print('Tu ID: ?',UserID)
+    print('Tu ID: ',UserID)
     for i in range(0,19):
         for j in range(0,19):
             print("\t{0}".format(matriz[i][j]),sep=',',end='')
@@ -81,7 +81,7 @@ def buscarAtraccion():
 
 
 def moverse(server,port):
-    print("movemos")
+    
     fila=0
     columna=0
     filaAtraccion=-1 
@@ -92,7 +92,8 @@ def moverse(server,port):
     while(True):
         (fila,columna)=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
         enviarPaso(fila,columna,server,port)
-        print_mapa(matriz)
+        recibirMapa(server,port)
+        #print_mapa(matriz)
 
 
     #----En bucle:
@@ -223,16 +224,20 @@ def recibeEntradaParque(server,puerto):
     for msg in consumer:
         print("bucle")
         datos = msg.value.decode('UTF-8')
-
-        if datos == '1':
+        print('resp:',datos)
+        if datos == '1':    
             print('Has entrado al parque.')
             break
-        else:
+        elif datos == '0':
             print('Hay una cola para entrar al parque, espera tu turno...')
+        elif datos == '-1':
+            print('Este usuario ya esta en linea.')
+        else:
+            print('Error en recibeEntradaParque()')
+
     print("Despues de for")
     consumer.close()
-    recibirMapa(server,puerto)
-    moverse(server,puerto)
+    
 
 #Funcion principal
 def run():
@@ -258,7 +263,7 @@ def run():
         matriz[13][18]='a3'
         matriz[5][1]='a4'
         matriz[8][8]='a5'
-        print(matriz)
+        #print(matriz)
 
         opcion=0
         while True:
@@ -270,6 +275,8 @@ def run():
                 if iniciarSesion(serverGrpc,puertoGrpc):
                     enviaEntradaParque(serverKafka,puertoKafka)
                     recibeEntradaParque(serverKafka,puertoKafka)
+                    recibirMapa(serverKafka,puertoKafka)
+                    moverse(serverKafka,puertoKafka)
                 
             if opcion == "3":
                 modificarUsuario(serverGrpc,puertoGrpc)

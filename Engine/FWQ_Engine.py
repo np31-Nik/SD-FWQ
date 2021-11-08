@@ -103,7 +103,7 @@ def get_atracciones(c,mapa):
     return atracciones
 
 #Funcion que imprime el mapa por consola
-def print_mapa(matriz):
+def print_mapa():
 
     for i in range(0,19):
         for j in range(0,19):
@@ -151,6 +151,7 @@ def escuchaVisitante(server,puerto):
     for msg in consumer:
         print(msg)
         datos=msg.value.decode('UTF-8').split(':')
+        print('movimiento recibido:',datos)
         movimiento(datos[0],datos[1],datos[2])
         enviarMapa(server,puerto,datos[0])
 
@@ -159,7 +160,7 @@ def enviarMapa(server,puerto,id_visitante):
     print('enviando mapa...')
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
     mensaje = matriz.tobytes()
-    print(matriz)
+    print_mapa()
     producer.send('%s' %(id_visitante), mensaje)
     producer.flush()
     print('mapa enviado!')
@@ -173,42 +174,49 @@ def entradaVisitante(server,puerto):
     global visitantes_actual
     global cola_entrada
     global posiciones
+    global matriz
 
     for msg in consumer:
         #print(msg)
         datos=msg.value.decode('UTF-8')
-
+        print('usuario ha entrado: ',datos)
+        repetido=False
         if not cola_entrada:
-            if visitantes_actual < int(visitantes_max):
-                visitantes_actual+=1
-                matriz[0][0] = datos
-                posiciones = np.append(posiciones,[datos,0,0]).reshape(len(posiciones)+1,3)
-                print("respuesta enviada")
-                print(posiciones)
-                respuestaEntradaVisitante(server,puerto,datos,True)
-                enviarMapa(server,puerto,datos)
+            if visitantes_actual < visitantes_max:
+                for i in range(0,visitantes_actual):
+                    if posiciones[i][0] == datos:
+                        respuestaEntradaVisitante(server,puerto,datos,-1)
+                        repetido = True
+
+                if not repetido:
+                    visitantes_actual+=1
+                    matriz[0][0] = datos
+                    
+                    posiciones = np.append(posiciones,[datos,0,0]).reshape(len(posiciones)+1,3)
+                    print("respuesta enviada")
+                    print_mapa()                    
+                    print(posiciones)
+                    respuestaEntradaVisitante(server,puerto,datos,1)
                 
             else:
                 cola_entrada.append(datos)
-                respuestaEntradaVisitante(server,puerto,datos,False)
+                respuestaEntradaVisitante(server,puerto,datos,0)
         else:
             cola_entrada.append(datos)
-            respuestaEntradaVisitante(server,puerto,datos,False)
+            respuestaEntradaVisitante(server,puerto,datos,0)
 
 #Funcion que envia la respuesta al usuario que intenta entrar al parque
-def respuestaEntradaVisitante(server,puerto,user,bool):
-    if bool:
-        respuesta = b'1'
-    else:
-        respuesta = b'0'
+def respuestaEntradaVisitante(server,puerto,user,resp):
+    resp = bytes(str(resp),'utf-8')
     print("Engine antes de send")
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
-    print('user:?',user)
-    producer.send('loginResponse.%s' %(user), respuesta)
+    print('user: ',user, ' resp:',resp)
+    producer.send('loginResponse.%s' %(user), resp)
     
     producer.flush()
 
     if bool:
+        print('mapa de entrada')
         enviarMapa(server,puerto,user)
 
 #Funcion que se ejecuta cada segundo para verificar si un usuario en cola puede entrar al parque
@@ -263,17 +271,22 @@ def borrarPos(id_user):
 #Funcion que registra el movimiento del usuario
 def movimiento(usuario,x,y):
     global posiciones, matriz
-    print('usuario:?',usuario)
+    #print('usuario:?',usuario)
+    #print('usuario se mueve:',usuario)
     pos_ant = borrarPos(usuario)
-    print('pos_ant:?',pos_ant)
+    #print('pos_ant:?',pos_ant)
+    print('x:',int(x),' y:',int(y),' mat[x][y]:', matriz[int(x)][int(y)],' usuario:', usuario)
 
-    matriz[int(pos_ant[1])][int(pos_ant[2])]='---'
+    if matriz[int(pos_ant[1])][int(pos_ant[2])]==usuario:
+        matriz[int(pos_ant[1])][int(pos_ant[2])]='---'
+        #print('borra pos anterior a ---')
     posiciones = np.append(posiciones,[usuario,x,y]).reshape(len(posiciones)+1,3)
-    print('x:? \ y:?',x,y)
+    #print('x:? \ y:?',x,y)
 
     if matriz[int(x)][int(y)] == '---':
-        matriz[int(x)][int(y)] == usuario
-        print('cambio de matriz')
+        matriz[int(x)][int(y)] = usuario
+        #print('cambio de matriz')
+        #print_mapa()
 
 
 #Funcion principal
@@ -285,7 +298,7 @@ def main():
 
         ip_gestor = sys.argv[1]
         puerto_gestor = sys.argv[2]
-        visitantes_max = sys.argv[3]
+        visitantes_max = int(sys.argv[3])
         ip_wts = sys.argv[4]
         puerto_wts = sys.argv[5]
 
@@ -306,7 +319,7 @@ def main():
         mapa = get_mapa(c,id_mapa)
         global matriz 
         matriz = rellenar_mapa(mapa)
-        print_mapa(matriz)
+        print_mapa()
         atr= get_atracciones(c,mapa)
         conn.close()
 
