@@ -40,6 +40,13 @@ def recibirMapa(server,puerto):
 
     for msg in consumer:
         print('mapa recibido!')
+        try:
+            datos=msg.value.decode('UTF-8').split(':')
+            if datos[0] == 'atr':
+                
+            elif datos[0] == 'col':
+
+               
         matriz = np.frombuffer(msg.value, dtype=ej.dtype).reshape(20,20)
         break
     print('salimos del for (recibirMapa)')

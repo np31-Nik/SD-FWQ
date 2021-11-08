@@ -25,7 +25,7 @@ class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 	def Time(self,request,context):
 		global num_atr,atr,tiempos
 		resul=tiempos.tobytes()
-		print ('num_atr',num_atr)
+		#print ('num_atr',num_atr)
 		ej = np.full((num_atr,3),'---')
 		
 		num_atr=request.num_atra
@@ -33,7 +33,7 @@ class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 		atr= np.frombuffer(request.atr, dtype=ej.dtype).reshape(num_atr,3)
 		#print(atr)
 		print('tiempos:',tiempos)
-		print('resul:',resul)
+		#print('resul:',resul)
 		return TimeServer_pb2.TimeResponse(times=resul,len=len(tiempos))
 
 
@@ -54,7 +54,7 @@ def generarTiempos():
 	for i in range(num_atr):
 		tiempos[i][0] = atr[i][0]
 		tiempos[i][1] = 0
-	print('generarTiempos')
+	#print('generarTiempos')
 	# print('tiempos',tiempos)
 
 def actualizarTiempos(id_atr,personas,anyadir):
@@ -123,7 +123,7 @@ def escuchaSensor(server,puerto):
 	for msg in consumer:
 		datos=msg.value.decode('UTF-8').split(':')
 		actualizarTiempos(datos[0],datos[1],True)
-		print(datos)
+		print('sensor:',datos)
 
 def escuchaEngine(puerto):
 
