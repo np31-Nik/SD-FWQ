@@ -13,7 +13,7 @@ import time
 import traceback
 import threading
 
-tiempos = np.full((3,3),0)
+tiempos = np.full((2,3),0)
 #tiempos = [["a1",0],["a2",0]]
 usuariosEspera = []
 num_atr=0
@@ -25,7 +25,7 @@ class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 	def Time(self,request,context):
 		global num_atr,atr
 		resul=tiempos.tobytes()
-		print (num_atr)
+		print ('num_atr',num_atr)
 		ej = np.full((num_atr,3),'---')
 		num_atr=request.num_atra
 		#print (num_atr)
@@ -51,16 +51,16 @@ def generarTiempos(num_atr,atracciones):
 	for i in range(num_atr):
 		tiempos[i][0] = atracciones[i]
 
-	print(tiempos)
+	# print('tiempos',tiempos)
 
 def actualizarTiempos(id_atr,personas,anyadir):
 	global tiempos
 	global usuariosEspera
 	if anyadir:
 		index = -1
-		print(id_atr)
-		print(num_atr)
-		print(atr)
+		# print(id_atr)
+		# print(num_atr)
+		# print(atr)
 		for i in range(0,num_atr):
 			print(atr[i][0])
 			if atr[i][0] ==id_atr:
@@ -86,7 +86,7 @@ def actualizarTiempos(id_atr,personas,anyadir):
 					# 		usuariosEspera[i][1] -= 1
 					# 	else:
 					# 		del usuariosEspera[i]
-
+	print('tiempos:',tiempos)
 
 def reloj():
 	#print("reloj")

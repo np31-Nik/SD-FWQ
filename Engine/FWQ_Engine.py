@@ -26,7 +26,8 @@ visitantes_max = 0
 visitantes_actual = 0
 pos_atr = []
 num_atr=0
-
+serverK = 0
+puertoK = 0
 
 def reloj(ip,puerto,atr):
 	#print("reloj")
@@ -51,7 +52,9 @@ def ObtenerTiempo(ip,port,atra):
     response = stub.Time(TimeServer_pb2.EstimatedTimeRequest(atr=atra.tobytes(),num_atra=num_atr))
     ej = np.full((response.len,3),1)
     tiempos = np.frombuffer(response.times, dtype=ej.dtype).reshape(response.len,3)
+    print('actualizando tiempos:',tiempos)
     ponerTiemposEnMapa(tiempos)
+    print_mapa()
     
     #print("Client received: " + response.times.decode('utf-8'))
 
@@ -62,15 +65,16 @@ def leerPosicionAtracciones():
     c=conn.cursor()
     c.execute("""SELECT valor, x, y from mapa""")
     pos_atr=c.fetchall()
+    print('pos_atr:',pos_atr)
 
 def ponerTiemposEnMapa(tiempos):
     global matriz
     global pos_atr
-
+    print('poniendo tiempos en el mapa')
     for i in range(len(tiempos)):
         for j in range(len(pos_atr)):
             if tiempos[i][0]==pos_atr[j][0]:
-                matriz[pos_atr[j][2]][[pos_atr[j][1]]]=tiempos[i][1]
+                matriz[pos_atr[j][1]][[pos_atr[j][2]]]=tiempos[i][1]
 
 
 #Funcion para conectarnos a la BD.
@@ -286,9 +290,29 @@ def movimiento(usuario,x,y):
 
     if matriz[int(x)][int(y)] == '---':
         matriz[int(x)][int(y)] = usuario
+    elif matriz[int(x)][int(y)].startswith('u'):
+        print('misma pos que otro usuario')
+    else:
+        atr_id = obtenerIDatr(int(x),int(y))
+        print('Entrando a la atraccion')
+        enviarSensor(atr_id,usuario)
         #print('cambio de matriz')
         #print_mapa()
 
+def enviarSensor(id_atr,id_user):
+    producer = KafkaProducer(bootstrap_servers=['%s:%s' %(serverK,puertoK)])
+    print('Enviando mensaje a sensor:',id_atr)
+    mensaje = bytes(id_user,'utf-8')
+    producer.send('%s' %(id_atr), mensaje)
+    producer.flush()
+
+def obtenerIDatr(x,y):
+    id = -1
+    for i in len(pos_atr):
+        if pos_atr[i][1]==x and pos_atr[i][2]==y:
+            id = pos_atr[i][0]
+            break
+    return id
 
 #Funcion principal
 def main():
