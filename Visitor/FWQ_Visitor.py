@@ -86,9 +86,10 @@ def moverse(server,port):
     columna=0
     filaAtraccion=-1 
     colAtraccion=-1
-    while(True):
-        while filaAtraccion==-1:
+    while filaAtraccion==-1:
+            print("Buscando atraccion")
             (filaAtraccion,colAtraccion)=buscarAtraccion()
+    while(True):
         (fila,columna)=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
         enviarPaso(fila,columna,server,port)
         print_mapa(matriz)
