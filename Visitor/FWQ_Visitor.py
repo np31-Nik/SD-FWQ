@@ -102,7 +102,7 @@ def buscarAtraccion():
 
 
 def moverse(server,port):
-    
+    global buscarAtr
     fila=0
     columna=0
     filaAtraccion=-1 
@@ -110,7 +110,8 @@ def moverse(server,port):
     while True:
         print("Buscando atraccion")
         filaAtraccion,colAtraccion=buscarAtraccion()
-        while(True):
+        while(not buscarAtr):
+            buscarAtr=False
             #print(str(filaAtraccion)+':::'+str(colAtraccion))
             time.sleep(1)
             #print("damos paso hacia"+str(filaAtraccion)+str(colAtraccion))
