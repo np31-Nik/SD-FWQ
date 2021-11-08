@@ -316,7 +316,7 @@ def enviarSensor(id_atr,id_user):
 
 def obtenerIDatr(x,y):
     id = -1
-    for i in range(0,len(pos_atr)):
+    for i in len(pos_atr):
         if pos_atr[i][1]==x and pos_atr[i][2]==y:
             id = pos_atr[i][0]
             break

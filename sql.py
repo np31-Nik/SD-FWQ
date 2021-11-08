@@ -46,11 +46,11 @@ c=conn.cursor()
 
 # c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m2',3,3,'a1'))
 # c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m2',9,15,'a2'))
-c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m3',2,3,'a1'))
-c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m3',5,7,'a2'))
-c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m3',9,9,'a3'))
-c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m3',13,15,'a4'))
-c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m3',2,15,'a5'))
+# c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m3',2,3,'a1'))
+# c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m3',5,7,'a2'))
+# c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m3',9,9,'a3'))
+# c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m3',13,15,'a4'))
+# c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m3',2,15,'a5'))
 
 
 #c.execute("Delete from usuarios where id='u3'")
