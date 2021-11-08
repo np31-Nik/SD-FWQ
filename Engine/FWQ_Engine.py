@@ -45,21 +45,25 @@ def reloj(ip,puerto,atr):
 
 #Llamada GRPC al servidor de tiempos de espera
 def ObtenerTiempo(ip,port,atra):
-    #channel = grpc.insecure_channel('localhost:50051')
-    channel = grpc.insecure_channel('%s:%s' %(ip,port))
-    stub = TimeServer_pb2_grpc.CalculateTimeStub(channel)
-    #print(atra)
-    response = stub.Time(TimeServer_pb2.EstimatedTimeRequest(atr=atra.tobytes(),num_atra=num_atr))
-    ej = np.full((response.len,2),'---')
-    print('response.len:',response.len)
-    tiempos = np.frombuffer(response.times, dtype=ej.dtype)
-    print('tiempos:',tiempos)
-    tiempos = tiempos.reshape(response.len,2)
-    print('actualizando tiempos:',tiempos)
-    ponerTiemposEnMapa(tiempos)
-    print_mapa()
-    
-    #print("Client received: " + response.times.decode('utf-8'))
+    error = -1
+    try:
+        #channel = grpc.insecure_channel('localhost:50051')
+        channel = grpc.insecure_channel('%s:%s' %(ip,port))
+        stub = TimeServer_pb2_grpc.CalculateTimeStub(channel)
+        #print(atra)
+        response = stub.Time(TimeServer_pb2.EstimatedTimeRequest(atr=atra.tobytes(),num_atra=num_atr))
+        ej = np.full((response.len,2),'---')
+        #print('response.len:',response.len)
+        tiempos = np.frombuffer(response.times, dtype=ej.dtype)
+        #print('tiempos:',tiempos)
+        tiempos = tiempos.reshape(response.len,2)
+        #print('actualizando tiempos:',tiempos)
+        ponerTiemposEnMapa(tiempos)
+        #print_mapa()
+        
+        #print("Client received: " + response.times.decode('utf-8'))
+    except:
+        error += 1    
 
 
 def leerPosicionAtracciones():
