@@ -45,21 +45,25 @@ def reloj(ip,puerto,atr):
 
 #Llamada GRPC al servidor de tiempos de espera
 def ObtenerTiempo(ip,port,atra):
-    #channel = grpc.insecure_channel('localhost:50051')
-    channel = grpc.insecure_channel('%s:%s' %(ip,port))
-    stub = TimeServer_pb2_grpc.CalculateTimeStub(channel)
-    #print(atra)
-    response = stub.Time(TimeServer_pb2.EstimatedTimeRequest(atr=atra.tobytes(),num_atra=num_atr))
-    ej = np.full((response.len,2),'---')
-    print('response.len:',response.len)
-    tiempos = np.frombuffer(response.times, dtype=ej.dtype)
-    print('tiempos:',tiempos)
-    tiempos = tiempos.reshape(response.len,2)
-    print('actualizando tiempos:',tiempos)
-    ponerTiemposEnMapa(tiempos)
-    print_mapa()
-    
-    #print("Client received: " + response.times.decode('utf-8'))
+    error = 0
+    try:
+        #channel = grpc.insecure_channel('localhost:50051')
+        channel = grpc.insecure_channel('%s:%s' %(ip,port))
+        stub = TimeServer_pb2_grpc.CalculateTimeStub(channel)
+        #print(atra)
+        response = stub.Time(TimeServer_pb2.EstimatedTimeRequest(atr=atra.tobytes(),num_atra=num_atr))
+        ej = np.full((response.len,2),'---')
+        #print('response.len:',response.len)
+        tiempos = np.frombuffer(response.times, dtype=ej.dtype)
+        #print('tiempos:',tiempos)
+        tiempos = tiempos.reshape(response.len,2)
+        #print('actualizando tiempos:',tiempos)
+        ponerTiemposEnMapa(tiempos)
+        #print_mapa()
+        
+        #print("Client received: " + response.times.decode('utf-8'))
+    except:
+        error += 1    
 
 
 def leerPosicionAtracciones():
@@ -77,6 +81,7 @@ def ponerTiemposEnMapa(tiempos):
     for i in range(len(tiempos)):
         for j in range(len(pos_atr)):
             if tiempos[i][0]==pos_atr[j][0]:
+                print('cambio en matriz (tiempos)')
                 matriz[pos_atr[j][1]][[pos_atr[j][2]]]=tiempos[i][1]
 
 
@@ -311,7 +316,7 @@ def enviarSensor(id_atr,id_user):
 
 def obtenerIDatr(x,y):
     id = -1
-    for i in len(pos_atr):
+    for i in range(0,len(pos_atr)):
         if pos_atr[i][1]==x and pos_atr[i][2]==y:
             id = pos_atr[i][0]
             break
