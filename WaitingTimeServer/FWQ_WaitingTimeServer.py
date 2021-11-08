@@ -32,7 +32,8 @@ class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 		#print (num_atr)
 		atr= np.frombuffer(request.atr, dtype=ej.dtype).reshape(num_atr,3)
 		#print(atr)
-
+		print('tiempos:',tiempos)
+		print('resul:',resul)
 		return TimeServer_pb2.TimeResponse(times=resul,len=len(tiempos))
 
 
@@ -70,7 +71,7 @@ def actualizarTiempos(id_atr,personas,anyadir):
 		# print(num_atr)
 		# print(atr)
 		for i in range(0,num_atr):
-			print(atr[i][0])
+			#print(atr[i][0])
 			if atr[i][0] ==id_atr:
 				index = i
 				break
@@ -96,6 +97,7 @@ def actualizarTiempos(id_atr,personas,anyadir):
 						# 		del usuariosEspera[i]
 	if anyadir or not primera:
 		print('tiempos:',tiempos)
+		print('-----------')
 
 def reloj():
 	#print("reloj")
