@@ -156,10 +156,12 @@ def escuchaVisitante(server,puerto):
 
 #Funcion que envia el mapa actualizado al visitante
 def enviarMapa(server,puerto,id_visitante):
+    print('enviando mapa...')
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
     mensaje = matriz.tobytes()
     producer.send('%s' %(id_visitante), mensaje)
     producer.flush()
+    print('mapa enviado!')
 
 #Funcion que recibe las entradas de los visitantes
 def entradaVisitante(server,puerto):
@@ -183,6 +185,7 @@ def entradaVisitante(server,puerto):
                 print("respuesta enviada")
                 print(posiciones)
                 respuestaEntradaVisitante(server,puerto,datos,True)
+                enviarMapa(server,puerto,datos)
                 
             else:
                 cola_entrada.append(datos)
@@ -199,6 +202,7 @@ def respuestaEntradaVisitante(server,puerto,user,bool):
         respuesta = b'0'
     print("Engine antes de send")
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
+    print('user:?',user)
     producer.send('loginResponse.%s' %(user), respuesta)
     
     producer.flush()
@@ -264,10 +268,11 @@ def movimiento(usuario,x,y):
 
     matriz[int(pos_ant[1])][int(pos_ant[2])]='---'
     posiciones = np.append(posiciones,[usuario,x,y]).reshape(len(posiciones)+1,3)
-    
+    print('x:? \ y:?',x,y)
 
     if matriz[int(x)][int(y)] == '---':
         matriz[int(x)][int(y)] == usuario
+        print('cambio de matriz')
 
 
 #Funcion principal
@@ -300,6 +305,7 @@ def main():
         mapa = get_mapa(c,id_mapa)
         global matriz 
         matriz = rellenar_mapa(mapa)
+        print_mapa(matriz)
         atr= get_atracciones(c,mapa)
         conn.close()
 

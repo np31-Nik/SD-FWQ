@@ -24,9 +24,9 @@ def enviarPaso(fila,columna,server,puerto):
     mensaje = '%s:%s:%s' %(UserID,str(fila),str(columna))
     producer.send('movimiento', bytes(mensaje,'UTF-8'))
     producer.flush()
-
+    producer.close()
     recibirMapa(server,puerto)
-    print_mapa(matriz)
+    #print_mapa(matriz)
 
 
 #Funcion que recibe el mapa desde engine
@@ -43,6 +43,8 @@ def recibirMapa(server,puerto):
     for msg in consumer:
         matriz = np.frombuffer(msg.value, dtype=ej.dtype).reshape(20,20)
         break
+    consumer.close()
+    print_mapa(matriz)
 
 
 #Funcion que imprime el mapa por consola
@@ -200,13 +202,12 @@ def modificarUsuario(ip,puerto):
 
 def enviaEntradaParque(server,puerto):
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
-    mensaje = matriz.tobytes()
     id=bytes(UserID, 'utf-8')
-    producer.send('loginAttempt', b'%s' %(id))
+    producer.send('loginAttempt', id)
     producer.flush()
     producer.close()
     print("Entrada enviada")
-    recibeEntradaParque(server,puerto)
+    
 
 
 def recibeEntradaParque(server,puerto):
@@ -216,16 +217,19 @@ def recibeEntradaParque(server,puerto):
         bootstrap_servers=['%s:%s'%(server,puerto)],
         )
     print("Entrada recibida de Engine")
-    # for msg in consumer:
-    #     print("bucle")
-    #     datos = msg.value.decode('UTF-8')
+    print('user:?',UserID)
+    for msg in consumer:
+        print("bucle")
+        datos = msg.value.decode('UTF-8')
 
-    #     if datos == '1':
-    #         print('Has entrado al parque.')
-    #         break
-    #     else:
-    #         print('Hay una cola para entrar al parque, espera tu turno...')
+        if datos == '1':
+            print('Has entrado al parque.')
+            recibirMapa(server,puerto)
+            break
+        else:
+            print('Hay una cola para entrar al parque, espera tu turno...')
     print("Despues de for")
+    consumer.close()
     moverse(server,puerto)
 
 #Funcion principal
@@ -263,6 +267,7 @@ def run():
             if opcion == "2":
                 if iniciarSesion(serverGrpc,puertoGrpc):
                     enviaEntradaParque(serverKafka,puertoKafka)
+                    recibeEntradaParque(serverKafka,puertoKafka)
                 
             if opcion == "3":
                 modificarUsuario(serverGrpc,puertoGrpc)
@@ -280,7 +285,7 @@ def handle_exit():
     mensaje = '%s' %(UserID)
     producer.send('logout', mensaje)
     producer.flush()
-
+    producer.close()
 atexit.register(handle_exit)
 signal.signal(signal.SIGTERM, handle_exit)
 signal.signal(signal.SIGINT, handle_exit)
