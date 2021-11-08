@@ -26,6 +26,9 @@ def enviarPaso(fila,columna,server,puerto):
     producer.flush()
     producer.close()
 
+def esperaCola(server,puerto,datos):
+    print('Has entrado a la atraccion ',datos[1],', hay que esperar ',datos[2])
+    time.sleep(int(datos[2]))
 
 #Funcion que recibe el mapa desde engine
 def recibirMapa(server,puerto):
@@ -37,15 +40,15 @@ def recibirMapa(server,puerto):
     print('esperando mapa...')
     global matriz
     ej = np.full((20,20),'---')
-
+    mover=False
     for msg in consumer:
         print('mapa recibido!')
         try:
             datos=msg.value.decode('UTF-8').split(':')
-            if datos[0] == 'atr':
-                
-            elif datos[0] == 'col':
-
+            if datos[0] == 'espera':
+                esperaCola(server,puerto,datos)
+        except:
+            mover=True
                
         matriz = np.frombuffer(msg.value, dtype=ej.dtype).reshape(20,20)
         break

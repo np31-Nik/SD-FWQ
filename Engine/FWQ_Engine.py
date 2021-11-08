@@ -156,9 +156,10 @@ def crearCola(lista_atr):
     for i in range (num_atr):
         rowList = []
         for j in range (1):
-            rowList.append(lista_atr[j])
+            rowList.append(lista_atr[i])
         mat.append(rowList)
 
+    print('mat:',mat)
     return mat 
 
 #Funcion que esta a la escucha de los usuarios
