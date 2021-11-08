@@ -110,16 +110,13 @@ def moverse(server,port):
         colAtraccion=-1
         print("Buscando atraccion")
         filaAtraccion,colAtraccion=buscarAtraccion()
-        while(not buscarAtr):
+        if filaAtraccion!=-1:
             buscarAtr=False
-            #print(str(filaAtraccion)+':::'+str(colAtraccion))
+        while(not buscarAtr):
             time.sleep(1)
-            #print("damos paso hacia"+str(filaAtraccion)+str(colAtraccion))
             fila,columna=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
-            #print("fila, columna"+str(fila)+ ";" +str(columna))
             enviarPaso(fila,columna,server,port)
             recibirMapa(server,port)
-            #print_mapa(matriz)
 
 
     #----En bucle:
