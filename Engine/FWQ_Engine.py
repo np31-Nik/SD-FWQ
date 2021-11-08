@@ -91,6 +91,7 @@ def ponerTiemposEnMapa(tiempos):
             if tiempos[i][0]==pos_atr[j][0]:
                 print('cambio en matriz (tiempos)')
                 matriz[pos_atr[j][1]][[pos_atr[j][2]]]=tiempos[i][1]
+                print(matriz[pos_atr[j][1]][[pos_atr[j][2]]])
 
 
 #Funcion para conectarnos a la BD.
