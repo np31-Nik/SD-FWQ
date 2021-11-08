@@ -316,7 +316,7 @@ import signal
 
 #Funcion que se ejecuta al salir del programa
 def handle_exit(one,two):
-    #print(serverK,puertoK)
+    print(serverK,puertoK)
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(serverK,puertoK)])
     mensaje = bytes('%s' %(UserID),'UTF-8')
     print('Saliendo...')
