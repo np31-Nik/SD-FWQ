@@ -85,6 +85,8 @@ def ponerTiemposEnMapa(tiempos):
     global matriz
     global pos_atr
     print('poniendo tiempos en el mapa')
+    print(tiempos)
+    prin
     for i in range(len(tiempos)):
         for j in range(len(pos_atr)):
             if tiempos[i][0]==pos_atr[j][0]:
