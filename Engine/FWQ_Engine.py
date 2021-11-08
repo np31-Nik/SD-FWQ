@@ -45,7 +45,7 @@ def reloj(ip,puerto,atr):
 
 #Llamada GRPC al servidor de tiempos de espera
 def ObtenerTiempo(ip,port,atra):
-    error = -1
+    error = 0
     try:
         #channel = grpc.insecure_channel('localhost:50051')
         channel = grpc.insecure_channel('%s:%s' %(ip,port))
@@ -83,6 +83,7 @@ def ponerTiemposEnMapa(tiempos):
     for i in range(len(tiempos)):
         for j in range(len(pos_atr)):
             if tiempos[i][0]==pos_atr[j][0]:
+                print('cambio en matriz (tiempos)')
                 matriz[pos_atr[j][1]][[pos_atr[j][2]]]=tiempos[i][1]
 
 
