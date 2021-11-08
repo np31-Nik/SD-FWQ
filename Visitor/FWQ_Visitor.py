@@ -126,8 +126,8 @@ def moverse(server,port):
     #5) Enviar el paso cada segundo
 
 
-def calcularPaso(fila,columna,filaAtraccion, colAtraccion,booleano):
-    
+def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
+    booleano=False
     if fila<filaAtraccion:
         fila=fila+1
         return fila,columna,False
@@ -161,7 +161,7 @@ def calcularPaso(fila,columna,filaAtraccion, colAtraccion,booleano):
     #         return fila,columna
     #         #return 'SW' #South-West
 
-    return (fila,columna)
+    return (fila,columna,booleano)
 
 
 

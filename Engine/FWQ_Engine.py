@@ -292,6 +292,7 @@ def borrarPos(id_user):
     global posiciones
     newMat=[]
     rem=[]
+    #print('posicionesantes:',posiciones)
 
     for i in range(0,len(posiciones)):
         if posiciones[i][0] == id_user:
@@ -299,6 +300,7 @@ def borrarPos(id_user):
         else:
             newMat = np.append(newMat,posiciones[i]).reshape(len(newMat)+1,3)
     posiciones = newMat
+    #print('posiciones:',posiciones)
 
     return rem
 
