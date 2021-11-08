@@ -64,7 +64,7 @@ def buscarAtraccion():
     contador =0 #Contador de atracciones
     for row in range(len(matriz)):
         for col in range(len(matriz[row])):
-            if matriz[row][col]!='---' and not matriz[row][col].startswith('u'):
+            if matriz[row][col]!='---' and not 'u' in matriz[row][col]:
                 contador=contador+1
     print("Matriz de Buscar Atraccion")
     print(matriz)
@@ -120,18 +120,22 @@ def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
             #return 'S' #South
 
 
-    elif fila==filaAtraccion and columna!=colAtraccion:
-        if columna<colAtraccion:
-            columna=columna+1
-            return fila,columna
-            #return 'E' #East
-        else:
-            columna=columna-1
-            return fila,columna
-            #return 'W' #West
-    elif fila==filaAtraccion and columna==colAtraccion:
-        return fila,columna
-    
+    else:
+        if fila==filaAtraccion and columna!=colAtraccion:
+            if columna<colAtraccion:
+                columna=columna+1
+                return fila,columna
+                #return 'E' #East
+            else:
+                if fila==filaAtraccion and columna==colAtraccion:
+                    return fila,columna
+                else:
+                    columna=columna-1
+                    return fila,columna
+                    #return 'W' #West
+
+
+
     # else:   
     #     if columna<colAtraccion and fila<filaAtraccion:
     #         columna=columna+1
