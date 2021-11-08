@@ -88,8 +88,9 @@ def moverse(server,port):
     colAtraccion=-1
     while True:
         print("Buscando atraccion")
-        (filaAtraccion,colAtraccion)=buscarAtraccion()
+        filaAtraccion,colAtraccion=buscarAtraccion()
         while(True):
+            print(str(filaAtraccion)+':::'+str(colAtraccion))
             time.sleep(3)
             print("damos paso")
             fila,columna=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
@@ -108,7 +109,7 @@ def moverse(server,port):
 
 def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
     
-    if columna==colAtraccion:
+    if columna==colAtraccion and filaAtraccion!=fila:
         if fila<filaAtraccion:
             fila=fila+1
             return fila,columna
@@ -119,7 +120,7 @@ def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
             #return 'S' #South
 
 
-    elif fila==filaAtraccion:
+    elif fila==filaAtraccion and columna!=colAtraccion:
         if columna<colAtraccion:
             columna=columna+1
             return fila,columna
@@ -305,14 +306,16 @@ def run():
 import signal
 
 #Funcion que se ejecuta al salir del programa
-def handle_exit():
+def handle_exit(one,two):
+    print(serverK,puertoK)
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(serverK,puertoK)])
-    mensaje = '%s' %(UserID)
+    mensaje = b'%s' %(UserID)
     print('enviando salida')
     producer.send('logout', mensaje)
     producer.flush()
     producer.close()
-atexit.register(handle_exit)
+
+atexit.register(handle_exit,'1','2')
 signal.signal(signal.SIGTERM, handle_exit)
 signal.signal(signal.SIGINT, handle_exit)
 
