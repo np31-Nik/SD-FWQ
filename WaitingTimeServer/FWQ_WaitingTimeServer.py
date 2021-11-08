@@ -98,7 +98,8 @@ def actualizarTiempos(id_atr,personas,anyadir):
 						# 	else:
 						# 		del usuariosEspera[i]
 	if anyadir or not primera:
-		print('tiempos:',tiempos)
+		print('tiempos:')
+		print(tiempos)
 		print('-----------')
 
 def reloj():

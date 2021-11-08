@@ -17,6 +17,7 @@ UserID = -1
 matriz = Matriz = np.full((20,20), '---')
 serverK = 0
 puertoK = 0 
+buscarAtr=False
 
 #Funcion que envia el movimiento del usuario al engine, y luego imprime el mapa
 def enviarPaso(fila,columna,server,puerto):
@@ -129,7 +130,7 @@ def moverse(server,port):
 
 def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
     
-    
+    global buscarAtr
     if fila<filaAtraccion:
         fila=fila+1
         return fila,columna
@@ -140,6 +141,7 @@ def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
         #return 'E' #East
     else:
         if fila==filaAtraccion and columna==colAtraccion:
+            buscarAtr=True
             return fila,columna
 
     # else:   
