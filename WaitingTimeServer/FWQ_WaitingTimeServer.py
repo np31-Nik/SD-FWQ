@@ -32,7 +32,7 @@ class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 		#print (num_atr)
 		atr= np.frombuffer(request.atr, dtype=ej.dtype).reshape(num_atr,3)
 		#print(atr)
-		print('tiempos:',tiempos)
+		print('enviando tiempos:',tiempos)
 		#print('resul:',resul)
 		return TimeServer_pb2.TimeResponse(times=resul,len=len(tiempos))
 
@@ -53,9 +53,9 @@ def generarTiempos():
 	tiempos = np.full((num_atr,2),'---')
 	for i in range(num_atr):
 		tiempos[i][0] = atr[i][0]
-		tiempos[i][1] = 0
+		tiempos[i][1] = atr[i][2]
 	#print('generarTiempos')
-	# print('tiempos',tiempos)
+	print('tiemposGenerados',tiempos)
 
 def actualizarTiempos(id_atr,personas,anyadir):
 	global tiempos
@@ -79,23 +79,24 @@ def actualizarTiempos(id_atr,personas,anyadir):
 		datos = atr[index]
 	if not primera:
 		for i in range(num_atr):
-			if len(tiempos)>0:
-				if tiempos[i][0] == id_atr:
-					if anyadir:
-						ciclos = round(len(personas)/int(datos[1]))
-						tiempo = ciclos * int(datos[2])
+			if tiempos[i][0] == id_atr:
+				if anyadir:
+					ciclos = int(np.ceil(float(len(personas))/float(datos[1])))
+					tiempo = ciclos * int(datos[2])
+					if tiempo > 0:
+						print('Asignando tiempo = ',tiempo,' tiempos[i]:',tiempos[i])
 						tiempos[i][1]=tiempo
-						#tiempos[i][1] += datos[2]
-					else:
-						if tiempos[i][1] > 0:
-							tiempos[i][1] -= 1
+					#tiempos[i][1] += datos[2]
+				else:
+					if tiempos[i][1] > int(datos[2]):
+						tiempos[i][1] = int(tiempos[i][1]) - 1
 
-							#esto depende de si hay que mostrar el tiempo para cada usuario:
-							# for i in len(usuariosEspera):
-							# 	if usuariosEspera[i][1] > 0:
-							# 		usuariosEspera[i][1] -= 1
-							# 	else:
-							# 		del usuariosEspera[i]
+						#esto depende de si hay que mostrar el tiempo para cada usuario:
+						# for i in len(usuariosEspera):
+						# 	if usuariosEspera[i][1] > 0:
+						# 		usuariosEspera[i][1] -= 1
+						# 	else:
+						# 		del usuariosEspera[i]
 	if anyadir or not primera:
 		print('tiempos:')
 		print(tiempos)
@@ -125,7 +126,7 @@ def escuchaSensor(server,puerto):
 	for msg in consumer:
 		datos=msg.value.decode('UTF-8').split(':')
 		actualizarTiempos(datos[0],datos[1],True)
-		print('sensor:',datos)
+		#print('sensor:',datos)
 
 def escuchaEngine(puerto):
 

@@ -28,10 +28,11 @@ pos_atr = []
 num_atr=0
 serverK = "0"
 puertoK = "0"
+tiempos = []
 
 def reloj(ip,puerto,atr):
 	#print("reloj")
-	delay = 1
+	delay = 2
 	next_time = time.time() + delay
 	while True:
 		time.sleep(max(0, next_time - time.time()))
@@ -46,6 +47,7 @@ def reloj(ip,puerto,atr):
 #Llamada GRPC al servidor de tiempos de espera
 def ObtenerTiempo(ip,port,atra):
     error = 0
+    global tiempos
     try:
         #channel = grpc.insecure_channel('localhost:50051')
         channel = grpc.insecure_channel('%s:%s' %(ip,port))
@@ -58,7 +60,7 @@ def ObtenerTiempo(ip,port,atra):
         #print('tiempos:',tiempos)
         tiempos = tiempos.reshape(response.len,2)
         #print('actualizando tiempos:',tiempos)
-        ponerTiemposEnMapa(tiempos)
+        ponerTiemposEnMapa()
         #print_mapa()
         
         #print("Client received: " + response.times.decode('utf-8'))
@@ -81,17 +83,24 @@ def leerPosicionAtracciones(id_mapa):
     pos_atr = resultado_matriz
     print('pos_atr:',pos_atr)
 
-def ponerTiemposEnMapa(tiempos):
+def ponerTiemposEnMapa():
     global matriz
     global pos_atr
+    global tiempos
     print('poniendo tiempos en el mapa')
     print(tiempos)
     for i in range(len(tiempos)):
+        id_tiempo = tiempos[i][0]
+        tiempo = tiempos[i][1]
         for j in range(len(pos_atr)):
-            if tiempos[i][0]==pos_atr[j][0]:
+            id_pos = pos_atr[j][0]
+            x = int(pos_atr[j][1])
+            y = int(pos_atr[j][2])
+            if id_tiempo == id_pos:
                 print('cambio en matriz (tiempos)')
-                matriz[pos_atr[j][1]][[pos_atr[j][2]]]=tiempos[i][1]
-                print(matriz[pos_atr[j][1]][[pos_atr[j][2]]])
+                matriz[x][y]=tiempo
+                print('matriz[x][y]:',matriz[x][y],' tiempo:',tiempo,' id_t:',id_tiempo,' id_pos:',id_pos)
+            
 
 
 #Funcion para conectarnos a la BD.
@@ -291,8 +300,17 @@ def borrarPos(id_user):
 
     return rem
 
+def enviarEsperaVisitante(usuario,id_atr,tiempo):
+    producer = KafkaProducer(bootstrap_servers=['%s:%s' %(serverK,puertoK)])
+    mensaje = bytes('espera:%s:%s'%(id_atr,tiempo),'UTF-8')
+    producer.send('%s' %(usuario), mensaje)
+    producer.flush()
+
+
+
 #Funcion que registra el movimiento del usuario
 def movimiento(usuario,x,y):
+    enviar_mapa=True
     global posiciones, matriz
     #print('usuario:?',usuario)
     #print('usuario se mueve:',usuario)
@@ -314,8 +332,14 @@ def movimiento(usuario,x,y):
         atr_id = obtenerIDatr(x,y)
         print('Entrando a la atraccion')
         enviarSensor(atr_id,usuario)
+        where = np.where(tiempos[:,0]==atr_id)
+        tiempo = tiempos[where][0][1]
+        print('tiempo|',tiempo)
+        enviarEsperaVisitante(usuario,atr_id,tiempo)
+        enviar_mapa=False
         #print('cambio de matriz')
         #print_mapa()
+    return enviar_mapa
 
 def enviarSensor(id_atr,id_user):
     print('Enviando mensaje a sensor:',id_atr,' serverK:',serverK,' puertoK:',puertoK,' id_user:',id_user)
