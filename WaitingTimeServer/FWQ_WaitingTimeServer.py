@@ -13,24 +13,26 @@ import time
 import traceback
 import threading
 
-tiempos = np.full((2,3),0)
+tiempos = np.full((2,2),0)
 #tiempos = [["a1",0],["a2",0]]
 usuariosEspera = []
 num_atr=0
 atr = np.full((num_atr,3),'---')
 num_atr=0
-
+primera = True
 
 class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 	def Time(self,request,context):
-		global num_atr,atr
+		global num_atr,atr,tiempos
 		resul=tiempos.tobytes()
 		print ('num_atr',num_atr)
 		ej = np.full((num_atr,3),'---')
+		
 		num_atr=request.num_atra
 		#print (num_atr)
 		atr= np.frombuffer(request.atr, dtype=ej.dtype).reshape(num_atr,3)
 		#print(atr)
+
 		return TimeServer_pb2.TimeResponse(times=resul,len=len(tiempos))
 
 
@@ -45,18 +47,24 @@ class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 # 		return WaitingTimeServer.WaitingTimeServerResponse(response=calcularTiempo())
 #     def calcularTiempo():
 
-def generarTiempos(num_atr,atracciones):
+def generarTiempos():
 	global tiempos
-	tiempos = np.full((num_atr,3),'---')
+	tiempos = np.full((num_atr,2),'---')
 	for i in range(num_atr):
-		tiempos[i][0] = atracciones[i]
-
+		tiempos[i][0] = atr[i][0]
+		tiempos[i][1] = 0
+	print('generarTiempos')
 	# print('tiempos',tiempos)
 
 def actualizarTiempos(id_atr,personas,anyadir):
 	global tiempos
 	global usuariosEspera
+	global primera
 	if anyadir:
+		if primera:
+			generarTiempos()
+			primera=False
+
 		index = -1
 		# print(id_atr)
 		# print(num_atr)
@@ -68,25 +76,26 @@ def actualizarTiempos(id_atr,personas,anyadir):
 				break
 		#index = np.where(atr[:,0] == id_atr)
 		datos = atr[index]
+	if not primera:
+		for i in range(num_atr):
+			if tiempos[i][0] == id_atr:
+				if anyadir:
+					ciclos = round(len(personas)/int(datos[1]))
+					tiempo = ciclos * int(datos[2])
+					tiempos[i][1]=tiempo
+					#tiempos[i][1] += datos[2]
+				else:
+					if tiempos[i][1] > 0:
+						tiempos[i][1] -= 1
 
-	for i in range(num_atr):
-		if tiempos[i][0] == id_atr:
-			if anyadir:
-				ciclos = round(len(personas)/datos[1])
-				tiempo = ciclos * datos[2]
-				tiempos[i][1]=tiempo
-				#tiempos[i][1] += datos[2]
-			else:
-				if tiempos[i][1] > 0:
-					tiempos[i][1] -= 1
-
-					#esto depende de si hay que mostrar el tiempo para cada usuario:
-					# for i in len(usuariosEspera):
-					# 	if usuariosEspera[i][1] > 0:
-					# 		usuariosEspera[i][1] -= 1
-					# 	else:
-					# 		del usuariosEspera[i]
-	print('tiempos:',tiempos)
+						#esto depende de si hay que mostrar el tiempo para cada usuario:
+						# for i in len(usuariosEspera):
+						# 	if usuariosEspera[i][1] > 0:
+						# 		usuariosEspera[i][1] -= 1
+						# 	else:
+						# 		del usuariosEspera[i]
+	if anyadir or not primera:
+		print('tiempos:',tiempos)
 
 def reloj():
 	#print("reloj")
