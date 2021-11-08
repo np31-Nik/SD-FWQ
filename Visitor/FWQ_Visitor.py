@@ -86,16 +86,15 @@ def buscarAtraccion():
             if matriz[row][col]!='---' and matriz[row][col].find('u')==-1:
                 contador=contador+1
     #print("Matriz de Buscar Atraccion")
-    print(matriz)
-    atraccion=1
+    #print(matriz)
+    #atraccion=1
     #print('contador:',contador)
-    atraccion=random.randint(contador) #comprobar si funciona
+    atraccion=random.randint(0,contador) #comprobar si funciona
     #print(str(atraccion)+'contador: '+ str(contador))
     contador =0
     for row in range(len(matriz)):
         for col in range(len(matriz[row])):
             if matriz[row][col]!='---' and matriz[row][col].find('u')==-1:
-                
                 if contador==atraccion: 
                     return row,col
                 contador=contador+1
@@ -105,9 +104,10 @@ def moverse(server,port):
     global buscarAtr
     fila=0
     columna=0
-    filaAtraccion=-1 
-    colAtraccion=-1
+    
     while True:
+        filaAtraccion=-1 
+        colAtraccion=-1
         print("Buscando atraccion")
         filaAtraccion,colAtraccion=buscarAtraccion()
         while(not buscarAtr):
@@ -135,11 +135,9 @@ def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
     if fila<filaAtraccion:
         fila=fila+1
         return fila,columna
-        #return 'N' #North
     elif columna<colAtraccion:
         columna=columna+1
         return fila,columna
-        #return 'E' #East
     else:
         if fila==filaAtraccion and columna==colAtraccion:
             buscarAtr=True
