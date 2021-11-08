@@ -224,12 +224,12 @@ def recibeEntradaParque(server,puerto):
 
         if datos == '1':
             print('Has entrado al parque.')
-            recibirMapa(server,puerto)
             break
         else:
             print('Hay una cola para entrar al parque, espera tu turno...')
     print("Despues de for")
     consumer.close()
+    recibirMapa(server,puerto)
     moverse(server,puerto)
 
 #Funcion principal

@@ -159,6 +159,7 @@ def enviarMapa(server,puerto,id_visitante):
     print('enviando mapa...')
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
     mensaje = matriz.tobytes()
+    print(matriz)
     producer.send('%s' %(id_visitante), mensaje)
     producer.flush()
     print('mapa enviado!')
