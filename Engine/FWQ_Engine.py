@@ -318,7 +318,7 @@ def movimiento(usuario,x,y):
     #print('usuario se mueve:',usuario)
     pos_ant = borrarPos(usuario)
     #print('pos_ant:?',pos_ant)
-    print('x:',int(x),' y:',int(y),' mat[x][y]:', matriz[int(x)][int(y)],' usuario:', usuario)
+    #print('x:',int(x),' y:',int(y),' mat[x][y]:', matriz[int(x)][int(y)],' usuario:', usuario)
 
     if matriz[int(pos_ant[1])][int(pos_ant[2])]==usuario:
         matriz[int(pos_ant[1])][int(pos_ant[2])]='---'
@@ -332,7 +332,7 @@ def movimiento(usuario,x,y):
         print('misma pos que otro usuario')
     else:
         atr_id = obtenerIDatr(x,y)
-        print('Entrando a la atraccion')
+        #print('Entrando a la atraccion')
         enviarSensor(atr_id,usuario)
         where = np.where(tiempos[:,0]==atr_id)
         tiempo = tiempos[where][0][1]
@@ -353,14 +353,14 @@ def enviarSensor(id_atr,id_user):
 
 def obtenerIDatr(x,y):
     id = -1
-    print('x:',x,' y:',y)
+    #print('x:',x,' y:',y)
     for i in range(len(pos_atr)):
-        print('pos_atr[',i,']: ',pos_atr[i])
+        #print('pos_atr[',i,']: ',pos_atr[i])
         if pos_atr[i][1]==x and pos_atr[i][2]==y:
             id = pos_atr[i][0]
             print('ID ENCONTRADO')
             break
-    print('obtenerIDatr:',id)
+    #print('obtenerIDatr:',id)
     return id
 
 #Funcion principal
