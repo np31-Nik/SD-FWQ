@@ -69,7 +69,7 @@ def buscarAtraccion():
     print("Matriz de Buscar Atraccion")
     print(matriz)
     atraccion=1
-    #atraccion=random.randint(contador) #comprobar si funciona
+    atraccion=random.randint(contador) #comprobar si funciona
     print(str(atraccion)+'contador: '+ str(contador))
     contador =0
     for row in range(len(matriz)):
