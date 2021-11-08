@@ -26,8 +26,8 @@ visitantes_max = 0
 visitantes_actual = 0
 pos_atr = []
 num_atr=0
-serverK = 0
-puertoK = 0
+serverK = "0"
+puertoK = "0"
 
 def reloj(ip,puerto,atr):
 	#print("reloj")
@@ -66,12 +66,19 @@ def ObtenerTiempo(ip,port,atra):
         error += 1    
 
 
-def leerPosicionAtracciones():
+def leerPosicionAtracciones(id_mapa):
     dir = os.path.join(os.path.dirname(__file__),'..','db.db')
     conn = create_connection(dir)
     c=conn.cursor()
-    c.execute("""SELECT valor, x, y from mapa""")
-    pos_atr=c.fetchall()
+    c.execute("""SELECT valor, x, y from mapa where id='%s'""" %(id_mapa))
+    query=c.fetchall()
+    conn.close()
+    global pos_atr
+    resultado_matriz = np.full((num_atr,3),'---')
+
+    for i in range(num_atr):
+        resultado_matriz[i]=[query[i][0],query[i][1],query[i][2]]
+    pos_atr = resultado_matriz
     print('pos_atr:',pos_atr)
 
 def ponerTiemposEnMapa(tiempos):
@@ -161,7 +168,7 @@ def escuchaVisitante(server,puerto):
     )
 
     for msg in consumer:
-        print(msg)
+        #print(msg)
         datos=msg.value.decode('UTF-8').split(':')
         print('movimiento recibido:',datos)
         movimiento(datos[0],datos[1],datos[2])
@@ -206,8 +213,8 @@ def entradaVisitante(server,puerto):
                     
                     posiciones = np.append(posiciones,[datos,0,0]).reshape(len(posiciones)+1,3)
                     print("respuesta enviada")
-                    print_mapa()                    
-                    print(posiciones)
+                    #print_mapa()                    
+                    #print(posiciones)
                     respuestaEntradaVisitante(server,puerto,datos,1)
                 
             else:
@@ -222,7 +229,7 @@ def respuestaEntradaVisitante(server,puerto,user,resp):
     resp = bytes(str(resp),'utf-8')
     print("Engine antes de send")
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
-    print('user: ',user, ' resp:',resp)
+    #print('user: ',user, ' resp:',resp)
     producer.send('loginResponse.%s' %(user), resp)
     
     producer.flush()
@@ -301,25 +308,30 @@ def movimiento(usuario,x,y):
     elif matriz[int(x)][int(y)].startswith('u'):
         print('misma pos que otro usuario')
     else:
-        atr_id = obtenerIDatr(int(x),int(y))
+        atr_id = obtenerIDatr(x,y)
         print('Entrando a la atraccion')
         enviarSensor(atr_id,usuario)
         #print('cambio de matriz')
         #print_mapa()
 
 def enviarSensor(id_atr,id_user):
+    print('Enviando mensaje a sensor:',id_atr,' serverK:',serverK,' puertoK:',puertoK,' id_user:',id_user)
+
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(serverK,puertoK)])
-    print('Enviando mensaje a sensor:',id_atr)
     mensaje = bytes(id_user,'utf-8')
     producer.send('%s' %(id_atr), mensaje)
     producer.flush()
 
 def obtenerIDatr(x,y):
     id = -1
-    for i in len(pos_atr):
+    print('x:',x,' y:',y)
+    for i in range(len(pos_atr)):
+        print('pos_atr[',i,']: ',pos_atr[i])
         if pos_atr[i][1]==x and pos_atr[i][2]==y:
             id = pos_atr[i][0]
+            print('ID ENCONTRADO')
             break
+    print('obtenerIDatr:',id)
     return id
 
 #Funcion principal
@@ -327,10 +339,10 @@ def main():
     if(len(sys.argv) != 6):
         print("Para ejecutar utiliza: FWQ_Engine.py |IP GESTOR| |PUERTO GESTOR| |NUM MAX VISITANTES| |IP WaitingTimeServer| |PUERTO WaitingTimeServer|")
     else:
-        global visitantes_max
+        global visitantes_max,serverK,puertoK
 
-        ip_gestor = sys.argv[1]
-        puerto_gestor = sys.argv[2]
+        serverK = ip_gestor = sys.argv[1]
+        puertoK = puerto_gestor = sys.argv[2]
         visitantes_max = int(sys.argv[3])
         ip_wts = sys.argv[4]
         puerto_wts = sys.argv[5]
@@ -346,13 +358,13 @@ def main():
         c=conn.cursor()
 
         id_mapa = 'm2'
-
-        leerPosicionAtracciones() #Guardamos las posiciones de atracciones en la lista
-
         mapa = get_mapa(c,id_mapa)
         global matriz 
         matriz = rellenar_mapa(mapa)
         print_mapa()
+
+        leerPosicionAtracciones(id_mapa) #Guardamos las posiciones de atracciones en la lista
+
         atr= get_atracciones(c,mapa)
         conn.close()
 
