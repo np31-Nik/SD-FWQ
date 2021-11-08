@@ -68,8 +68,9 @@ def buscarAtraccion():
                 contador=contador+1
     print("Matriz de Buscar Atraccion")
     print(matriz)
-    atraccion=random.randint(contador) #comprobar si funciona
-    print(atraccion)
+    atraccion=1
+    #atraccion=random.randint(contador) #comprobar si funciona
+    print(str(atraccion)+'contador: '+ str(contador))
     contador =0
     for row in range(len(matriz)):
         for col in range(len(matriz[row])):
@@ -92,7 +93,7 @@ def moverse(server,port):
         while(True):
             print(str(filaAtraccion)+':::'+str(colAtraccion))
             time.sleep(3)
-            print("damos paso")
+            print("damos paso hacia"+str(filaAtraccion)+str(colAtraccion))
             fila,columna=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
             print("fila, columna"+str(fila)+ ";" +str(columna))
             enviarPaso(fila,columna,server,port)
@@ -109,32 +110,18 @@ def moverse(server,port):
 
 def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
     
-    if columna==colAtraccion and filaAtraccion!=fila:
-        if fila<filaAtraccion:
-            fila=fila+1
-            return fila,columna
-            #return 'N' #North
-        else:
-            fila=fila-1
-            return fila,columna
-            #return 'S' #South
-
-
+    
+    if fila<filaAtraccion:
+        fila=fila+1
+        return fila,columna
+        #return 'N' #North
+    elif columna<colAtraccion:
+        columna=columna+1
+        return fila,columna
+        #return 'E' #East
     else:
-        if fila==filaAtraccion and columna!=colAtraccion:
-            if columna<colAtraccion:
-                columna=columna+1
-                return fila,columna
-                #return 'E' #East
-            else:
-                if fila==filaAtraccion and columna==colAtraccion:
-                    return fila,columna
-                else:
-                    columna=columna-1
-                    return fila,columna
-                    #return 'W' #West
-
-
+        if fila==filaAtraccion and columna==colAtraccion:
+            return fila,columna
 
     # else:   
     #     if columna<colAtraccion and fila<filaAtraccion:
