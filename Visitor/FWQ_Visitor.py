@@ -109,35 +109,43 @@ def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
     if fila==filaAtraccion:
         if columna<colAtraccion:
             columna=columna+1
+            return fila,columna
             #return 'E' #East
         else:
             columna=columna-1
+            return fila,columna
             #return 'W' #West
 
-    if columna==colAtraccion:
+    elif columna==colAtraccion:
         if fila<filaAtraccion:
             fila=fila+1
+            return fila,columna
             #return 'N' #North
         else:
             fila=fila-1
+            return fila,columna
             #return 'S' #South
 
     else:   
         if columna<colAtraccion and fila<filaAtraccion:
             columna=columna+1
             fila=fila+1
+            return fila,columna
             #return 'NE' #North-East
         elif columna<colAtraccion and fila>filaAtraccion:
             columna=columna+1
             fila=fila-1
+            return fila,columna
             #return 'SE' #South-East
         elif columna>colAtraccion and fila<filaAtraccion:
             columna=columna-1
             fila=fila+1
+            return fila,columna
             #return 'NW' #North-West
         elif columna>colAtraccion and fila>filaAtraccion:
             columna=columna-1
             fila=fila-1
+            return fila,columna
             #return 'SW' #South-West
 
     return (fila,columna)
