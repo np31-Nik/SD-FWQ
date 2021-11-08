@@ -106,7 +106,6 @@ def moverse(server,port):
 
 
 def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
-    pri
     if fila==filaAtraccion:
         if columna<colAtraccion:
             columna=columna+1
