@@ -64,7 +64,7 @@ def buscarAtraccion():
     contador =0 #Contador de atracciones
     for row in range(len(matriz)):
         for col in range(len(matriz[row])):
-            if matriz[row][col]!='---' and not 'u' in matriz[row][col]:
+            if matriz[row][col]!='---' and matriz[row][col].find('u')==-1:
                 contador=contador+1
     print("Matriz de Buscar Atraccion")
     print(matriz)
@@ -74,7 +74,7 @@ def buscarAtraccion():
     contador =0
     for row in range(len(matriz)):
         for col in range(len(matriz[row])):
-            if matriz[row][col]!='---':
+            if matriz[row][col]!='---' and matriz[row][col].find('u')==-1:
                 
                 if contador==atraccion: 
                     return row,col
