@@ -64,9 +64,10 @@ def buscarAtraccion():
     contador =0 #Contador de atracciones
     for row in range(len(matriz)):
         for col in range(len(matriz[row])):
-            if matriz[row][col]!='---':
+            if matriz[row][col]!='---' and not matriz[row][col].startswith('u'):
                 contador=contador+1
-
+    print("Matriz de Buscar Atraccion")
+    print(matriz)
     atraccion=random.randint(contador) #comprobar si funciona
     print(atraccion)
     contador =0
