@@ -79,24 +79,26 @@ def actualizarTiempos(id_atr,personas,anyadir):
 		datos = atr[index]
 	if not primera:
 		for i in range(num_atr):
-			if tiempos[i][0] == id_atr:
-				if anyadir:
-					ciclos = round(len(personas)/int(datos[1]))
-					tiempo = ciclos * int(datos[2])
-					tiempos[i][1]=tiempo
-					#tiempos[i][1] += datos[2]
-				else:
-					if tiempos[i][1] > 0:
-						tiempos[i][1] -= 1
+			if len(tiempos)>0:
+				if tiempos[i][0] == id_atr:
+					if anyadir:
+						ciclos = round(len(personas)/int(datos[1]))
+						tiempo = ciclos * int(datos[2])
+						tiempos[i][1]=tiempo
+						#tiempos[i][1] += datos[2]
+					else:
+						if tiempos[i][1] > 0:
+							tiempos[i][1] -= 1
 
-						#esto depende de si hay que mostrar el tiempo para cada usuario:
-						# for i in len(usuariosEspera):
-						# 	if usuariosEspera[i][1] > 0:
-						# 		usuariosEspera[i][1] -= 1
-						# 	else:
-						# 		del usuariosEspera[i]
+							#esto depende de si hay que mostrar el tiempo para cada usuario:
+							# for i in len(usuariosEspera):
+							# 	if usuariosEspera[i][1] > 0:
+							# 		usuariosEspera[i][1] -= 1
+							# 	else:
+							# 		del usuariosEspera[i]
 	if anyadir or not primera:
-		print('tiempos:',tiempos)
+		print('tiempos:')
+		print(tiempos)
 		print('-----------')
 
 def reloj():

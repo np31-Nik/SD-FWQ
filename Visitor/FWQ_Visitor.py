@@ -40,11 +40,11 @@ def recibirMapa(server,puerto):
 
     for msg in consumer:
         print('mapa recibido!')
-        try:
-            datos=msg.value.decode('UTF-8').split(':')
-            if datos[0] == 'atr':
+        # try:
+        #     datos=msg.value.decode('UTF-8').split(':')
+        #     if datos[0] == 'atr':
                 
-            elif datos[0] == 'col':
+        #     elif datos[0] == 'col':
 
                
         matriz = np.frombuffer(msg.value, dtype=ej.dtype).reshape(20,20)
@@ -76,7 +76,7 @@ def buscarAtraccion():
     print("Matriz de Buscar Atraccion")
     print(matriz)
     atraccion=1
-    atraccion=random.randint(contador) #comprobar si funciona
+    atraccion=random.randint(0,contador) #comprobar si funciona
     print(str(atraccion)+'contador: '+ str(contador))
     contador =0
     for row in range(len(matriz)):
