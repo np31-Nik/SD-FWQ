@@ -81,14 +81,14 @@ def leerPosicionAtracciones(id_mapa):
     for i in range(num_atr):
         resultado_matriz[i]=[query[i][0],query[i][1],query[i][2]]
     pos_atr = resultado_matriz
-    print('pos_atr:',pos_atr)
+    #print('pos_atr:',pos_atr)
 
 def ponerTiemposEnMapa():
     global matriz
     global pos_atr
     global tiempos
-    print('poniendo tiempos en el mapa')
-    print(tiempos)
+    #print('poniendo tiempos en el mapa')
+    #print(tiempos)
     for i in range(len(tiempos)):
         id_tiempo = tiempos[i][0]
         tiempo = tiempos[i][1]
@@ -97,9 +97,9 @@ def ponerTiemposEnMapa():
             x = int(pos_atr[j][1])
             y = int(pos_atr[j][2])
             if id_tiempo == id_pos:
-                print('cambio en matriz (tiempos)')
+                #print('cambio en matriz (tiempos)')
                 matriz[x][y]=tiempo
-                print('matriz[x][y]:',matriz[x][y],' tiempo:',tiempo,' id_t:',id_tiempo,' id_pos:',id_pos)
+                #print('matriz[x][y]:',matriz[x][y],' tiempo:',tiempo,' id_t:',id_tiempo,' id_pos:',id_pos)
             
 
 
@@ -169,7 +169,7 @@ def crearCola(lista_atr):
             rowList.append(lista_atr[i])
         mat.append(rowList)
 
-    print('mat:',mat)
+    #print('mat:',mat)
     return mat 
 
 #Funcion que esta a la escucha de los usuarios
@@ -240,7 +240,7 @@ def entradaVisitante(server,puerto):
 #Funcion que envia la respuesta al usuario que intenta entrar al parque
 def respuestaEntradaVisitante(server,puerto,user,resp):
     resp = bytes(str(resp),'utf-8')
-    print("Engine antes de send")
+    #print("Engine antes de send")
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
     #print('user: ',user, ' resp:',resp)
     time.sleep(1)
@@ -283,7 +283,7 @@ def salidaVisitante(server,puerto):
     global visitantes_actual,posiciones
 
     for msg in consumer:
-        print('alguien ha salido')
+        print('Alguien ha salido.')
         user = msg.value.decode('UTF-8')
         borrarPos(user)
         visitantes_actual-=1
@@ -329,14 +329,14 @@ def movimiento(usuario,x,y):
     if matriz[int(x)][int(y)] == '---':
         matriz[int(x)][int(y)] = usuario
     elif matriz[int(x)][int(y)].startswith('u'):
-        print('misma pos que otro usuario')
+        solapado=True
     else:
         atr_id = obtenerIDatr(x,y)
         #print('Entrando a la atraccion')
         enviarSensor(atr_id,usuario)
         where = np.where(tiempos[:,0]==atr_id)
         tiempo = tiempos[where][0][1]
-        print('tiempo|',tiempo)
+        #print('tiempo|',tiempo)
         enviarEsperaVisitante(usuario,atr_id,tiempo)
         enviar_mapa=False
         #print('cambio de matriz')
@@ -344,7 +344,7 @@ def movimiento(usuario,x,y):
     return enviar_mapa
 
 def enviarSensor(id_atr,id_user):
-    print('Enviando mensaje a sensor:',id_atr,' serverK:',serverK,' puertoK:',puertoK,' id_user:',id_user)
+    #print('Enviando mensaje a sensor:',id_atr,' serverK:',serverK,' puertoK:',puertoK,' id_user:',id_user)
 
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(serverK,puertoK)])
     mensaje = bytes(id_user,'utf-8')
@@ -358,7 +358,7 @@ def obtenerIDatr(x,y):
         #print('pos_atr[',i,']: ',pos_atr[i])
         if pos_atr[i][1]==x and pos_atr[i][2]==y:
             id = pos_atr[i][0]
-            print('ID ENCONTRADO')
+            #print('ID ENCONTRADO')
             break
     #print('obtenerIDatr:',id)
     return id
