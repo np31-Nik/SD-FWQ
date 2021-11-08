@@ -51,7 +51,6 @@ def recibirMapa(server,puerto):
                 esperaCola(server,puerto,datos)
                 mapa=False
             else:
-                print('else')
                 mapa=True
         except:
             print('except')
@@ -242,9 +241,7 @@ def recibeEntradaParque(server,puerto):
     print("Entrada recibida de Engine")
     print('userID:',UserID)
     for msg in consumer:
-        print("bucle")
         datos = msg.value.decode('UTF-8')
-        print('resp:',datos)
         if datos == '1':    
             print('Has entrado al parque.')
             break
@@ -277,10 +274,10 @@ def run():
         serverK = serverKafka
         puertoK = puertoKafka
         UserID="-1"
-        
+
         opcion=0
         while True:
-            print("Eliga una opcion: \n 1) Registrarse; \n 2) Iniciar sesion y entrar al parque; \n 3) Modificar usuario;\n 4) Salir;")
+            print("Eliga una opcion: \n 1) Registrarse; \n 2) Iniciar sesion y entrar al parque; \n 3) Modificar usuario; (Da error)\n 4) Salir;")
             opcion = input()
             if opcion == "1":
                 registarse(serverGrpc,puertoGrpc)
