@@ -51,8 +51,8 @@ def recibirMapa(server,puerto):
 def print_mapa(matriz):
 
     print('Tu ID: ',UserID)
-    for i in range(0,19):
-        for j in range(0,19):
+    for i in range(0,20):
+        for j in range(0,20):
             print("\t{0}".format(matriz[i][j]),sep=',',end='')
         print('')
 
