@@ -86,16 +86,17 @@ def moverse(server,port):
     columna=0
     filaAtraccion=-1 
     colAtraccion=-1
-    while filaAtraccion==-1:
-            print("Buscando atraccion")
-            (filaAtraccion,colAtraccion)=buscarAtraccion()
-    while(True):
-        time.sleep(3)
-        print("damos paso")
-        (fila,columna)=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
-        enviarPaso(fila,columna,server,port)
-        recibirMapa(server,port)
-        #print_mapa(matriz)
+    while True:
+        print("Buscando atraccion")
+        (filaAtraccion,colAtraccion)=buscarAtraccion()
+        while(True):
+            time.sleep(3)
+            print("damos paso")
+            fila,columna=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
+            print("fila, columna"+str(fila)+ ";" +str(columna))
+            enviarPaso(fila,columna,server,port)
+            recibirMapa(server,port)
+            #print_mapa(matriz)
 
 
     #----En bucle:
@@ -106,17 +107,8 @@ def moverse(server,port):
 
 
 def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
-    if fila==filaAtraccion:
-        if columna<colAtraccion:
-            columna=columna+1
-            return fila,columna
-            #return 'E' #East
-        else:
-            columna=columna-1
-            return fila,columna
-            #return 'W' #West
-
-    elif columna==colAtraccion:
+    
+    if columna==colAtraccion:
         if fila<filaAtraccion:
             fila=fila+1
             return fila,columna
@@ -126,27 +118,40 @@ def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
             return fila,columna
             #return 'S' #South
 
-    else:   
-        if columna<colAtraccion and fila<filaAtraccion:
+
+    elif fila==filaAtraccion:
+        if columna<colAtraccion:
             columna=columna+1
-            fila=fila+1
             return fila,columna
-            #return 'NE' #North-East
-        elif columna<colAtraccion and fila>filaAtraccion:
-            columna=columna+1
-            fila=fila-1
-            return fila,columna
-            #return 'SE' #South-East
-        elif columna>colAtraccion and fila<filaAtraccion:
+            #return 'E' #East
+        else:
             columna=columna-1
-            fila=fila+1
             return fila,columna
-            #return 'NW' #North-West
-        elif columna>colAtraccion and fila>filaAtraccion:
-            columna=columna-1
-            fila=fila-1
-            return fila,columna
-            #return 'SW' #South-West
+            #return 'W' #West
+    elif fila==filaAtraccion and columna==colAtraccion:
+        return fila,columna
+    
+    # else:   
+    #     if columna<colAtraccion and fila<filaAtraccion:
+    #         columna=columna+1
+    #         fila=fila+1
+    #         return fila,columna
+    #         #return 'NE' #North-East
+    #     elif columna<colAtraccion and fila>filaAtraccion:
+    #         columna=columna+1
+    #         fila=fila-1
+    #         return fila,columna
+    #         #return 'SE' #South-East
+    #     elif columna>colAtraccion and fila<filaAtraccion:
+    #         columna=columna-1
+    #         fila=fila+1
+    #         return fila,columna
+    #         #return 'NW' #North-West
+    #     elif columna>colAtraccion and fila>filaAtraccion:
+    #         columna=columna-1
+    #         fila=fila-1
+    #         return fila,columna
+    #         #return 'SW' #South-West
 
     return (fila,columna)
 
