@@ -25,15 +25,11 @@ class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 	def Time(self,request,context):
 		global num_atr,atr,tiempos
 		resul=tiempos.tobytes()
-		#print ('num_atr',num_atr)
 		ej = np.full((num_atr,3),'---')
 		
 		num_atr=request.num_atra
-		#print (num_atr)
+		
 		atr= np.frombuffer(request.atr, dtype=ej.dtype).reshape(num_atr,3)
-		#print(atr)
-		#print('enviando tiempos:',tiempos)
-		#print('resul:',resul)
 		return TimeServer_pb2.TimeResponse(times=resul,len=len(tiempos))
 
 
@@ -54,9 +50,8 @@ def generarTiempos():
 	for i in range(num_atr):
 		tiempos[i][0] = atr[i][0]
 		tiempos[i][1] = atr[i][2]
-	#print('generarTiempos')
-	#print('tiemposGenerados',tiempos)
-
+	
+	
 def actualizarTiempos(id_atr,personas,anyadir):
 	global tiempos
 	global usuariosEspera
@@ -67,11 +62,9 @@ def actualizarTiempos(id_atr,personas,anyadir):
 			primera=False
 
 		index = -1
-		# print(id_atr)
-		# print(num_atr)
-		# print(atr)
+
 		for i in range(0,num_atr):
-			#print(atr[i][0])
+
 			if atr[i][0] ==id_atr:
 				index = i
 				break
@@ -84,9 +77,7 @@ def actualizarTiempos(id_atr,personas,anyadir):
 					ciclos = int(np.ceil(float(len(personas))/float(datos[1])))
 					tiempo = ciclos * int(datos[2])
 					if tiempo > 0:
-						#print('Asignando tiempo = ',tiempo,' tiempos[i]:',tiempos[i])
 						tiempos[i][1]=tiempo
-					#tiempos[i][1] += datos[2]
 				else:
 					if tiempos[i][1] > int(datos[2]):
 						tiempos[i][1] = int(tiempos[i][1]) - 1
@@ -98,12 +89,9 @@ def actualizarTiempos(id_atr,personas,anyadir):
 						# 	else:
 						# 		del usuariosEspera[i]
 	#if anyadir or not primera:
-		#print('tiempos:')
-		#print(tiempos)
-		#print('-----------')
+		
 
 def reloj():
-	#print("reloj")
 	delay = 1
 	next_time = time.time() + delay
 	while True:
@@ -117,7 +105,7 @@ def reloj():
 
 			
 def escuchaSensor(server,puerto):
-	#print("escuchaSensor")
+	
 	consumer = KafkaConsumer(
         'sensorPersonas',
         bootstrap_servers=['%s:%s'%(server,puerto)],
@@ -126,14 +114,13 @@ def escuchaSensor(server,puerto):
 	for msg in consumer:
 		datos=msg.value.decode('UTF-8').split(':')
 		actualizarTiempos(datos[0],datos[1],True)
-		#print('sensor:',datos)
+		
 
 def escuchaEngine(puerto):
 
 	server = grpc.server(futures.ThreadPoolExecutor(max_workers=100))
 	TimeServer_pb2_grpc.add_CalculateTimeServicer_to_server(Time(),server)
 	server.add_insecure_port('[::]:%s'%(puerto))
-	#server.add_insecure_port('[::]:50051')
 	server.start()
 	server.wait_for_termination()
 
