@@ -250,6 +250,7 @@ def salidaVisitante(server,puerto):
     global visitantes_actual,posiciones
 
     for msg in consumer:
+        print('alguien ha salido')
         user = msg.value.decode('UTF-8')
         borrarPos(user)
         visitantes_actual-=1
