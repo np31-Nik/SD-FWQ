@@ -45,7 +45,7 @@ def reloj(ip,puerto,atr):
 
 #Llamada GRPC al servidor de tiempos de espera
 def ObtenerTiempo(ip,port,atra):
-    error = 0
+    error = -1
     try:
         #channel = grpc.insecure_channel('localhost:50051')
         channel = grpc.insecure_channel('%s:%s' %(ip,port))
