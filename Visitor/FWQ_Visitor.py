@@ -101,7 +101,6 @@ def buscarAtraccion():
 
 
 def moverse(server,port):
-    global buscarAtr
     fila=0
     columna=0
     
@@ -110,11 +109,12 @@ def moverse(server,port):
         colAtraccion=-1
         print("Buscando atraccion")
         filaAtraccion,colAtraccion=buscarAtraccion()
+        print(filaAtraccion,colAtraccion)
         if filaAtraccion!=-1:
-            buscarAtr=False
-        while(not buscarAtr):
+            booleano=False
+        while(not booleano):
             time.sleep(1)
-            fila,columna=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
+            fila,columna,booleano=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
             enviarPaso(fila,columna,server,port)
             recibirMapa(server,port)
 
@@ -126,19 +126,18 @@ def moverse(server,port):
     #5) Enviar el paso cada segundo
 
 
-def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
+def calcularPaso(fila,columna,filaAtraccion, colAtraccion,booleano):
     
-    global buscarAtr
     if fila<filaAtraccion:
         fila=fila+1
-        return fila,columna
+        return fila,columna,False
     elif columna<colAtraccion:
         columna=columna+1
-        return fila,columna
+        return fila,columna,False
     else:
         if fila==filaAtraccion and columna==colAtraccion:
-            buscarAtr=True
-            return fila,columna
+            booleano=True
+            return fila,columna,booleano
 
     # else:   
     #     if columna<colAtraccion and fila<filaAtraccion:
