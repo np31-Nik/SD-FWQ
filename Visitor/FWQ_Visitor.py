@@ -27,7 +27,7 @@ def enviarPaso(fila,columna,server,puerto):
     producer.close()
 
 def esperaCola(server,puerto,datos):
-    print('Has entrado a la atraccion ',datos[1],', hay que esperar ',datos[2])
+    print('Has entrado a la atraccion ',datos[1],', hay que esperar ',datos[2],' segundos.')
     time.sleep(int(datos[2]))
 
 #Funcion que recibe el mapa desde engine
@@ -40,17 +40,24 @@ def recibirMapa(server,puerto):
     print('esperando mapa...')
     global matriz
     ej = np.full((20,20),'---')
-    mover=False
+    mapa=True
     for msg in consumer:
         print('mapa recibido!')
         try:
             datos=msg.value.decode('UTF-8').split(':')
             if datos[0] == 'espera':
                 esperaCola(server,puerto,datos)
+                mapa=False
+            else:
+                print('else')
+                mapa=True
         except:
-            mover=True
+            print('except')
+            mapa=True
                
-        matriz = np.frombuffer(msg.value, dtype=ej.dtype).reshape(20,20)
+        if mapa:
+            print('mapa asignado')
+            matriz = np.frombuffer(msg.value, dtype=ej.dtype).reshape(20,20)
         break
     print('salimos del for (recibirMapa)')
     consumer.close()
@@ -79,6 +86,7 @@ def buscarAtraccion():
     print("Matriz de Buscar Atraccion")
     print(matriz)
     atraccion=1
+    print('contador:',contador)
     atraccion=random.randint(contador) #comprobar si funciona
     print(str(atraccion)+'contador: '+ str(contador))
     contador =0
@@ -275,11 +283,11 @@ def run():
         puertoK = puertoKafka
         UserID="-1"
 
-        matriz[2][2]='a1'
-        matriz[4][9]='a2'
-        matriz[13][18]='a3'
-        matriz[5][1]='a4'
-        matriz[8][8]='a5'
+        # matriz[2][2]='a1'
+        # matriz[4][9]='a2'
+        # matriz[13][18]='a3'
+        # matriz[5][1]='a4'
+        # matriz[8][8]='a5'
         #print(matriz)
 
         opcion=0
@@ -308,10 +316,10 @@ import signal
 
 #Funcion que se ejecuta al salir del programa
 def handle_exit(one,two):
-    print(serverK,puertoK)
+    #print(serverK,puertoK)
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(serverK,puertoK)])
-    mensaje = b'%s' %(UserID)
-    print('enviando salida')
+    mensaje = bytes('%s' %(UserID),'UTF-8')
+    print('Saliendo...')
     producer.send('logout', mensaje)
     producer.flush()
     producer.close()
