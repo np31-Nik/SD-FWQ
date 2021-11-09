@@ -325,6 +325,7 @@ def movimiento(usuario,x,y):
     pos_ant = borrarPos(usuario)
     #print('pos_ant:?',pos_ant)
     #print('x:',int(x),' y:',int(y),' mat[x][y]:', matriz[int(x)][int(y)],' usuario:', usuario)
+    print('movimiento posiciones',posiciones)
     for u in posiciones:
         print('u0',u[0],' user:',usuario)
         if u[0]==usuario:
