@@ -69,7 +69,10 @@ def actualizarTiempos(id_atr,personas,anyadir):
 				index = i
 				break
 		#index = np.where(atr[:,0] == id_atr)
-		datos = atr[index]
+		if index > 0:
+			datos = atr[index]
+		else:
+			datos = 0
 	if not primera:
 		for i in range(num_atr):
 			if tiempos[i][0] == id_atr:

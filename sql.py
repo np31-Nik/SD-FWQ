@@ -73,5 +73,6 @@ c=conn.cursor()
 #     #for j in range(len(ej[i])):
 #     print(ej[i])
 
+#c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m2',5,7,'a3'))
 conn.commit()
 conn.close()
