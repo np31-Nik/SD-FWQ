@@ -56,6 +56,7 @@ def actualizarTiempos(id_atr,personas,anyadir):
 	global tiempos
 	global usuariosEspera
 	global primera
+	d=True
 	if anyadir:
 		if primera:
 			generarTiempos()
@@ -71,26 +72,30 @@ def actualizarTiempos(id_atr,personas,anyadir):
 		#index = np.where(atr[:,0] == id_atr)
 		if index > 0:
 			datos = atr[index]
+			d=True
 		else:
 			datos = 0
-	if not primera:
+			d=False
+	if not primera and d:
 		for i in range(num_atr):
-			if tiempos[i][0] == id_atr:
-				if anyadir:
-					ciclos = int(np.ceil(float(len(personas))/float(datos[1])))
-					tiempo = ciclos * int(datos[2])
-					if tiempo > 0:
-						tiempos[i][1]=tiempo
-				else:
-					if tiempos[i][1] > int(datos[2]):
-						tiempos[i][1] = int(tiempos[i][1]) - 1
+			if len(tiempos)>0:
+				if tiempos[i][0] == id_atr:
+					if anyadir:
+						print('datos:',datos)
+						ciclos = int(np.ceil(float(len(personas))/float(datos[1])))
+						tiempo = ciclos * int(datos[2])
+						if tiempo > 0:
+							tiempos[i][1]=tiempo
+					else:
+						if tiempos[i][1] > int(datos[2]):
+							tiempos[i][1] = int(tiempos[i][1]) - 1
 
-						#esto depende de si hay que mostrar el tiempo para cada usuario:
-						# for i in len(usuariosEspera):
-						# 	if usuariosEspera[i][1] > 0:
-						# 		usuariosEspera[i][1] -= 1
-						# 	else:
-						# 		del usuariosEspera[i]
+							#esto depende de si hay que mostrar el tiempo para cada usuario:
+							# for i in len(usuariosEspera):
+							# 	if usuariosEspera[i][1] > 0:
+							# 		usuariosEspera[i][1] -= 1
+							# 	else:
+							# 		del usuariosEspera[i]
 	#if anyadir or not primera:
 		
 
