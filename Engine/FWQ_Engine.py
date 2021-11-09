@@ -314,7 +314,7 @@ def enviarEsperaVisitante(usuario,id_atr,tiempo):
 def movimiento(usuario,x,y):
     enviar_mapa=True
     global posiciones, matriz
-    eliminado=False
+    eliminado=True
     #print('usuario:?',usuario)
     #print('usuario se mueve:',usuario)
     pos_ant = borrarPos(usuario)
@@ -322,8 +322,7 @@ def movimiento(usuario,x,y):
     #print('x:',int(x),' y:',int(y),' mat[x][y]:', matriz[int(x)][int(y)],' usuario:', usuario)
     for u in posiciones:
         if u[0]==usuario:
-            eliminado=True
-            enviar_mapa=False
+            eliminado=False
     if not eliminado:
         if matriz[int(pos_ant[1])][int(pos_ant[2])]==usuario:
             matriz[int(pos_ant[1])][int(pos_ant[2])]='---'
@@ -346,6 +345,8 @@ def movimiento(usuario,x,y):
             enviar_mapa=False
             #print('cambio de matriz')
             #print_mapa()
+    else:
+        enviar_mapa=False
     return enviar_mapa
 
 def enviarSensor(id_atr,id_user):
