@@ -267,7 +267,7 @@ def colaParque(server,puerto):
                 if visitantes_actual < visitantes_max:
                     user = cola_entrada[0]
                     del cola_entrada[0]
-                    posiciones = np.append(posiciones,[user,0,0]).reshape(len(posiciones)+1,3)
+                    posiciones = np.append(posiciones,[user,'0','0']).reshape(len(posiciones)+1,3)
                     matriz[0][0] = user
                     visitantes_actual += 1
                     respuestaEntradaVisitante(server,puerto,user,True)
@@ -322,7 +322,7 @@ def movimiento(usuario,x,y):
     eliminado=True
     #print('usuario:?',usuario)
     #print('usuario se mueve:',usuario)
-    pos_ant = borrarPos(usuario)
+    
     #print('pos_ant:?',pos_ant)
     #print('x:',int(x),' y:',int(y),' mat[x][y]:', matriz[int(x)][int(y)],' usuario:', usuario)
     print('movimiento posiciones',posiciones)
@@ -332,6 +332,7 @@ def movimiento(usuario,x,y):
             eliminado=False
             print('elim False')
     if not eliminado:
+        pos_ant = borrarPos(usuario)
         print('if not')
         if matriz[int(pos_ant[1])][int(pos_ant[2])]==usuario:
             matriz[int(pos_ant[1])][int(pos_ant[2])]='---'
