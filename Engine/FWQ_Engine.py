@@ -323,7 +323,7 @@ def movimiento(usuario,x,y):
     for u in posiciones:
         if u[0]==usuario:
             eliminado=False
-    if not eliminado:
+    if eliminado:
         if matriz[int(pos_ant[1])][int(pos_ant[2])]==usuario:
             matriz[int(pos_ant[1])][int(pos_ant[2])]='---'
             #print('borra pos anterior a ---')
