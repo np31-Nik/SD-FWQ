@@ -18,7 +18,7 @@ matriz = Matriz = np.full((20,20), '---')
 serverK = 0
 puertoK = 0 
 buscarAtr=False
-
+atraccionActual='---'
 #Funcion que envia el movimiento del usuario al engine, y luego imprime el mapa
 def enviarPaso(fila,columna,server,puerto):
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
@@ -28,6 +28,8 @@ def enviarPaso(fila,columna,server,puerto):
     producer.close()
 
 def esperaCola(server,puerto,datos):
+    global atraccionActual
+    atraccionActual=datos[1]
     print('Has entrado a la atraccion ',datos[1],', hay que esperar ',datos[2],' segundos.')
     time.sleep(int(datos[2]))
 
@@ -90,7 +92,7 @@ def buscarAtraccion():
     for row in range(len(matriz)):
         for col in range(len(matriz[row])):
             if matriz[row][col]!='---' and matriz[row][col].find('u')==-1:
-                if contador==atraccion: 
+                if contador==atraccion and matriz[row][col]!=atraccionActual: 
                     return row,col
                 contador=contador+1
 
