@@ -300,6 +300,9 @@ def borrarPos(id_user):
     for i in range(0,len(posiciones)):
         if posiciones[i][0] == id_user:
             rem = posiciones[i]
+            x=int(rem[1])
+            y=int(rem[2])
+            matriz[x][y]='---'
         else:
             newMat = np.append(newMat,posiciones[i]).reshape(len(newMat)+1,3)
     posiciones = newMat
@@ -325,15 +328,15 @@ def movimiento(usuario,x,y):
     
     #print('pos_ant:?',pos_ant)
     #print('x:',int(x),' y:',int(y),' mat[x][y]:', matriz[int(x)][int(y)],' usuario:', usuario)
-    print('movimiento posiciones',posiciones)
+    #print('movimiento posiciones',posiciones)
     for u in posiciones:
-        print('u0',u[0],' user:',usuario)
+        #print('u0',u[0],' user:',usuario)
         if u[0]==usuario:
             eliminado=False
-            print('elim False')
+            #print('elim False')
     if not eliminado:
         pos_ant = borrarPos(usuario)
-        print('if not')
+        #print('if not')
         if matriz[int(pos_ant[1])][int(pos_ant[2])]==usuario:
             matriz[int(pos_ant[1])][int(pos_ant[2])]='---'
             #print('borra pos anterior a ---')
