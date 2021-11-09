@@ -237,6 +237,7 @@ def entradaVisitante(server,puerto):
 
 #Funcion que envia la respuesta al usuario que intenta entrar al parque
 def respuestaEntradaVisitante(server,puerto,user,resp):
+    global posiciones
     resp = bytes(str(resp),'utf-8')
     #print("Engine antes de send")
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
@@ -247,6 +248,8 @@ def respuestaEntradaVisitante(server,puerto,user,resp):
     producer.flush()
 
     if bool:
+        posiciones = np.append(posiciones,[user,0,0]).reshape(len(posiciones)+1,3)
+
         print('mapa de entrada')
         enviarMapa(server,puerto,user)
 
@@ -321,12 +324,12 @@ def movimiento(usuario,x,y):
     #print('pos_ant:?',pos_ant)
     #print('x:',int(x),' y:',int(y),' mat[x][y]:', matriz[int(x)][int(y)],' usuario:', usuario)
     for u in posiciones:
-        print('u0',u[0],' user:',usuario)
+        #print('u0',u[0],' user:',usuario)
         if u[0]==usuario:
             eliminado=False
-            print('elim False')
+            #print('elim False')
     if not eliminado:
-        print('if not')
+        #print('if not')
         if matriz[int(pos_ant[1])][int(pos_ant[2])]==usuario:
             matriz[int(pos_ant[1])][int(pos_ant[2])]='---'
             #print('borra pos anterior a ---')
