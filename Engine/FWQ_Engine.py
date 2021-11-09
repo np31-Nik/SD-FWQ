@@ -247,7 +247,7 @@ def respuestaEntradaVisitante(server,puerto,user,resp):
     
     producer.flush()
 
-    if bool:
+    if resp==1:
         posiciones = np.append(posiciones,[user,0,0]).reshape(len(posiciones)+1,3)
 
         print('mapa de entrada')
