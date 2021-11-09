@@ -322,8 +322,7 @@ def movimiento(usuario,x,y):
     #print('x:',int(x),' y:',int(y),' mat[x][y]:', matriz[int(x)][int(y)],' usuario:', usuario)
     for u in posiciones:
         if u[0]==usuario:
-            eliminado=True
-            enviar_mapa=False
+            eliminado=False
     if not eliminado:
         if matriz[int(pos_ant[1])][int(pos_ant[2])]==usuario:
             matriz[int(pos_ant[1])][int(pos_ant[2])]='---'
