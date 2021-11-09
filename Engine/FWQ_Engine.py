@@ -225,8 +225,8 @@ def entradaVisitante(server,puerto):
                     matriz[0][0] = datos
                     
                     posiciones = np.append(posiciones,[datos,'0','0']).reshape(len(posiciones)+1,3)
-                    print('posiciones:',posiciones)
-                    print("respuesta enviada")
+                   # print('posiciones:',posiciones)
+                   # print("respuesta enviada")
                     respuestaEntradaVisitante(server,puerto,datos,1)
                     #posiciones = np.append(posiciones,[datos,'0','0']).reshape(len(posiciones)+1,3)
 

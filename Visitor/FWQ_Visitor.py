@@ -115,7 +115,7 @@ def moverse(server,port):
     while True:
         filaAtraccion=-1 
         colAtraccion=-1
-        print("Buscando atraccion")
+        #print("Buscando atraccion")
         filaAtraccion,colAtraccion=buscarAtraccion()
         print(filaAtraccion,colAtraccion)
         booleano=True
@@ -124,8 +124,8 @@ def moverse(server,port):
         while booleano:
             time.sleep(1)
             fila,columna,booleano=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
-            print('fA,cA',filaAtraccion,colAtraccion)
-            print('f,c,b',fila,columna,booleano)
+            #print('fA,cA',filaAtraccion,colAtraccion)
+            #print('f,c,b',fila,columna,booleano)
             enviarPaso(fila,columna,server,port)
             subir = True
             recibirMapa(server,port)
@@ -250,7 +250,7 @@ def enviaEntradaParque(server,puerto):
     producer.send('loginAttempt', id)
     producer.flush()
     producer.close()
-    print("Entrada enviada")
+    #print("Entrada enviada")
     
 
 
@@ -262,7 +262,7 @@ def recibeEntradaParque(server,puerto):
         #enable_auto_commit=False
 
         )
-    print("Entrada recibida de Engine")
+    #print("Entrada recibida de Engine")
     print('userID:',UserID)
     for msg in consumer:
         datos = msg.value.decode('UTF-8')
@@ -276,7 +276,7 @@ def recibeEntradaParque(server,puerto):
         else:
             print('Error en recibeEntradaParque()')
 
-    print("Despues de for")
+   # print("Despues de for")
     consumer.close()
     
 
@@ -325,7 +325,7 @@ import signal
 
 #Funcion que se ejecuta al salir del programa
 def handle_exit(one,two):
-    print(serverK,puertoK)
+    #print(serverK,puertoK)
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(serverK,puertoK)])
     mensaje = bytes('%s' %(UserID),'UTF-8')
     print('Saliendo...')
