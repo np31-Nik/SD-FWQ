@@ -224,9 +224,12 @@ def entradaVisitante(server,puerto):
                     visitantes_actual+=1
                     matriz[0][0] = datos
                     
-                    posiciones = np.append(posiciones,[datos,0,0]).reshape(len(posiciones)+1,3)
+                    posiciones = np.append(posiciones,[datos,'0','0']).reshape(len(posiciones)+1,3)
+                    print('posiciones:',posiciones)
                     print("respuesta enviada")
                     respuestaEntradaVisitante(server,puerto,datos,1)
+                    #posiciones = np.append(posiciones,[datos,'0','0']).reshape(len(posiciones)+1,3)
+
                 
             else:
                 cola_entrada.append(datos)
@@ -247,8 +250,7 @@ def respuestaEntradaVisitante(server,puerto,user,resp):
     
     producer.flush()
 
-    if resp==1:
-        posiciones = np.append(posiciones,[user,0,0]).reshape(len(posiciones)+1,3)
+    if bool:
 
         print('mapa de entrada')
         enviarMapa(server,puerto,user)
