@@ -183,8 +183,9 @@ def escuchaVisitante(server,puerto):
         #print(msg)
         datos=msg.value.decode('UTF-8').split(':')
         print('movimiento recibido:',datos)
-        movimiento(datos[0],datos[1],datos[2])
-        enviarMapa(server,puerto,datos[0])
+        enviar = movimiento(datos[0],datos[1],datos[2])
+        if enviar:
+            enviarMapa(server,puerto,datos[0])
 
 #Funcion que envia el mapa actualizado al visitante
 def enviarMapa(server,puerto,id_visitante):
@@ -313,33 +314,38 @@ def enviarEsperaVisitante(usuario,id_atr,tiempo):
 def movimiento(usuario,x,y):
     enviar_mapa=True
     global posiciones, matriz
+    eliminado=False
     #print('usuario:?',usuario)
     #print('usuario se mueve:',usuario)
     pos_ant = borrarPos(usuario)
     #print('pos_ant:?',pos_ant)
     #print('x:',int(x),' y:',int(y),' mat[x][y]:', matriz[int(x)][int(y)],' usuario:', usuario)
+    for u in posiciones:
+        if u[0]==usuario:
+            eliminado=True
+            enviar_mapa=False
+    if not eliminado:
+        if matriz[int(pos_ant[1])][int(pos_ant[2])]==usuario:
+            matriz[int(pos_ant[1])][int(pos_ant[2])]='---'
+            #print('borra pos anterior a ---')
+        posiciones = np.append(posiciones,[usuario,x,y]).reshape(len(posiciones)+1,3)
+        #print('x:? \ y:?',x,y)
 
-    if matriz[int(pos_ant[1])][int(pos_ant[2])]==usuario:
-        matriz[int(pos_ant[1])][int(pos_ant[2])]='---'
-        #print('borra pos anterior a ---')
-    posiciones = np.append(posiciones,[usuario,x,y]).reshape(len(posiciones)+1,3)
-    #print('x:? \ y:?',x,y)
-
-    if matriz[int(x)][int(y)] == '---':
-        matriz[int(x)][int(y)] = usuario
-    elif matriz[int(x)][int(y)].startswith('u'):
-        solapado=True
-    else:
-        atr_id = obtenerIDatr(x,y)
-        #print('Entrando a la atraccion')
-        enviarSensor(atr_id,usuario)
-        where = np.where(tiempos[:,0]==atr_id)
-        tiempo = tiempos[where][0][1]
-        #print('tiempo|',tiempo)
-        enviarEsperaVisitante(usuario,atr_id,tiempo)
-        enviar_mapa=False
-        #print('cambio de matriz')
-        #print_mapa()
+        if matriz[int(x)][int(y)] == '---':
+            matriz[int(x)][int(y)] = usuario
+        elif matriz[int(x)][int(y)].startswith('u'):
+            solapado=True
+        else:
+            atr_id = obtenerIDatr(x,y)
+            #print('Entrando a la atraccion')
+            enviarSensor(atr_id,usuario)
+            where = np.where(tiempos[:,0]==atr_id)
+            tiempo = tiempos[where][0][1]
+            #print('tiempo|',tiempo)
+            enviarEsperaVisitante(usuario,atr_id,tiempo)
+            enviar_mapa=False
+            #print('cambio de matriz')
+            #print_mapa()
     return enviar_mapa
 
 def enviarSensor(id_atr,id_user):
