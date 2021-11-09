@@ -241,12 +241,12 @@ def entradaVisitante(server,puerto):
 #Funcion que envia la respuesta al usuario que intenta entrar al parque
 def respuestaEntradaVisitante(server,puerto,user,resp):
     global posiciones
-    resp = bytes(str(resp),'utf-8')
+    mensaje = bytes(str(resp),'utf-8')
     #print("Engine antes de send")
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
     #print('user: ',user, ' resp:',resp)
     time.sleep(1)
-    producer.send('loginResponseX%s' %(user), resp)
+    producer.send('loginResponseX%s' %(user),mensaje)
     
     producer.flush()
 
