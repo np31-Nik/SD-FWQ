@@ -18,7 +18,7 @@ matriz = Matriz = np.full((20,20), '---')
 serverK = 0
 puertoK = 0 
 buscarAtr=False
-atraccionActual='---'
+atraccionActual='a00'
 #Funcion que envia el movimiento del usuario al engine, y luego imprime el mapa
 def enviarPaso(fila,columna,server,puerto):
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
