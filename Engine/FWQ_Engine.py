@@ -250,7 +250,7 @@ def respuestaEntradaVisitante(server,puerto,user,resp):
     
     producer.flush()
 
-    if bool:
+    if resp==1:
 
         print('mapa de entrada')
         enviarMapa(server,puerto,user)
