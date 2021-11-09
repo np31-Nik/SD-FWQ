@@ -81,7 +81,6 @@ def actualizarTiempos(id_atr,personas,anyadir):
 			if len(tiempos)>0:
 				if tiempos[i][0] == id_atr:
 					if anyadir:
-						print('datos:',datos)
 						ciclos = int(np.ceil(float(len(personas))/float(datos[1])))
 						tiempo = ciclos * int(datos[2])
 						if tiempo > 0:
