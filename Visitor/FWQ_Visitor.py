@@ -18,7 +18,8 @@ matriz = Matriz = np.full((20,20), '---')
 serverK = 0
 puertoK = 0 
 buscarAtr=False
-atraccionActual='a00'
+atraccionActual=[-1,-1]
+subir = False
 #Funcion que envia el movimiento del usuario al engine, y luego imprime el mapa
 def enviarPaso(fila,columna,server,puerto):
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(server,puerto)])
@@ -29,7 +30,7 @@ def enviarPaso(fila,columna,server,puerto):
 
 def esperaCola(server,puerto,datos):
     global atraccionActual
-    atraccionActual=datos[1]
+    #atraccionActual=datos[1]
     print('Has entrado a la atraccion ',datos[1],', hay que esperar ',datos[2],' segundos.')
     time.sleep(int(datos[2]))
 
@@ -45,6 +46,7 @@ def recibirMapa(server,puerto):
     global matriz
     ej = np.full((20,20),'---')
     mapa=True
+    global subir
     for msg in consumer:
         print('mapa recibido!')
         try:
@@ -52,6 +54,7 @@ def recibirMapa(server,puerto):
             if datos[0] == 'espera':
                 esperaCola(server,puerto,datos)
                 mapa=False
+                subir = False
             else:
                 mapa=True
         except:
@@ -64,6 +67,7 @@ def recibirMapa(server,puerto):
         break
     consumer.close()
     print_mapa(matriz)
+    return mapa
 
 
 #Funcion que imprime el mapa por consola
@@ -85,35 +89,47 @@ def buscarAtraccion():
         for col in range(len(matriz[row])):
             if matriz[row][col]!='---' and matriz[row][col].find('u')==-1:
                 contador=contador+1
-
-    atraccion=random.randint(0,contador) #comprobar si funciona
-    
-    contador =0
-    for row in range(len(matriz)):
-        for col in range(len(matriz[row])):
-            if matriz[row][col]!='---' and matriz[row][col].find('u')==-1:
-                if contador==atraccion and matriz[row][col]!=atraccionActual: 
-                    return row,col
-                contador=contador+1
+    encontrado=False
+    global atraccionActual
+    while not encontrado:
+        atraccion=random.randint(0,contador) #comprobar si funciona
+        
+        contador =0
+        for row in range(len(matriz)):
+            for col in range(len(matriz[row])):
+                if matriz[row][col]!='---' and matriz[row][col].find('u')==-1:
+                    if contador==atraccion and row != atraccionActual[0] and col!=atraccionActual[1]:
+                        #print('matriz[r][c]:',matriz[row][col],' atrAct:',atraccionActual) 
+                        atraccionActual[0]=row
+                        atraccionActual[1]=col
+                        encontrado = True
+                        return row,col
+                    contador=contador+1
 
 
 def moverse(server,port):
     fila=0
     columna=0
-    
+    booleano=True
+    global subir
     while True:
         filaAtraccion=-1 
         colAtraccion=-1
         print("Buscando atraccion")
         filaAtraccion,colAtraccion=buscarAtraccion()
         print(filaAtraccion,colAtraccion)
-        if filaAtraccion!=-1:
-            booleano=False
-        while(not booleano):
+        booleano=True
+        #if filaAtraccion!=-1:
+          #  booleano=False
+        while booleano:
             time.sleep(1)
             fila,columna,booleano=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
+            print('fA,cA',filaAtraccion,colAtraccion)
+            print('f,c,b',fila,columna,booleano)
             enviarPaso(fila,columna,server,port)
+            subir = True
             recibirMapa(server,port)
+            booleano = subir
 
 
     #----En bucle:
@@ -127,6 +143,12 @@ def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
     booleano=False
     if fila<filaAtraccion:
         fila=fila+1
+        return fila,columna,False
+    elif fila>filaAtraccion:
+        fila=fila-1
+        return fila,columna,False
+    elif columna>colAtraccion:
+        columna=columna-1
         return fila,columna,False
     elif columna<colAtraccion:
         columna=columna+1
