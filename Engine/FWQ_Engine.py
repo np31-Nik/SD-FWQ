@@ -321,9 +321,12 @@ def movimiento(usuario,x,y):
     #print('pos_ant:?',pos_ant)
     #print('x:',int(x),' y:',int(y),' mat[x][y]:', matriz[int(x)][int(y)],' usuario:', usuario)
     for u in posiciones:
+        print('u0',u[0],' user:',usuario)
         if u[0]==usuario:
             eliminado=False
+            print('elim False')
     if not eliminado:
+        print('if not')
         if matriz[int(pos_ant[1])][int(pos_ant[2])]==usuario:
             matriz[int(pos_ant[1])][int(pos_ant[2])]='---'
             #print('borra pos anterior a ---')
