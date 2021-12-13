@@ -1,42 +1,60 @@
-const { response } = require("express");
-const express = require("express");
-const app = express();
-// Se define el puerto
-const port=3000;
-const sqlite3 = require('sqlite3').verbose();
+// const { response } = require("express");
+// const express = require("express");
+// const app = express();
+// // Se define el puerto
+// const port=3000;
+// const sqlite3 = require('sqlite3').verbose();
 
-// Ejecutar la aplicacion
-app.listen(port, () => {
-    console.log(`Ejecutando la aplicación API REST de SD en el puerto
-    ${port}`);
-});
+// // Ejecutar la aplicacion
+// app.listen(port,'0.0.0.0', () => {
+//     console.log(`Ejecutando la aplicación API REST de SD en el puerto
+//     ${port}`);
+// });
 
-// open the database
-let connection = new sqlite3.Database('db.db', sqlite3.OPEN_READWRITE, (err) => {
-    if (err) {
-      console.error(err.message);
-    }
-    console.log('Connected to the database.');
-  });
+// // open the database
+// let connection = new sqlite3.Database('db.db', sqlite3.OPEN_READWRITE, (err) => {
+//     if (err) {
+//       console.error(err.message);
+//     }
+//     console.log('Connected to the database.');
+//   });
 
-  app.get("/",(req,res) => {
-    console.log("GET /")
-  });
+//   app.get("/",(req,res) => {
+//     console.log("GET /")
+//   });
 
-//usuarios GET
-app.get("/usuarios",(req, response) => {
-    connection.all(`SELECT * FROM usuarios`,[], (err, rows) => {
-    if (err) {
-        response.send(err.message);
-        console.log("Error GET/usuarios")
-    }
-        console.log(rows)
-        response.send(rows)
-  });
+// //usuarios GET
+// app.get("/usuarios",(req, response) => {
+//     connection.all(`SELECT * FROM usuarios`,[], (err, rows) => {
+//     if (err) {
+//         response.send(err.message);
+//         console.log("Error GET/usuarios")
+//     }
+//         console.log(rows)
+//         response.send(rows)
+//   });
   
+// });
+
+const https = require('https');
+const options = {
+  hostname: '192.168.137.13',
+  port: 3000,
+  path: '/todos',
+  method: 'GET',
+};
+
+const req = https.request(options, res => {
+  console.log(`statusCode: ${res.statusCode}`);
+
+  res.on('data', d => {
+    process.stdout.write(d);
+  });
 });
 
-
+req.on('error', error => {
+  console.error(error);
+});
 
 
 
