@@ -1,0 +1,24 @@
+{
+  "name": "sd-fwq",
+  "version": "1.0.0",
+  "description": "Sistemas Distribuidos - Gestor de colas en parques tematicos \"Fun With Queues\"",
+  "main": "index.js",
+  "scripts": {
+    "servicio": "json-server --wathc api.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/np31-ua/SD-FWQ.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/np31-ua/SD-FWQ/issues"
+  },
+  "homepage": "https://github.com/np31-ua/SD-FWQ#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "sqlite": "^4.0.23"
+  }
+}
