@@ -28,40 +28,61 @@ num_atr=0
 serverK = "0"
 puertoK = "0"
 tiempos = []
+#clima:
+temp_threshold= (20,30)
+ciudades = ["Alicante","Paris","California","Tokyo"]
+
 # importing requests and json
 import requests, json
-# base URL
-def clima():
+
+
+def climaAtracciones(t,c):
+    print("Cambiando estado de atracciones por el clima...")
+
+    rangoX = (0,0)
+    rangoY = (0,0)
+
+    if c == 0:
+        rangoX = (0,10)
+        rangoY = (0,10)
+    elif c == 1:
+        rangoX = (10,20)
+        rangoY = (0,10)
+    elif c == 2:
+        rangoX = (0,10)
+        rangoY = (10,20)
+    else:
+        rangoX = (10,20)
+        rangoY = (10,20)
+
+    for i in range(len(pos_atr)):
+        x = pos_atr[i][1]
+        y = pos_atr[i][2]
+        if (x > rangoX[0] and x < rangoX[1]) and (y > rangoY[0] and y < rangoY[1]):
+            if t < 20 or t > 30:
+                matriz[x][y] = 'X'
+            else:
+                matriz[x][y] = pos_atr[i][0]
+                
+    
+
+# Funcion que obtiene el clima de las 4 ciudades
+def obtenerClima():
+
     BASE_URL = "https://api.openweathermap.org/data/2.5/weather?"
-    # City Name CITY = "Hyderabad"
-    # API key API_KEY = "Your API Key"
     CITY = "Alicante"
     API_KEY = "291383717ab69005393ff7fd27b2605a"
-    # upadting the URL
-    URL = BASE_URL + "q=" + CITY + "&appid=" + API_KEY
-    # HTTP request
+    URL = BASE_URL + "q=" + CITY + "&units=metric"+ "&appid=" + API_KEY
+
     response = requests.get(URL)
-    # checking the status code of the request
+    
     if response.status_code == 200:
-        # getting data in the json format
         data = response.json()
-        # getting the main dict block
         main = data['main']
-        # getting temperature
         temperature = main['temp']
-        # getting the humidity
-        humidity = main['humidity']
-        # getting the pressure
-        pressure = main['pressure']
-        # weather report
-        report = data['weather']
         print(f"{CITY:-^30}")
         print(f"Temperature: {temperature}")
-        print(f"Humidity: {humidity}")
-        print(f"Pressure: {pressure}")
-        print(f"Weather Report: {report[0]['description']}")
     else:
-        # showing the error message
         print("Error in the HTTP request")
 
 #Escribir en fichero
