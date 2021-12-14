@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<HTML>
+
+<HEAD>
+
+<TITLE>Pagina Inicial</TITLE>
+<script type="text/javascript" src="../Registry/API_Registry.js/"></script>
+</HEAD>
+
+<BODY>
+
+<h1>Cosas titulo</h1>
+
+<form>
+<label for="fname">Username:</label>
+<input type="text" id="fname" name="fname"><br><br>
+<label for="fname">Password:</label>
+<input type="text" id="fpass" name="fpass"><br><br>
+
+    <form action="" method="post">
+        <input type="submit" name="Registry" value="Registrarse" />
+    </form>
+
+<button type="button" onclick="myFunction()" >Probando</button>
+</form>
+
+
+
+<p onclick="myFunction()">Click me to change my text color.</p>
+
+<script>
+function myFunction() {
+    var fname=document.getElementById('fname');
+    var fpass=document.getElementById('fpass');
+    
+
+    if (fname!=null 
+    //&& fpass != null
+    ) {
+        var username=document.getElementById('fname').value;
+        //var password=document.getElementById('fpass').value;
+    }
+    const http=new XMLHttpRequest();
+    const url='http://localhost:3000/usuarios/id';
+    const params='username='+username;
+    http.open("GET",url+params,true);
+    http.send();
+     http.onreadystatechange = (e) => {
+        console.log(http.responseText);    
+    }
+
+    var element=document.getElementById('fname');
+
+    if (element!=null) {
+        var cad=document.getElementById('fname').value;
+    }
+}
+</script>
+
+</BODY>
+
+</HTML>
