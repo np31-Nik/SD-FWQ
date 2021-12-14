@@ -1,18 +1,23 @@
 const { response } = require("express");
 const express = require("express");
-const { use } = require("express/lib/application");
-const req = require("express/lib/request");
-const { jsonp } = require("express/lib/response");
 const app = express();
-const bodyParser=require('body-parser');
-const jsonParser=bodyParser.json();
+const bodyParser = require('body-parser');
+const jsonParser = bodyParser.json()
 // Se define el puerto
-const port=3002;
+const port=3000;
 const sqlite3 = require('sqlite3').verbose();
 
+
+const crypto = require("crypto");
+hash=crypto.getHashes();
+cadena="Hola";
+hashcadena=crypto.createHash('sha1').update(cadena).digest('hex');
+console.log(hashcadena);
+
+
 // Ejecutar la aplicacion
-app.listen(port, () => {
-    console.log(`Ejecutando la aplicación API REST REGISTRY de SD en el puerto
+app.listen(port,'0.0.0.0', () => {
+    console.log(`Ejecutando la aplicación API REST de SD en el puerto
     ${port}`);
 });
 
@@ -25,7 +30,7 @@ let connection = new sqlite3.Database('../db.db', sqlite3.OPEN_READWRITE, (err) 
   });
 
   app.get("/",(req,res) => {
-    console.log("GET /")
+    res.send("GET /")
   });
 
 //usuarios GET
@@ -38,73 +43,66 @@ app.get("/usuarios",(req, response) => {
         console.log(rows)
         response.send(rows)
   });
-  
 });
 
-//Añadir usuarios
-app.post("/usuarios",jsonParser, (req, response) => {
-    console.log("Añadiendo usuario");
-    const id=req.body.id;
-    const username=req.body.username;
-    const password=req.body.password;
+//usuarios GET/id
+app.get("/usuarios/:id",jsonParser,(req, response) => {
+    console.log(req.body.id);
+    connection.all('SELECT * FROM usuarios WHERE id = ?',[req.body.id], (err, rows) => {
+    if (err) {
+        response.send(err.message);
+        console.log("Error GET/usuarios/id");
+    }
+    else{
+        console.log(rows);
+        response.send(rows);
+    }
+});
+});
+
+//usuarios POST
+app.post("/usuarios",jsonParser,(req, response) => {
+  console.log('Añadiendo usuario:',[req.body.id,req.body.username,req.body.password])
+
+  //cifrado irreversible
+  hash=crypto.getHashes();
+  cadena=req.body.password;
+  hashcadena=crypto.createHash('sha1').update(cadena).digest('hex');
+  console.log(hashcadena);
+
+  try{
+    connection.run(`INSERT INTO usuarios VALUES(?, ?, ?)`,[req.body.id,req.body.username,hashcadena], (err, rows) => {
+    if (err) {
+        response.send(err.message);
+        console.log("Error POST/usuarios")
+    }
+    console.log("Usuario añadido.")
+    response.send("Usuario añadido.")
+    });
+  }catch(e){} //comprobar
+});
+
+app.put("/usuarios/:id",jsonParser,(req, response) => {
+    console.log('Modificando Usuario:',[req.body.id,req.body.username,req.body.password]);
+
+    //cifrado irreversible
+    hash=crypto.getHashes();
+    cadena=req.body.password;
+    hashcadena=crypto.createHash('sha1').update(cadena).digest('hex');
+    console.log(hashcadena);
     
-    const sql= ('Insert into usuarios (id,username,password) values(u'+id+','+username+','+password+')');
-    connection.run(sql,error => {
-      if(error) {
-        console.log('Error: ', + error +' '+id+' '+username+ ' '+ password)
-        response.send('Error: ', + error +' '+id+' '+username+ ' '+ password)
-      }
-      response.send('Usuario añadido');
+    connection.run('Update usuarios set id=?,username=?, password=? where id=?',[req.body.id,req.body.username,hashcadena,req.body.id], (err, rows) => {
+    if (err) console.log('Error modificando usuario');
+    response.send('Usuario Modificado');
+
     });
 });
 
-// // Añadir un nuevo usuario
-// app.post("/usuarios",(request, response) => {
-//   console.log('Añadir nuevo usuario');
-//   const sql = 'INSERT INTO Usuarios SET ?';
-//   console.log(request.body.id)
+app.delete("/usuarios/:id",jsonParser,(request, response) => {
+    console.log('Borrar usuario');
+    connection.run('DELETE FROM usuarios WHERE id= ?',[request.body.id], (err, rows) => {
+    if (err) console.log('Error borrando usuario');
+    else response.send('Usuario borrado');
 
-//   const usuarioObj = {
-//     id: request.body.id,
-//     username: request.body.username,
-//     password: request.body.password
-//   }
-//   connection.query(sql,usuarioObj,error => {
-//   if (error) throw error;
-//   response.send('Usuario creado');
-//   });
-//  });
-
-// app.post("/usuarios",jsonParser,(request, response) => {
-//   console.log('Añadir nuevo usuario', request.body.nombre);
-//   const sql = 'INSERT INTO Usuarios SET ?';
- 
-//   const usuarioObj = {
-//     nombre: request.body.nombre,
-//     ciudad: request.body.ciudad,
-//     correo: request.body.correo
-//   }
-//   connection.run(sql,usuarioObj,error => {
-//   if (error) throw error;
-//   response.send('Usuario creado');
-//   });
-// });
-
-
-
-// db.serialize(() => {
-//   db.each(`SELECT *
-//            FROM usuarios`, (err, row) => {
-//     if (err) {
-//       console.error(err.message);
-//     }
-//     console.log(row.id + "\t" + row.username);
-//   });
-// });
-
-// db.close((err) => {
-//   if (err) {
-//     console.error(err.message);
-//   }
-//   console.log('Close the database connection.');
-// });
+    });
+});
