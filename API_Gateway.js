@@ -36,26 +36,13 @@
   
 // });
 
-const https = require('https');
-const options = {
-  hostname: '192.168.137.13',
-  port: 3000,
-  path: '/todos',
-  method: 'GET',
-};
-
-const req = https.request(options, res => {
-  console.log(`statusCode: ${res.statusCode}`);
-
-  res.on('data', d => {
-    process.stdout.write(d);
-  });
+const request = require('request');
+const IP = "";
+const query = "/usuarios"
+request('http://192.168.253.77:3000/', { json: true }, (err, res, body) => {
+  if (err) { return console.log(err); }
+  console.log(body);
 });
-
-req.on('error', error => {
-  console.error(error);
-});
-
 
 
 // db.serialize(() => {
