@@ -16,7 +16,6 @@ import TimeServer_pb2_grpc
 import traceback
 import threading
 
-
 #Variable global que almacena las posiciones de los usuarios
 posiciones = np.full((2,3),'---')
 matriz = []
@@ -29,6 +28,74 @@ num_atr=0
 serverK = "0"
 puertoK = "0"
 tiempos = []
+# importing requests and json
+import requests, json
+# base URL
+def clima():
+    BASE_URL = "https://api.openweathermap.org/data/2.5/weather?"
+    # City Name CITY = "Hyderabad"
+    # API key API_KEY = "Your API Key"
+    CITY = "Alicante"
+    API_KEY = "291383717ab69005393ff7fd27b2605a"
+    # upadting the URL
+    URL = BASE_URL + "q=" + CITY + "&appid=" + API_KEY
+    # HTTP request
+    response = requests.get(URL)
+    # checking the status code of the request
+    if response.status_code == 200:
+        # getting data in the json format
+        data = response.json()
+        # getting the main dict block
+        main = data['main']
+        # getting temperature
+        temperature = main['temp']
+        # getting the humidity
+        humidity = main['humidity']
+        # getting the pressure
+        pressure = main['pressure']
+        # weather report
+        report = data['weather']
+        print(f"{CITY:-^30}")
+        print(f"Temperature: {temperature}")
+        print(f"Humidity: {humidity}")
+        print(f"Pressure: {pressure}")
+        print(f"Weather Report: {report[0]['description']}")
+    else:
+        # showing the error message
+        print("Error in the HTTP request")
+
+#Escribir en fichero
+def escribirFichero():
+    
+    archivo = "mapaTemp.txt"
+    open(archivo,'w').close()
+    f = open(archivo,'a')
+    f.write('Mapa: \n')
+
+    original_stdout = sys.stdout # Save a reference to the original standard output
+    sys.stdout = f # Change the standard output to the file we created.
+
+    for i in range(0,20):
+        for j in range(0,20):
+            print("\t{0}".format(matriz[i][j]),sep=',',end='')
+        print('')
+
+    sys.stdout = original_stdout # Reset the standard output to its original value
+
+    f.close()
+
+
+    archivo2 = "usuariosTemp.txt"
+    open(archivo2,'w').close()
+    f2 = open(archivo2,'a')
+    f2.write('Usuarios: \n')
+
+    for i in range(0,len(posiciones)):
+        if posiciones[i][0]!='---':
+            f2.write(str(posiciones[i]))
+        f2.write('\n')
+    f2.close()
+
 
 def reloj(ip,puerto,atr):
 	#print("reloj")
@@ -139,6 +206,8 @@ def print_mapa():
         for j in range(0,20):
             print("\t{0}".format(matriz[i][j]),sep=',',end='')
         print('')
+
+    escribirFichero()
 
 #Funcion que crea una matriz para visualizar el mapa
 def rellenar_mapa(mapa):
@@ -410,7 +479,7 @@ def main():
         global matriz 
         matriz = rellenar_mapa(mapa)
         print_mapa()
-
+        clima()
         leerPosicionAtracciones(id_mapa) #Guardamos las posiciones de atracciones en la lista
 
         atr= get_atracciones(c,mapa)
