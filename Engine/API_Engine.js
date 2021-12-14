@@ -33,9 +33,19 @@ app.get("/usuarios",(req, response) => {
         console.log(rows)
         response.send(rows)
   });
-  
 });
 
+//usuarios GET/id
+app.get("/usuarios/:id",(req, response) => {
+  connection.all(`SELECT * FROM usuarios WHERE id = ${id}`,[], (err, rows) => {
+  if (err) {
+      response.send(err.message);
+      console.log("Error GET/usuarios/id")
+  }
+      console.log(rows)
+      response.send(rows)
+});
+});
 
 
 
