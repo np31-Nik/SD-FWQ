@@ -30,11 +30,20 @@ puertoK = "0"
 tiempos = []
 #clima:
 temp_threshold= (20,30)
-ciudades = ["Alicante","Paris","California","Tokyo"]
+ciudades = ["Alicante","Buenos aires","Bombay","Nigeria"]
 
 # importing requests and json
 import requests, json
 
+def actualizarCiudades():
+    archivo = "ciudades.txt"
+    f= open(archivo,'r')
+
+    r = f.read()
+    print(r)
+
+    f.close()
+    return r
 
 def climaAtracciones(t,c):
     print("Cambiando estado de atracciones por el clima...")
@@ -56,8 +65,8 @@ def climaAtracciones(t,c):
         rangoY = (10,20)
 
     for i in range(len(pos_atr)):
-        x = pos_atr[i][1]
-        y = pos_atr[i][2]
+        x = int(pos_atr[i][1])
+        y = int(pos_atr[i][2])
         if (x > rangoX[0] and x < rangoX[1]) and (y > rangoY[0] and y < rangoY[1]):
             if t < 20 or t > 30:
                 matriz[x][y] = 'X'
@@ -70,20 +79,24 @@ def climaAtracciones(t,c):
 def obtenerClima():
 
     BASE_URL = "https://api.openweathermap.org/data/2.5/weather?"
-    CITY = "Alicante"
     API_KEY = "291383717ab69005393ff7fd27b2605a"
-    URL = BASE_URL + "q=" + CITY + "&units=metric"+ "&appid=" + API_KEY
+    #ciudades = actualizarCiudades()
 
-    response = requests.get(URL)
-    
-    if response.status_code == 200:
-        data = response.json()
-        main = data['main']
-        temperature = main['temp']
-        print(f"{CITY:-^30}")
-        print(f"Temperature: {temperature}")
-    else:
-        print("Error in the HTTP request")
+    for i in range(len(ciudades)):
+        CITY = ciudades[i]
+        URL = BASE_URL + "q=" + CITY + "&units=metric"+ "&appid=" + API_KEY
+        response = requests.get(URL)
+        
+        if response.status_code == 200:
+            data = response.json()
+            main = data['main']
+            temperature = main['temp']
+            print(f"{CITY:-^30}")
+            print(f"Temperature: {temperature}")
+
+            climaAtracciones(temperature,i)
+        else:
+            print("Error in the HTTP request")
 
 #Escribir en fichero
 def escribirFichero():
@@ -129,8 +142,6 @@ def reloj(ip,puerto,atr):
 		except Exception:
 			traceback.print_exc()
 		next_time += delay
-
-
 
 #Llamada GRPC al servidor de tiempos de espera
 def ObtenerTiempo(ip,port,atra):
@@ -267,6 +278,12 @@ def escuchaVisitante(server,puerto):
     consumer = KafkaConsumer(
         'movimiento',
         bootstrap_servers=['%s:%s'%(server,puerto)],
+        security_protocol='SSL',
+                         ssl_check_hostname=False,
+                         ssl_cafile='CARoot.pem',
+                         ssl_certfile='ca-cert',
+                         ssl_keyfile='ca-key',
+                         ssl_password='qwerty'
     )
 
     for msg in consumer:
@@ -499,10 +516,14 @@ def main():
         mapa = get_mapa(c,id_mapa)
         global matriz 
         matriz = rellenar_mapa(mapa)
+
         print_mapa()
-        clima()
+
+
         leerPosicionAtracciones(id_mapa) #Guardamos las posiciones de atracciones en la lista
 
+        obtenerClima()
+        print_mapa()
         atr= get_atracciones(c,mapa)
         conn.close()
 
@@ -516,6 +537,7 @@ def main():
         threading.Thread(target = escuchaVisitante, args=(ip_gestor,puerto_gestor)).start()
         threading.Thread(target = salidaVisitante, args=(ip_gestor,puerto_gestor)).start()
         threading.Thread(target = reloj, args=(ip_wts,puerto_wts,atr)).start()
+      
 
 
 #------------------------
