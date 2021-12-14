@@ -6,23 +6,14 @@ const jsonParser = bodyParser.json()
 // Se define el puerto
 const port=3000;
 const sqlite3 = require('sqlite3').verbose();
-const crypto = require ("crypto");
-const algorithm = "aes-256-cbc"; 
-const initVector = crypto.randomBytes(16);
-const message = "secreto";
-const Securitykey = crypto.randomBytes(32);
-const cipher = crypto.createCipheriv(algorithm, Securitykey, initVector);
-let encryptedData = cipher.update(message, "utf-8", "hex");
-encryptedData += cipher.final("hex");
-console.log("Encrypted message: " + encryptedData);
 
-const decipher = crypto.createDecipheriv(algorithm, Securitykey, initVector);
 
-let decryptedData = decipher.update(encryptedData, "hex", "utf-8");
+const crypto = require("crypto");
+hash=crypto.getHashes();
+cadena="Hola";
+hashcadena=crypto.createHash('sha1').update(cadena).digest('hex');
+console.log(hashcadena);
 
-decryptedData += decipher.final("utf8");
-
-console.log("Decrypted message: " + decryptedData);
 
 // Ejecutar la aplicacion
 app.listen(port,'0.0.0.0', () => {
@@ -55,36 +46,52 @@ app.get("/usuarios",(req, response) => {
 });
 
 //usuarios GET/id
-app.get("/usuarios/:id",(req, response) => {
-  connection.all(`SELECT * FROM usuarios WHERE id = ${id}`,[], (err, rows) => {
-  if (err) {
-      response.send(err.message);
-      console.log("Error GET/usuarios/id")
-  }
-      console.log(rows)
-      response.send(rows)
-    });
+app.get("/usuarios/:id",jsonParser,(req, response) => {
+    console.log(req.body.id);
+    connection.all('SELECT * FROM usuarios WHERE id = ?',[req.body.id], (err, rows) => {
+    if (err) {
+        response.send(err.message);
+        console.log("Error GET/usuarios/id");
+    }
+    else{
+        console.log(rows);
+        response.send(rows);
+    }
+});
 });
 
 //usuarios POST
 app.post("/usuarios",jsonParser,(req, response) => {
   console.log('Añadiendo usuario:',[req.body.id,req.body.username,req.body.password])
+
+  //cifrado irreversible
+  hash=crypto.getHashes();
+  cadena=req.body.password;
+  hashcadena=crypto.createHash('sha1').update(cadena).digest('hex');
+  console.log(hashcadena);
+
   try{
-    connection.run(`INSERT INTO usuarios VALUES(?, ?, ?)`,[req.body.id,req.body.username,req.body.password], (err, rows) => {
+    connection.run(`INSERT INTO usuarios VALUES(?, ?, ?)`,[req.body.id,req.body.username,hashcadena], (err, rows) => {
     if (err) {
         response.send(err.message);
         console.log("Error POST/usuarios")
     }
-        console.log("Usuario añadido.")
-        response.send("Usuario añadido.")
+    console.log("Usuario añadido.")
+    response.send("Usuario añadido.")
     });
   }catch(e){} //comprobar
 });
 
 app.put("/usuarios/:id",jsonParser,(req, response) => {
     console.log('Modificando Usuario:',[req.body.id,req.body.username,req.body.password]);
-    var encrypted= encrypt()
-    connection.run('Update usuarios set id=?,username=?, password=? where id=?',[req.body.id,req.body.username,req.body.password,req.body.id], (err, rows) => {
+
+    //cifrado irreversible
+    hash=crypto.getHashes();
+    cadena=req.body.password;
+    hashcadena=crypto.createHash('sha1').update(cadena).digest('hex');
+    console.log(hashcadena);
+    
+    connection.run('Update usuarios set id=?,username=?, password=? where id=?',[req.body.id,req.body.username,hashcadena,req.body.id], (err, rows) => {
     if (err) console.log('Error modificando usuario');
     response.send('Usuario Modificado');
 
