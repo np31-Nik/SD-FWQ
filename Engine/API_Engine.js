@@ -3,6 +3,8 @@ const express = require("express");
 const app = express();
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json()
+const fs = require('fs')
+
 // Se define el puerto
 const port=3000;
 const sqlite3 = require('sqlite3').verbose();
@@ -27,66 +29,32 @@ let connection = new sqlite3.Database('../db.db', sqlite3.OPEN_READWRITE, (err) 
 
 //usuarios GET
 app.get("/usuarios",(req, response) => {
-    connection.all(`SELECT * FROM usuarios`,[], (err, rows) => {
-    if (err) {
-        response.send(err.message);
-        console.log("Error GET/usuarios")
-    }
-        console.log(rows)
-        response.send(rows)
-  });
-});
-
-//usuarios GET/id
-app.get("/usuarios/:id",(req, response) => {
-  connection.all(`SELECT * FROM usuarios WHERE id = ${id}`,[], (err, rows) => {
-  if (err) {
-      response.send(err.message);
-      console.log("Error GET/usuarios/id")
-  }
-      console.log(rows)
-      response.send(rows)
-});
-});
-
-//usuarios POST
-app.post("/usuarios",jsonParser,(req, response) => {
-  console.log('Añadiendo usuario:',[req.body.id,req.body.username,req.body.password])
-  connection.run(`INSERT INTO usuarios VALUES(?, ?, ?)`,[req.body.id,req.body.username,req.body.password], (err, rows) => {
-  if (err) {
-      response.send(err.message);
-      console.log("Error POST/usuarios")
-  }
-      console.log("Usuario añadido.")
-      response.send("Usuario añadido.")
-});
-});
-
-app.put("/usuarios/:id",jsonParser,(req, response) => {
-  console.log('Añadiendo usuario:',[req.body.id,req.body.username,req.body.password])
-  const sqlcomm =
-  connection.run(sqlcomm, (err, rows) => {
-  if (err) {
-      response.send(err.message);
-      console.log("Error POST/usuarios")
-  }
-      console.log("Usuario añadido.")
-      response.send("Usuario añadido.")
-});
+  console.log("Leyendo datos de fichero usuariosTemp.txt...");
+    const datos = fs.readFile('usuariosTemp.txt','utf8',(err,data) =>{
+      if(err){
+        console.log(err);
+        return;
+      }else{
+        console.log(data);
+        response.send(data);
+      }
+    });
 });
 
 
-
-// db.serialize(() => {
-//   db.each(`SELECT *
-//            FROM usuarios`, (err, row) => {
-//     if (err) {
-//       console.error(err.message);
-//     }
-//     console.log(row.id + "\t" + row.username);
-//   });
-// });
-
+//mapa GET
+app.get("/mapa",(req, response) => {
+  console.log("Leyendo datos de fichero mapaTemp.txt...");
+    const datos = fs.readFile('mapaTemp.txt','utf8',(err,data) =>{
+      if(err){
+        console.log(err);
+        return;
+      }else{
+        console.log(data);
+        response.send(data);
+      }
+    });
+});
 // db.close((err) => {
 //   if (err) {
 //     console.error(err.message);
