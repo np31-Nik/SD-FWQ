@@ -20,7 +20,7 @@ let connection = new sqlite3.Database('../db.db', sqlite3.OPEN_READWRITE, (err) 
   });
 
   app.get("/",(req,res) => {
-    console.log("GET /")
+    res.send("GET /")
   });
 
 //usuarios GET
