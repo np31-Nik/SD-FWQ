@@ -9,9 +9,10 @@
 
 <BODY>
 
-<h1>Cosas titulo</h1>
+<h1>Pagina de Visitantes</h1>
 
 <form>
+
 <label for="fname">Username:</label>
 <input type="text" id="fname" name="fname"><br><br>
 <label for="fname">Password:</label>
@@ -22,40 +23,39 @@
     </form>
 
 <button type="button" onclick="myFunction()" >Probando</button>
+
+<div id="output">
+</div>
+
 </form>
 
-
-
-<p onclick="myFunction()">Click me to change my text color.</p>
-
 <script>
-function myFunction() {
-    var fname=document.getElementById('fname');
-    var fpass=document.getElementById('fpass');
+    function myFunction() {
     
-
-    if (fname!=null 
-    //&& fpass != null
-    ) {
-        var username=document.getElementById('fname').value;
-        //var password=document.getElementById('fpass').value;
+        var fname=document.getElementById('fname');
+        var fpass=document.getElementById('fpass');
+    
+        if (fname!=null 
+        //&& fpass != null
+        ) {
+            var username=document.getElementById('fname').value;
+            //var password=document.getElementById('fpass').value;
+        }
+        const http=new XMLHttpRequest();
+        const url='http://localhost:3000/usuarios';
+        const params='username='+username;
+        http.open("GET",url);
+        http.send();
+         http.onreadystatechange = (e) => {
+            console.log(http.responseText);
+            document.getElementById("output").innerHTML=http.responseText;    
+        }
+        
     }
-    const http=new XMLHttpRequest();
-    const url='http://localhost:3000/usuarios/id';
-    const params='username='+username;
-    http.open("GET",url+params,true);
-    http.send();
-     http.onreadystatechange = (e) => {
-        console.log(http.responseText);    
-    }
 
-    var element=document.getElementById('fname');
-
-    if (element!=null) {
-        var cad=document.getElementById('fname').value;
-    }
-}
 </script>
+
+
 
 </BODY>
 
