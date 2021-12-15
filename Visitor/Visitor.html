@@ -41,8 +41,8 @@ function myFunction() {
         //var password=document.getElementById('fpass').value;
     }
     const http=new XMLHttpRequest();
-    const url='http://localhost:3000/usuarios/id';
-    const params='username='+username;
+    const url='http://localhost:3000/usuarios/';
+    const params=username;
     http.open("GET",url+params,true);
     http.send();
      http.onreadystatechange = (e) => {

@@ -74,5 +74,7 @@ c=conn.cursor()
 #     print(ej[i])
 
 #c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m2',5,7,'a3'))
+
+print(c.execute("""SELECT * from usuarios where id=?""", ['u1']))
 conn.commit()
 conn.close()
