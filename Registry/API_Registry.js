@@ -35,20 +35,21 @@ let connection = new sqlite3.Database('../db.db', sqlite3.OPEN_READWRITE, (err) 
 
 //usuarios GET
 app.get("/usuarios",(req, response) => {
-    connection.all(`SELECT * FROM usuarios`,[], (err, rows) => {
+    connection.all(`SELECT * FROM usuarios`,[], (err, resultado) => {
     if (err) {
         response.send(err.message);
-        console.log("Error GET/usuarios")
+        console.log("Error GET/usuarios");
     }
-        console.log(rows)
-        response.send(rows)
+        console.log(resultado);
+        response.send(resultado);
   });
 });
 
 //usuarios GET/id
-app.get("/usuarios/:id",jsonParser,(req, response) => {
-    console.log(req.body.id);
-    connection.all('SELECT * FROM usuarios WHERE id = ?',[req.body.id], (err, rows) => {
+app.get("/usuarios/:id",(req, response) => {
+    console.log(req.params);
+    const quote = "\'";
+    connection.all('SELECT * FROM usuarios where id='+quote+Object.values(req.params)+quote, (err, rows) => {
     if (err) {
         response.send(err.message);
         console.log("Error GET/usuarios/id");

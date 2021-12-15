@@ -32,26 +32,22 @@
 <script>
     function myFunction() {
     
-        var fname=document.getElementById('fname');
-        var fpass=document.getElementById('fpass');
-    
-        if (fname!=null 
-        //&& fpass != null
-        ) {
-            var username=document.getElementById('fname').value;
-            //var password=document.getElementById('fpass').value;
-        }
-        const http=new XMLHttpRequest();
-        const url='http://localhost:3000/usuarios';
-        const params='username='+username;
-        http.open("GET",url);
-        http.send();
-         http.onreadystatechange = (e) => {
-            console.log(http.responseText);
-            document.getElementById("output").innerHTML=http.responseText;    
-        }
-        
+
+    if (fname!=null 
+    //&& fpass != null
+    ) {
+        var username=document.getElementById('fname').value;
+        //var password=document.getElementById('fpass').value;
     }
+    const http=new XMLHttpRequest();
+    const url='http://localhost:3000/usuarios/';
+    const params=username;
+    http.open("GET",url+params,true);
+    http.send();
+     http.onreadystatechange = (e) => {
+        console.log(http.responseText);    
+    document.getElementById("output").innerHTML=http.responseText;
+}
 
 </script>
 
