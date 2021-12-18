@@ -80,7 +80,7 @@ app.get("/usuarios",(req, response) => {
 
 //usuarios GET/id
 app.get("/usuarios/:id",(req, response) => {
-    //console.log(req.params);
+    console.log(req.params);
     const quote = "\'";
     connection.all('SELECT * FROM usuarios where id='+quote+Object.values(req.params)+quote, (err, rows) => {
     if (err) {
@@ -89,8 +89,8 @@ app.get("/usuarios/:id",(req, response) => {
     }
     else{
         console.log(rows);
-        response.write(rows);
-        response.end();
+        //response.write(rows);
+        //response.end();
         response.send(rows);
     }
 });
