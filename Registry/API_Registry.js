@@ -84,7 +84,6 @@ app.get("/usuarios",(req, response) => {
 });
 
 
-
 //usuarios GET/id
 app.get("/usuarios/:id",(req, response) => {
     console.log(req.params);
@@ -104,12 +103,18 @@ app.get("/usuarios/:id",(req, response) => {
 });
 
 app.get("/login",jsonParser,(req,response)=>{
-  console.log("recibido")
-  console.log(req.headers);
-  auth = atob(req.headers.authorization).split(":");
-  username = auth[0];
-  password = auth[1];
-  console.log(username);
+    
+
+    console.log("recibido")
+    console.log(req.headers);
+    auth = atob(req.headers.authorization).split(":");
+    username = auth[0];
+    password = auth[1];
+    console.log(username);
+
+    hash=crypto.getHashes();
+    cadena=req.body.password;
+    password=crypto.createHash('sha1').update(password).digest('hex');
 
     connection.all("SELECT * FROM usuarios WHERE username='"+username+"' AND password='"+password+"'", (err, rows) => {
     if (err) {
