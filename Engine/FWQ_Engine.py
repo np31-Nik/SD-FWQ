@@ -35,6 +35,35 @@ ciudades = ["Alicante","Buenos aires","Bombay","Nigeria"]
 # importing requests and json
 import requests, json
 
+def leerUsuariosOnline():
+    print("leyendo fichero")
+    archivo = "../Registry/usersOnline.txt"
+    f= open(archivo,'r')
+
+    lines = f.readlines()
+    
+    for i in range(len(lines)):
+        online=False
+        for p in range(len(posiciones)):
+            if lines[i] in posiciones[p]:
+                online=True
+                break
+        if not online:
+            print("not online")
+    
+
+def reloj2(ip,puerto,atr):
+#print("reloj")
+    delay = 1
+    next_time = time.time() + delay
+    while True:
+        time.sleep(max(0, next_time - time.time()))
+        try:
+            leerUsuariosOnline()
+        except Exception:
+            traceback.print_exc()
+        next_time += delay
+
 def actualizarCiudades():
     archivo = "ciudades.txt"
     f= open(archivo,'r')
@@ -102,9 +131,8 @@ def obtenerClima():
 def escribirFichero():
     
     archivo = "mapaTemp.txt"
-    open(archivo,'w').close()
-    f = open(archivo,'a')
-    f.write('Mapa: \n')
+    f= open(archivo,'w')
+    f.write('Mapa: <br>')
 
     original_stdout = sys.stdout # Save a reference to the original standard output
     sys.stdout = f # Change the standard output to the file we created.
@@ -112,7 +140,7 @@ def escribirFichero():
     for i in range(0,20):
         for j in range(0,20):
             print("\t{0}".format(matriz[i][j]),sep=',',end='')
-        print('')
+        print('<br>')
 
     sys.stdout = original_stdout # Reset the standard output to its original value
 
@@ -120,14 +148,13 @@ def escribirFichero():
 
 
     archivo2 = "usuariosTemp.txt"
-    open(archivo2,'w').close()
-    f2 = open(archivo2,'a')
-    f2.write('Usuarios: \n')
+    f2= open(archivo2,'w')
+    f2.write('Usuarios: <br>')
 
     for i in range(0,len(posiciones)):
         if posiciones[i][0]!='---':
             f2.write(str(posiciones[i]))
-        f2.write('\n')
+            f2.write('<br>')
     f2.close()
 
 
@@ -531,7 +558,8 @@ def main():
         threading.Thread(target = escuchaVisitante, args=(ip_gestor,puerto_gestor)).start()
         threading.Thread(target = salidaVisitante, args=(ip_gestor,puerto_gestor)).start()
         threading.Thread(target = reloj, args=(ip_wts,puerto_wts,atr)).start()
-      
+        #threading.Thread(target = reloj2).start()
+
 
 
 #------------------------

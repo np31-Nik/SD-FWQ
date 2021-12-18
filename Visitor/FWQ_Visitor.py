@@ -206,13 +206,16 @@ def registarse(ip,puerto):
     print(response.response)
 
 
-def iniciarSesion(ip,puerto):
+def iniciarSesion(ip,puerto,usr=-1,pwd=-1):
     global UserID
     channel = grpc.insecure_channel('%s:%s'%(ip,puerto))
     #channel = grpc.insecure_channel('localhost:50051')
     #channel = grpc.insecure_channel('192.168.4.246:50051')
     stub = Registry_pb2_grpc.loginStub(channel)
-    username,password=AskNamePassword()
+    if usr!=-1:
+        username,password=(usr,pwd)
+    else:
+        username,password=AskNamePassword()
     response = stub.Login(Registry_pb2.loginRequest(username=username,password=password))
     print(response.response)
     if response.response!="El nombre de usuario o la contraseña no son correctos":
@@ -279,10 +282,24 @@ def recibeEntradaParque(server,puerto):
    # print("Despues de for")
     consumer.close()
     
+def login(serverGrpc,puertoGrpc,serverKafka,puertoKafka,usr=-1,pwd=-1):
+    if iniciarSesion(serverGrpc,puertoGrpc,usr,pwd):
+                    enviaEntradaParque(serverKafka,puertoKafka)
+                    recibeEntradaParque(serverKafka,puertoKafka)
+                    recibirMapa(serverKafka,puertoKafka)
+                    moverse(serverKafka,puertoKafka)
 
 #Funcion principal
 def run():
-    if(len(sys.argv) != 5):
+    if(len(sys.argv)==7):
+            serverGrpc = sys.argv[1]
+            puertoGrpc = sys.argv[2]
+            serverKafka = sys.argv[3]
+            puertoKafka=sys.argv[4]
+            usr = sys.argv[5]
+            pwd = sys.argv[6]
+            login(serverGrpc,puertoGrpc,serverKafka,puertoKafka,usr,pwd)
+    elif(len(sys.argv) != 5):
         print("Para ejecutar utiliza: FWQ_Sensor.py |IP GRPC SERVER| |PUERTO| |IP BROKER SERVER| |PUERTO|")
     else:
         serverGrpc = sys.argv[1]
@@ -301,17 +318,12 @@ def run():
 
         opcion=0
         while True:
-            print("Eliga una opcion: \n 1) Registrarse; \n 2) Iniciar sesion y entrar al parque; \n 3) Modificar usuario; (Da error)\n 4) Salir;")
+            print("Eliga una opcion: \n 1) Registrarse; \n 2) Iniciar sesion y entrar al parque; \n 3) Modificar usuario; \n 4) Salir;")
             opcion = input()
             if opcion == "1":
                 registarse(serverGrpc,puertoGrpc)
             if opcion == "2":
-                if iniciarSesion(serverGrpc,puertoGrpc):
-                    enviaEntradaParque(serverKafka,puertoKafka)
-                    recibeEntradaParque(serverKafka,puertoKafka)
-                    recibirMapa(serverKafka,puertoKafka)
-                    moverse(serverKafka,puertoKafka)
-                
+                login(serverGrpc,puertoGrpc,serverKafka,puertoKafka)                
             if opcion == "3":
                 modificarUsuario(serverGrpc,puertoGrpc)
             if opcion =="4":

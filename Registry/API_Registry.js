@@ -6,6 +6,7 @@ const jsonParser = bodyParser.json()
 // Se define el puerto
 const port=3000;
 const sqlite3 = require('sqlite3').verbose();
+const {spawn} = require('child_process');
 
 
 //Ejemplo de encriptacion de datos 
@@ -15,9 +16,25 @@ const { copyFileSync } = require("fs");
 hash=crypto.getHashes();
 cadena="Hola";
 hashcadena=crypto.createHash('sha1').update(cadena).digest('hex');
+<<<<<<< HEAD
+=======
+console.log(hashcadena);
+const fs = require('fs')
+>>>>>>> 58e8b097da5a90e4002f990a7f64cdd235865f59
 
 //Fin ejemplo
 
+function escribirUsuario(id){
+
+fs.writeFile('usersOnline.txt', id+'\n', { flag: 'a+' },err => {
+  if (err) {
+    console.error(err)
+    return
+  }else{
+    console.log("Nuevo usuario añadido a usersOnline.txt");
+  }
+})
+}
 // Add headers before the routes are defined
 app.use(function (req, res, next) {
 
@@ -90,7 +107,7 @@ app.get("/usuarios/:id",(req, response) => {
 });
 });
 
-app.get("/login",jsonParser,(req,response)=> {
+app.get("/login",jsonParser,(req,response)=>{
   console.log("recibido")
   console.log(req.headers);
   auth = atob(req.headers.authorization).split(":");
@@ -106,6 +123,15 @@ app.get("/login",jsonParser,(req,response)=> {
     else{
       if (rows.length>0){
         console.log(rows);
+
+        // let id = rows[0].id;
+        // console.log("id:"+id);
+        // escribirUsuario(id);
+        const py = spawn('python3',['./../Visitor/FWQ_Visitor.py', '192.168.0.104', '1111', '192.168.0.104', '9092',username,password])
+        py.stdout.on('data', function(data) {
+
+          console.log(data.toString());
+      });
         response.send("200");
       }else{
         response.send("404")
@@ -123,7 +149,11 @@ app.get("/login",jsonParser,(req,response)=> {
 
 
 //usuarios POST
+<<<<<<< HEAD
 app.post("/usuarios",jsonParser,(req, response) =>{
+=======
+app.post("/usuarios",jsonParser,(req, response) => async function() {
+>>>>>>> 58e8b097da5a90e4002f990a7f64cdd235865f59
   console.log('Añadiendo usuario:',[req.body.id,req.body.username,req.body.password])
 
   //cifrado irreversible
