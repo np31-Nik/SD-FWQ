@@ -16,7 +16,7 @@ const { copyFileSync } = require("fs");
 hash=crypto.getHashes();
 cadena="Hola";
 hashcadena=crypto.createHash('sha1').update(cadena).digest('hex');
-console.log(hashcadena);
+//console.log(hashcadena);
 const fs = require('fs')
 
 //Fin ejemplo
@@ -141,40 +141,44 @@ app.get("/login",jsonParser,(req,response)=>{
   //response.send('hola');
 });
 
-
+// var totalUsuarios=numUsuarios();
+// console.log(totalUsuarios);
 
 //usuarios POST
-app.post("/usuarios",jsonParser,(req, response) => async function(){
-  console.log('Añadiendo usuario:',[req.body.id,req.body.username,req.body.password])
-
+app.post("/usuarios",jsonParser,async (req, response) => {
+  const totalUsuarios =  await numUsuarios() +1;
   //cifrado irreversible
   hash=crypto.getHashes();
   cadena=req.body.password;
   hashcadena=crypto.createHash('sha1').update(cadena).digest('hex');
-  var total=await numUsuarios();
-  console.log(total);
+
+  console.log('Añadiendo usuario:',["u"+totalUsuarios,req.body.username,req.body.password])
+
   try{
-    connection.run(`INSERT INTO usuarios VALUES(?, ?, ?)`,["u"+total+1,req.body.username,hashcadena], (err, rows) => {
+    connection.run(`INSERT INTO usuarios VALUES(?, ?, ?)`,["u"+totalUsuarios,req.body.username,hashcadena], (err, rows) => {
     if (err) {
         response.send(err.message);
         console.log("Error POST/usuarios")
-    }
+    }else{
     console.log("Usuario añadido.")
     response.send("Usuario añadido.")
+    }
     });
   }catch(e){} //comprobar
 });
 
 function numUsuarios(){
     select='Select count(*) as total from usuarios';
-    connection.all(select,(err,rows)=>{
-        if (err) console.log('Error contando usuarios');
+    return new Promise((resolve,reject) => connection.all(select,(err,rows)=>{
+        if (err){
+          console.log('Error contando usuarios');
+          reject(-1)
+        } 
         else {
-            //console.log("return "+rows[0].total)
-            return (rows[0].total);
-            
+            console.log("return "+rows[0].total)
+            resolve (rows[0].total);
         }
-    });
+    }));
 }
 
 app.put("/usuarios/:id",jsonParser,(req, response) => {
