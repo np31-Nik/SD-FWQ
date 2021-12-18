@@ -19,7 +19,7 @@
 <input type="text" id="fpass" name="fpass"><br><br>
 
 
-<button type="button" onclic="prueba1()" id="prueba">Probando</button>
+<button onclick="prueba();">Execute</button>
 <button type="button" onclick="iniciarSesion()" id="login">Iniciar sesion</button>
 
 <div id="output">
@@ -56,12 +56,12 @@
 </script>
 
 <script>
-    function prueba1(){
+    function prueba(){
         
         const http=new XMLHttpRequest();
         const url = 'http://localhost:3000/usuarios';
         http.open("GET",url,true);
-        http.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        //http.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         http.send();
 
         http.onreadystatechange=(e)=>{
