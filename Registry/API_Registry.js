@@ -16,7 +16,7 @@ const { copyFileSync } = require("fs");
 hash=crypto.getHashes();
 cadena="Hola";
 hashcadena=crypto.createHash('sha1').update(cadena).digest('hex');
-console.log(hashcadena);
+//console.log(hashcadena);
 const fs = require('fs')
 
 //Fin ejemplo
@@ -83,8 +83,7 @@ app.get("/usuarios",(req, response) => {
   });
 });
 
-var totalUsuarios=numUsuarios();
-console.log(totalUsuarios);
+
 
 //usuarios GET/id
 app.get("/usuarios/:id",(req, response) => {
@@ -143,12 +142,13 @@ app.get("/login",jsonParser,(req,response)=>{
   //response.send('hola');
 });
 
-
+// var totalUsuarios=numUsuarios();
+// console.log(totalUsuarios);
 
 //usuarios POST
-app.post("/usuarios",jsonParser,(req, response) => {
+app.post("/usuarios",jsonParser,async (req, response) => {
   console.log('Añadiendo usuario:',[req.body.id,req.body.username,req.body.password])
-
+  const totalUsuarios =  await numUsuarios();
   //cifrado irreversible
   hash=crypto.getHashes();
   cadena=req.body.password;
@@ -159,22 +159,26 @@ app.post("/usuarios",jsonParser,(req, response) => {
     if (err) {
         response.send(err.message);
         console.log("Error POST/usuarios")
-    }
+    }else{
     console.log("Usuario añadido.")
     response.send("Usuario añadido.")
+    }
     });
   }catch(e){} //comprobar
 });
 
 function numUsuarios(){
     select='Select count(*) as total from usuarios';
-    connection.all(select,(err,rows)=>{
-        if (err) console.log('Error contando usuarios');
+    return new Promise((resolve,reject) => connection.all(select,(err,rows)=>{
+        if (err){
+          console.log('Error contando usuarios');
+          reject(-1)
+        } 
         else {
-            //console.log("return "+rows[0].total)
-            return (rows[0].total);
+            console.log("return "+rows[0].total)
+            resolve (rows[0].total);
         }
-    });
+    }));
 }
 
 app.put("/usuarios/:id",jsonParser,(req, response) => {
