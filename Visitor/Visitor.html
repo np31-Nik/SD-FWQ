@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<HTML>
+
+<HEAD>
+
+<TITLE>Pagina Inicial</TITLE>
+<script type="text/javascript" src="../Registry/API_Registry.js/"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</HEAD>
+
+<BODY>
+
+<h1>Pagina de Visitantes</h1>
+
+<form>
+<label for="fname">Username:</label>
+<input type="text" id="fname" name="fname"><br><br>
+<label for="fname">Password:</label>
+<input type="text" id="fpass" name="fpass"><br><br>
+
+    <form action="" method="post">
+        <input type="submit" name="Registry" value="Registrarse" />
+    </form>
+
+<button type="button" onclic="prueb1()" id="prueba">Probando</button>
+<button type="button" onclick="iniciarSesion()" id="login">Iniciar sesion</button>
+
+<div id="output">
+</div>
+<p id="output2">1</p>
+
+</form>
+
+<script>
+    function myFunction() {
+    if (fname!=null 
+    //&& fpass != null
+    ) {
+        var username=document.getElementById('fname').value;
+        //var password=document.getElementById('fpass').value;
+    
+    const http=new XMLHttpRequest();
+    const url='http://localhost:3000/usuarios/';
+    http.open("GET",url+username,true);
+    
+    http.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    http.send();
+    
+    http.onreadystatechange = (e) => {
+        console.log(document.getElementById('output').innerHTML);
+        //document.getElementById('output').innerHTML = http.responseText;
+        console.log(http.responseText);
+        
+    };
+       
+    } 
+}
+
+</script>
+
+<script>
+    function prueba1(){
+        
+        const http=new XMLHttpRequest();
+        const url = 'http://localhost:3000/usuarios/';
+        http.open("GET",url);
+        http.send();
+
+        http.onreadystatechange=(e)=>{
+            console.log(http.responseText);
+        }
+
+    }
+    
+</script>
+
+<script>
+    function iniciarSesion(){
+        var username=document.getElementById('fname').value;
+        var password=document.getElementById('fpass').value;
+        if(username.length!=0 || password!=0){
+            return;
+        }
+        else{
+            cad="Debe introducir nombre de usuario y contrasenya";
+            var output=document.getElementById("output");
+            output.innerHTML=cad;
+        }
+    }
+
+</script>
+
+
+
+</BODY>
+
+</HTML>
