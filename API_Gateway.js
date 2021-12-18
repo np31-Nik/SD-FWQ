@@ -45,6 +45,8 @@ request('http://192.168.253.77:3000/', { json: true }, (err, res, body) => {
 });
 
 
+
+
 // db.serialize(() => {
 //   db.each(`SELECT *
 //            FROM usuarios`, (err, row) => {
