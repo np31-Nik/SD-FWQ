@@ -277,13 +277,7 @@ def crearCola(lista_atr):
 def escuchaVisitante(server,puerto):
     consumer = KafkaConsumer(
         'movimiento',
-        bootstrap_servers=['%s:%s'%(server,puerto)],
-        security_protocol='SSL',
-                         ssl_check_hostname=False,
-                         ssl_cafile='CARoot.pem',
-                         ssl_certfile='ca-cert',
-                         ssl_keyfile='ca-key',
-                         ssl_password='qwerty'
+        bootstrap_servers=['%s:%s'%(server,puerto)]
     )
 
     for msg in consumer:
