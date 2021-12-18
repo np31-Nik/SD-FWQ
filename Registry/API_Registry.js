@@ -16,11 +16,8 @@ const { copyFileSync } = require("fs");
 hash=crypto.getHashes();
 cadena="Hola";
 hashcadena=crypto.createHash('sha1').update(cadena).digest('hex');
-<<<<<<< HEAD
-=======
 console.log(hashcadena);
 const fs = require('fs')
->>>>>>> 58e8b097da5a90e4002f990a7f64cdd235865f59
 
 //Fin ejemplo
 
@@ -149,11 +146,7 @@ app.get("/login",jsonParser,(req,response)=>{
 
 
 //usuarios POST
-<<<<<<< HEAD
 app.post("/usuarios",jsonParser,(req, response) =>{
-=======
-app.post("/usuarios",jsonParser,(req, response) => async function() {
->>>>>>> 58e8b097da5a90e4002f990a7f64cdd235865f59
   console.log('Añadiendo usuario:',[req.body.id,req.body.username,req.body.password])
 
   //cifrado irreversible
