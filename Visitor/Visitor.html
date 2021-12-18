@@ -25,10 +25,7 @@
 <label for="fname">Password:</label>
 <input type="text" id="fpass" name="fpass"><br><br>
 
-<h5>Start Ad-Placer!</h5>
-<input type="submit" value="Start" onclick="submit()">
-
-<button type="button" onclick="prueba()">Execute</button>
+<button type="button" onclick="prueba()">Listado</button>
 <button type="button" onclick="iniciarSesion()" id="login">Iniciar sesion</button>
 <button type="button" onclick="register()" id="Registro">Registrarse</button>
 
@@ -69,7 +66,7 @@ async function prueba(){
 
       authors.map(function(author) {
         let li = document.createElement('li');
-        let name = document.createElement('h2');
+        let name = document.createElement('h4');
         let email = document.createElement('span');
 
         name.innerHTML = `${author.username}`;
@@ -92,7 +89,7 @@ async function prueba(){
         let headers = new Headers();
         let resp = "";
         headers.set('Authorization',btoa(username+":"+password));
-        await fetch(url,{method:'GET',headers:headers})
+        const f = await fetch(url,{method:'GET',headers:headers})
         .then(response => response.text())
         .then(json => {console.log(json); resp=json;});
 
@@ -103,15 +100,16 @@ async function prueba(){
         }
     }
     
-    function iniciarSesion(){
+    async function iniciarSesion(){
         var output=document.getElementById("output");
         var username=document.getElementById('fname').value;
         var password=document.getElementById('fpass').value;
         if(username.length!=0 && password!=0){
-            if(!comprobarUsuario(username,password)){
+            const c = await comprobarUsuario(username,password)
+            if(!c){
                 output.innerHTML="Usuario o contraseña incorrecta.";
             }else{
-                output.innerHTML="Iniciando sesion...";
+                console.log("Iniciando sesion...");
 
                 var login=document.getElementById("login");
                 var parque=document.getElementById("parque");
