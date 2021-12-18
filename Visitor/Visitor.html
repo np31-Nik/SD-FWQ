@@ -4,7 +4,15 @@
 <HEAD>
 
 <TITLE>Pagina Inicial</TITLE>
+<!---<script type="text/javascript" src="../Registry/API_Registry.js/"></script>--->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<system.webServer>
+    <httpProtocol>
+      <customHeaders>
+        <add name="Access-Control-Allow-Origin" value="*"/>
+      </customHeaders>
+    </httpProtocol>
+<system.webServer>
 </HEAD>
 
 <BODY>
@@ -17,6 +25,8 @@
 <label for="fname">Password:</label>
 <input type="text" id="fpass" name="fpass"><br><br>
 
+<h5>Start Ad-Placer!</h5>
+<input type="submit" value="Start" onclick="submit()">
 
 <button type="button" onclick="prueba()">Execute</button>
 <button type="button" onclick="iniciarSesion()" id="login">Iniciar sesion</button>
@@ -37,29 +47,9 @@
 </div>
 <script>
     function myFunction() {
-    if (fname!=null 
-    //&& fpass != null
-    ) {
-        var username=document.getElementById('fname').value;
-        //var password=document.getElementById('fpass').value;
-    
-    const http=new XMLHttpRequest();
-    const url='http://localhost:3000/usuarios';
-    http.open("GET",url+username,true);
-    
-    http.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    http.send();
-    
-    http.onreadystatechange = (e) => {
-        //console.log(document.getElementById('output').innerHTML);
-        //document.getElementById('output').innerHTML = http.responseText;
-        //console.log(http.responseText);
-        return;
-        
-    };
-    return; 
+        console.log("Hello from Firefox code");
+        alert("xhr.response");
     } 
-}
 
 </script>
 

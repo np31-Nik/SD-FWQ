@@ -1,0 +1,136 @@
+<!DOCTYPE HTML>
+<HTML>
+
+<HEAD>
+
+<TITLE>Pagina Inicial</TITLE>
+<!---<script type="text/javascript" src="../Registry/API_Registry.js/"></script>--->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<system.webServer>
+    <httpProtocol>
+      <customHeaders>
+        <add name="Access-Control-Allow-Origin" value="*"/>
+      </customHeaders>
+    </httpProtocol>
+<system.webServer>
+</HEAD>
+
+<BODY>
+
+<h1>Pagina de Visitantes</h1>
+
+<form>
+<label for="fname">Username:</label>
+<input type="text" id="fname" name="fname"><br><br>
+<label for="fname">Password:</label>
+<input type="text" id="fpass" name="fpass"><br><br>
+
+<h5>Start Ad-Placer!</h5>
+<input type="submit" value="Start" onclick="submit()">
+
+<script type="text/javascript">
+    function submit() {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                console.log("Hello from Firefox code")
+                alert(xhr.response);
+            }
+        }
+        xhr.open('get', 'http://localhost:3000/usuarios/', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+        xhr.send();
+    }
+
+</script>
+
+
+<button type="button" onclick="prueba();">Execute</button>
+<button type="button" onclick="myFunction();" id="login">Iniciar sesion</button>
+
+<div id="output">
+</div>
+
+<p id="output2">
+
+</p>
+
+</form>
+
+<script>
+    function myFunction() {
+        console.log("Hello from Firefox code");
+        alert("xhr.response");
+    } 
+
+</script>
+
+<script>
+    function prueba(){
+        
+        const http=new XMLHttpRequest();
+        cad="Debe introducir nombre de usuario y contrasenya";
+        var output=document.getElementById("output");
+        output.innerHTML=cad;
+        const url = 'http://localhost:3000/usuarios/';
+        http.open("GET",url+"u2",true);
+        //http.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        
+
+        http.onload=()=>{
+            console.log("Hello from Firefox code");
+            console.log(http.responseText);
+            //console.log(http.responseText);
+            //console.log(respuesta);
+        }
+        http.send();
+
+    }
+    
+</script>
+
+<script>
+    function iniciarSesion(){ //Hacer GET y comprobar que coinciden los datos
+        var username=document.getElementById('fname').value;
+        var password=document.getElementById('fpass').value;
+        if(username.length!=0 || password!=0){
+            return;
+        }
+        else{
+            cad="Debe introducir nombre de usuario y contrasenya";
+            var output=document.getElementById("output");
+            output.innerHTML=cad;
+        }
+    }
+
+</script>
+
+<script>
+    function Registrarse(){ //HACER REQUEST POST!
+        var username=document.getElementById('fname').value;
+        var password=document.getElementById('fpass').value;
+        if(username.length!=0 || password!=0){
+            const http=new XMLHttpRequest();
+            const url = 'http://localhost:3000/usuarios/';
+            http.open("POST",url);
+            http.send();
+            return;
+        }
+        else{
+            cad="Debe introducir nombre de usuario y contrasenya";
+            var output=document.getElementById("output");
+            output.innerHTML=cad;
+            if (true){
+                cad="este usuario ya existe"
+            }
+            if(true){
+                cad="Usuario registrado"
+            }
+        }
+    }
+
+</script>
+
+</BODY>
+
+</HTML>
