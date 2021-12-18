@@ -75,10 +75,21 @@
 </script>
 
 <script>
+    function comprobarUsuario(){
+        const http=new XMLHttpRequest();
+        const url = 'http://localhost:3000/usuarios/';
+        http.open("GET",url);
+        http.send();
+
+        http.onreadystatechange=(e)=>{
+            console.log(http.responseText);
+        }
+    }
+    
     function iniciarSesion(){
         var username=document.getElementById('fname').value;
         var password=document.getElementById('fpass').value;
-        if(username.length!=0 || password!=0){
+        if(username.length!=0 && password!=0){
             return;
         }
         else{

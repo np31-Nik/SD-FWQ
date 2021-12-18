@@ -61,6 +61,21 @@ app.get("/usuarios/:id",(req, response) => {
 });
 });
 
+app.get("usuarios/login",jsonParser,(req,response)=> {
+  console.log(req.params);
+    connection.all('SELECT * FROM usuarios where username='+req.body.username+"' AND password='"+req.body.password+"'", (err, rows) => {
+    if (err) {
+        response.send(err.message);
+        console.log("Error GET/usuarios/id");
+    }
+    else{
+      if (rows)
+        console.log(rows);
+        response.send(rows);
+    }
+});
+});
+
 //usuarios POST
 app.post("/usuarios",jsonParser,(req, response) => {
   console.log('Añadiendo usuario:',[req.body.id,req.body.username,req.body.password])
