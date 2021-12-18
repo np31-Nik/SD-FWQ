@@ -19,13 +19,13 @@ console.log(hashcadena);
 app.use(function (req, res, next) {
 
   // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', 'null');
+  res.setHeader('Access-Control-Allow-Origin', '*');
 
   // Request methods you wish to allow
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
   // Request headers you wish to allow
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  res.setHeader('Access-Control-Allow-Headers', '*, Authorization');
 
   // Set to true if you need the website to include cookies in the requests sent
   // to the API (e.g. in case you use sessions)
@@ -85,23 +85,32 @@ app.get("/usuarios/:id",(req, response) => {
 
 app.get("/login",jsonParser,(req,response)=> {
   console.log("recibido")
-  console.log(req.body);
+  console.log(req.headers);
+  auth = atob(req.headers.authorization).split(":");
+  username = auth[0];
+  password = auth[1];
+  console.log(username);
+
+    connection.all("SELECT * FROM usuarios WHERE username='"+username+"' AND password='"+password+"'", (err, rows) => {
+    if (err) {
+        response.send(err.message);
+        console.log("Error GET/usuarios/id");
+    }
+    else{
+      if (rows.length>0){
+        console.log(rows);
+        response.send("200");
+      }else{
+        response.send("404")
+      }
+        
+    } 
+});
+
   // response.writeHead(200,{'Content-Type':'text/plain'});
   // response.write('index.html');
   // response.end();
-  response.write('hola');
-  response.end();
-    // connection.all('SELECT * FROM usuarios where username='+req.body.username+"' AND password='"+req.body.password+"'", (err, rows) => {
-    // if (err) {
-    //     response.send(err.message);
-    //     console.log("Error GET/usuarios/id");
-    // }
-    // else{
-    //   if (rows)
-    //     console.log(rows);
-    //     response.send(rows);
-    // }  
-//});
+  //response.send('hola');
 });
 
 //usuarios POST

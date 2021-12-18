@@ -10,7 +10,7 @@
 <BODY>
 
 <h1>Pagina de Visitantes</h1>
-
+<div id="login">
 <form>
 <label for="fname">Username:</label>
 <input type="text" id="fname" name="fname"><br><br>
@@ -23,9 +23,18 @@
 
 <div id="output">
 </div>
-
 </form>
+</div>
+<div id="parque", style="display:none;">
+    <h2>Mapa</h2>
+    <div id="mapa">
 
+    </div>
+    <h2>Usuarios</h2>
+    <div id="usuarios">
+
+    </div>
+</div>
 <script>
     function myFunction() {
     if (fname!=null 
@@ -56,7 +65,7 @@
 
 <script>
 async function prueba(){
-    
+
     const list = document.createDocumentFragment();
 
         var output=document.getElementById("output");
@@ -87,28 +96,75 @@ async function prueba(){
 </script>
 
 <script>
-    function comprobarUsuario(){
-        const http=new XMLHttpRequest();
-        const url = 'http://localhost:3000/usuarios/';
-        http.open("GET",url);
-        http.send();
+    async function comprobarUsuario(username,password){
+        const url = 'http://localhost:3000/login'
+        let headers = new Headers();
+        let resp = "";
+        headers.set('Authorization',btoa(username+":"+password));
+        await fetch(url,{method:'GET',headers:headers})
+        .then(response => response.text())
+        .then(json => {console.log(json); resp=json;});
 
-        http.onreadystatechange=(e)=>{
-            console.log(http.responseText);
+        if (resp=="200"){
+            return true;
+        }else{
+            return false;
         }
     }
     
     function iniciarSesion(){
+        var output=document.getElementById("output");
         var username=document.getElementById('fname').value;
         var password=document.getElementById('fpass').value;
         if(username.length!=0 && password!=0){
-            return;
+            if(!comprobarUsuario(username,password)){
+                output.innerHTML="Usuario o contraseña incorrecta.";
+            }else{
+                output.innerHTML="Iniciando sesion...";
+
+                var login=document.getElementById("login");
+                var parque=document.getElementById("parque");
+                login.style.display="none";
+                parque.style.display="block";
+
+                iniciado();
+
+            }
         }
         else{
             cad="Debe introducir nombre de usuario y contrasenya";
-            var output=document.getElementById("output");
             output.innerHTML=cad;
         }
+    }
+
+    function iniciado(){
+        obtenerMapa();
+        obtenerUsuarios();
+    }
+
+    async function obtenerMapa(){
+        const url = 'http://localhost:3003/mapa'
+        let headers = new Headers();
+        let resp = "";
+        var mapa=document.getElementById("mapa");
+
+        //headers.set('Authorization',btoa(username+":"+password));
+        await fetch(url,{method:'GET'})
+        .then(response => response.text())
+        .then(json => {console.log(json); resp=json;});
+        mapa.innerHTML=resp;
+    }
+    async function obtenerUsuarios(){
+        const url = 'http://localhost:3003/usuarios'
+        let headers = new Headers();
+        let resp = "";
+        var usuarios=document.getElementById("usuarios");
+
+        //headers.set('Authorization',btoa(username+":"+password));
+        await fetch(url,{method:'GET'})
+        .then(response => response.text())
+        .then(json => {console.log(json); resp=json;});
+        usuarios.innerHTML=resp;
     }
 
 </script>
