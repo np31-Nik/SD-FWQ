@@ -136,7 +136,7 @@ app.get("/login",jsonParser,(req,response)=>{
 });
 
 //usuarios POST
-app.post("/usuarios",jsonParser,(req, response) => async function() {
+app.post("/usuarios",jsonParser,(req, response) => {
   console.log('Añadiendo usuario:',[req.body.id,req.body.username,req.body.password])
 
   //cifrado irreversible
