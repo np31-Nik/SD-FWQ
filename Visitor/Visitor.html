@@ -86,41 +86,17 @@ async function prueba(){
 <script>
     function comprobarUsuario(){
         const http=new XMLHttpRequest();
-<<<<<<< HEAD
-        cad="Debe introducir nombre de usuario y contrasenya";
-        var output=document.getElementById("output");
-        output.innerHTML=cad;
-        const url = 'http://localhost:3000/usuarios/';
-        http.open("GET",url+"u2",true);
-        //http.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        
-=======
         const url = 'http://localhost:3000/usuarios/';
         http.open("GET",url);
         http.send();
->>>>>>> b75e2b287f57aef48f01cfb2aebd1ef5242b229d
 
         http.onload=()=>{
             console.log("Hello from Firefox code");
             console.log(http.responseText);
-<<<<<<< HEAD
-            //console.log(http.responseText);
-            //console.log(respuesta);
-        }
-        http.send();
-
-    }
-    
-</script>
-
-<script>
-    function iniciarSesion(){ //Hacer GET y comprobar que coinciden los datos
-=======
         }
     }
     
     function iniciarSesion(){
->>>>>>> b75e2b287f57aef48f01cfb2aebd1ef5242b229d
         var username=document.getElementById('fname').value;
         var password=document.getElementById('fpass').value;
         if(username.length!=0 && password!=0){
