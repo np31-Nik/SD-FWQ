@@ -30,6 +30,7 @@
 
 <button type="button" onclick="prueba()">Execute</button>
 <button type="button" onclick="iniciarSesion()" id="login">Iniciar sesion</button>
+<button type="button" onclick="register()" id="Registro">Registrarse</button>
 
 <div id="output">
 </div>
@@ -160,13 +161,18 @@ async function prueba(){
 </script>
 
 <script>
-    function Registrarse(){ //HACER REQUEST POST!
+    function registrar(){ //HACER REQUEST POST!
         var username=document.getElementById('fname').value;
         var password=document.getElementById('fpass').value;
         if(username.length!=0 || password!=0){
             const http=new XMLHttpRequest();
             const url = 'http://localhost:3000/usuarios/';
             http.open("POST",url);
+            var data = `{
+                "username": "`+username+`",
+                "password": `+password+`,
+                }`;
+
             http.send();
             return;
         }
@@ -174,12 +180,6 @@ async function prueba(){
             cad="Debe introducir nombre de usuario y contrasenya";
             var output=document.getElementById("output");
             output.innerHTML=cad;
-            if (true){
-                cad="este usuario ya existe"
-            }
-            if(true){
-                cad="Usuario registrado"
-            }
         }
     }
 

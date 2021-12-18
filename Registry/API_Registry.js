@@ -8,12 +8,15 @@ const port=3000;
 const sqlite3 = require('sqlite3').verbose();
 
 
+//Ejemplo de encriptacion de datos 
 const crypto = require("crypto");
+const e = require("express");
+const { copyFileSync } = require("fs");
 hash=crypto.getHashes();
 cadena="Hola";
 hashcadena=crypto.createHash('sha1').update(cadena).digest('hex');
-console.log(hashcadena);
 
+//Fin ejemplo
 
 // Add headers before the routes are defined
 app.use(function (req, res, next) {
@@ -53,6 +56,7 @@ let connection = new sqlite3.Database('../db.db', sqlite3.OPEN_READWRITE, (err) 
     res.send("GET /")
   });
 
+
 //usuarios GET
 app.get("/usuarios",(req, response) => {
     connection.all(`SELECT * FROM usuarios`,[], (err, resultado) => {
@@ -64,6 +68,9 @@ app.get("/usuarios",(req, response) => {
         response.status(200).send(resultado);
   });
 });
+
+var totalUsuarios=numUsuarios();
+console.log(totalUsuarios);
 
 //usuarios GET/id
 app.get("/usuarios/:id",(req, response) => {
@@ -113,18 +120,19 @@ app.get("/login",jsonParser,(req,response)=> {
   //response.send('hola');
 });
 
+
+
 //usuarios POST
-app.post("/usuarios",jsonParser,(req, response) => {
+app.post("/usuarios",jsonParser,(req, response) =>{
   console.log('Añadiendo usuario:',[req.body.id,req.body.username,req.body.password])
 
   //cifrado irreversible
   hash=crypto.getHashes();
   cadena=req.body.password;
   hashcadena=crypto.createHash('sha1').update(cadena).digest('hex');
-  console.log(hashcadena);
-
+  console.log(totalUsuarios);
   try{
-    connection.run(`INSERT INTO usuarios VALUES(?, ?, ?)`,[req.body.id,req.body.username,hashcadena], (err, rows) => {
+    connection.run(`INSERT INTO usuarios VALUES(?, ?, ?)`,["u"+totalUsuarios+1,req.body.username,hashcadena], (err, rows) => {
     if (err) {
         response.send(err.message);
         console.log("Error POST/usuarios")
@@ -134,6 +142,17 @@ app.post("/usuarios",jsonParser,(req, response) => {
     });
   }catch(e){} //comprobar
 });
+
+function numUsuarios(){
+    select='Select count(*) as total from usuarios';
+    connection.all(select,(err,rows)=>{
+        if (err) console.log('Error contando usuarios');
+        else {
+            //console.log("return "+rows[0].total)
+            return (rows[0].total);
+        }
+    });
+}
 
 app.put("/usuarios/:id",jsonParser,(req, response) => {
     console.log('Modificando Usuario:',[req.body.id,req.body.username,req.body.password]);
@@ -159,3 +178,5 @@ app.delete("/usuarios/:id",jsonParser,(request, response) => {
 
     });
 });
+
+
