@@ -116,8 +116,10 @@ async function prueba(){
                 var parque=document.getElementById("parque");
                 login.style.display="none";
                 parque.style.display="block";
-
-                iniciado();
+                var intervalId = window.setInterval(function(){
+                    iniciado();
+                }, 5000);
+                //iniciado();
 
             }
         }
