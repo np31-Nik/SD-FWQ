@@ -4,7 +4,10 @@
 <HEAD>
 
 <TITLE>Pagina Inicial</TITLE>
+<<<<<<< HEAD
 <!---<script type="text/javascript" src="../Registry/API_Registry.js/"></script>--->
+=======
+>>>>>>> b75e2b287f57aef48f01cfb2aebd1ef5242b229d
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <system.webServer>
     <httpProtocol>
@@ -28,25 +31,8 @@
 <h5>Start Ad-Placer!</h5>
 <input type="submit" value="Start" onclick="submit()">
 
-<script type="text/javascript">
-    function submit() {
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-                console.log("Hello from Firefox code")
-                alert(xhr.response);
-            }
-        }
-        xhr.open('get', 'http://localhost:3000/usuarios/', true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-        xhr.send();
-    }
-
-</script>
-
-
-<button type="button" onclick="prueba();">Execute</button>
-<button type="button" onclick="myFunction();" id="login">Iniciar sesion</button>
+<button type="button" onclick="prueba()">Execute</button>
+<button type="button" onclick="iniciarSesion()" id="login">Iniciar sesion</button>
 
 <div id="output">
 </div>
@@ -66,9 +52,41 @@
 </script>
 
 <script>
-    function prueba(){
-        
+async function prueba(){
+    
+    const list = document.createDocumentFragment();
+
+        var output=document.getElementById("output");
+
+        let response = await fetch('http://localhost:3000/usuarios').then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      let authors = data;
+
+      authors.map(function(author) {
+        let li = document.createElement('li');
+        let name = document.createElement('h2');
+        let email = document.createElement('span');
+
+        name.innerHTML = `${author.username}`;
+        email.innerHTML = `${author.password}`;
+
+        li.appendChild(name);
+        li.appendChild(email);
+        list.appendChild(li);
+      });
+    });
+    output.appendChild(list);
+
+    }
+    
+</script>
+
+<script>
+    function comprobarUsuario(){
         const http=new XMLHttpRequest();
+<<<<<<< HEAD
         cad="Debe introducir nombre de usuario y contrasenya";
         var output=document.getElementById("output");
         output.innerHTML=cad;
@@ -76,10 +94,16 @@
         http.open("GET",url+"u2",true);
         //http.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         
+=======
+        const url = 'http://localhost:3000/usuarios/';
+        http.open("GET",url);
+        http.send();
+>>>>>>> b75e2b287f57aef48f01cfb2aebd1ef5242b229d
 
         http.onload=()=>{
             console.log("Hello from Firefox code");
             console.log(http.responseText);
+<<<<<<< HEAD
             //console.log(http.responseText);
             //console.log(respuesta);
         }
@@ -91,9 +115,15 @@
 
 <script>
     function iniciarSesion(){ //Hacer GET y comprobar que coinciden los datos
+=======
+        }
+    }
+    
+    function iniciarSesion(){
+>>>>>>> b75e2b287f57aef48f01cfb2aebd1ef5242b229d
         var username=document.getElementById('fname').value;
         var password=document.getElementById('fpass').value;
-        if(username.length!=0 || password!=0){
+        if(username.length!=0 && password!=0){
             return;
         }
         else{
