@@ -18,16 +18,12 @@
 <label for="fname">Password:</label>
 <input type="text" id="fpass" name="fpass"><br><br>
 
-    <form action="" method="post">
-        <input type="submit" name="Registry" value="Registrarse" />
-    </form>
 
-<button type="button" onclic="prueb1()" id="prueba">Probando</button>
+<button type="button" onclic="prueba1()" id="prueba">Probando</button>
 <button type="button" onclick="iniciarSesion()" id="login">Iniciar sesion</button>
 
 <div id="output">
 </div>
-<p id="output2">1</p>
 
 </form>
 
@@ -40,19 +36,20 @@
         //var password=document.getElementById('fpass').value;
     
     const http=new XMLHttpRequest();
-    const url='http://localhost:3000/usuarios/';
+    const url='http://localhost:3000/usuarios';
     http.open("GET",url+username,true);
     
     http.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     http.send();
     
     http.onreadystatechange = (e) => {
-        console.log(document.getElementById('output').innerHTML);
+        //console.log(document.getElementById('output').innerHTML);
         //document.getElementById('output').innerHTML = http.responseText;
-        console.log(http.responseText);
+        //console.log(http.responseText);
+        return;
         
     };
-       
+    return; 
     } 
 }
 
@@ -62,12 +59,16 @@
     function prueba1(){
         
         const http=new XMLHttpRequest();
-        const url = 'http://localhost:3000/usuarios/';
-        http.open("GET",url);
+        const url = 'http://localhost:3000/usuarios';
+        http.open("GET",url,true);
+        http.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         http.send();
 
         http.onreadystatechange=(e)=>{
             console.log(http.responseText);
+            cad="Debe introducir nombre de usuario y contrasenya";
+            var output=document.getElementById("output");
+            output.innerHTML=cad;
         }
 
     }
@@ -90,7 +91,31 @@
 
 </script>
 
+<script>
+    function Registrarse(){ //HACER REQUEST POST!
+        var username=document.getElementById('fname').value;
+        var password=document.getElementById('fpass').value;
+        if(username.length!=0 || password!=0){
+            const http=new XMLHttpRequest();
+            const url = 'http://localhost:3000/usuarios/';
+            http.open("POST",url);
+            http.send();
+            return;
+        }
+        else{
+            cad="Debe introducir nombre de usuario y contrasenya";
+            var output=document.getElementById("output");
+            output.innerHTML=cad;
+            if (true){
+                cad="este usuario ya existe"
+            }
+            if(true){
+                cad="Usuario registrado"
+            }
+        }
+    }
 
+</script>
 
 </BODY>
 
