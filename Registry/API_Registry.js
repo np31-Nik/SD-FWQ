@@ -147,15 +147,16 @@ app.get("/login",jsonParser,(req,response)=>{
 
 //usuarios POST
 app.post("/usuarios",jsonParser,async (req, response) => {
-  console.log('Añadiendo usuario:',[req.body.id,req.body.username,req.body.password])
-  const totalUsuarios =  await numUsuarios();
+  const totalUsuarios =  await numUsuarios() +1;
   //cifrado irreversible
   hash=crypto.getHashes();
   cadena=req.body.password;
   hashcadena=crypto.createHash('sha1').update(cadena).digest('hex');
-  console.log(totalUsuarios);
+
+  console.log('Añadiendo usuario:',["u"+totalUsuarios,req.body.username,req.body.password])
+
   try{
-    connection.run(`INSERT INTO usuarios VALUES(?, ?, ?)`,["u"+totalUsuarios+1,req.body.username,hashcadena], (err, rows) => {
+    connection.run(`INSERT INTO usuarios VALUES(?, ?, ?)`,["u"+totalUsuarios,req.body.username,hashcadena], (err, rows) => {
     if (err) {
         response.send(err.message);
         console.log("Error POST/usuarios")
