@@ -4,7 +4,6 @@
 <HEAD>
 
 <TITLE>Pagina Inicial</TITLE>
-<script type="text/javascript" src="../Registry/API_Registry.js/"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </HEAD>
 
@@ -19,7 +18,7 @@
 <input type="text" id="fpass" name="fpass"><br><br>
 
 
-<button onclick="prueba();">Execute</button>
+<button type="button" onclick="prueba()">Execute</button>
 <button type="button" onclick="iniciarSesion()" id="login">Iniciar sesion</button>
 
 <div id="output">
@@ -56,20 +55,32 @@
 </script>
 
 <script>
-    function prueba(){
-        
-        const http=new XMLHttpRequest();
-        const url = 'http://localhost:3000/usuarios';
-        http.open("GET",url,true);
-        //http.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        http.send();
+async function prueba(){
+    
+    const list = document.createDocumentFragment();
 
-        http.onreadystatechange=(e)=>{
-            console.log(http.responseText);
-            cad="Debe introducir nombre de usuario y contrasenya";
-            var output=document.getElementById("output");
-            output.innerHTML=cad;
-        }
+        var output=document.getElementById("output");
+
+        let response = await fetch('http://localhost:3000/usuarios').then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      let authors = data;
+
+      authors.map(function(author) {
+        let li = document.createElement('li');
+        let name = document.createElement('h2');
+        let email = document.createElement('span');
+
+        name.innerHTML = `${author.username}`;
+        email.innerHTML = `${author.password}`;
+
+        li.appendChild(name);
+        li.appendChild(email);
+        list.appendChild(li);
+      });
+    });
+    output.appendChild(list);
 
     }
     

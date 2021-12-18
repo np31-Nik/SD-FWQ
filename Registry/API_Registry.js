@@ -15,6 +15,26 @@ hashcadena=crypto.createHash('sha1').update(cadena).digest('hex');
 console.log(hashcadena);
 
 
+// Add headers before the routes are defined
+app.use(function (req, res, next) {
+
+  // Website you wish to allow to connect
+  res.setHeader('Access-Control-Allow-Origin', 'null');
+
+  // Request methods you wish to allow
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+  // Request headers you wish to allow
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader('Access-Control-Allow-Credentials', true);
+
+  // Pass to next layer of middleware
+  next();
+});
+
 // Ejecutar la aplicacion
 app.listen(port,'0.0.0.0', () => {
     console.log(`Ejecutando la aplicación API REST de SD en el puerto
@@ -37,11 +57,11 @@ let connection = new sqlite3.Database('../db.db', sqlite3.OPEN_READWRITE, (err) 
 app.get("/usuarios",(req, response) => {
     connection.all(`SELECT * FROM usuarios`,[], (err, resultado) => {
     if (err) {
+      console.log("Error GET/usuarios");
         response.send(err.message);
-        console.log("Error GET/usuarios");
     }
         console.log(resultado);
-        response.send(resultado);
+        response.status(200).send(resultado);
   });
 });
 
@@ -56,24 +76,32 @@ app.get("/usuarios/:id",(req, response) => {
     }
     else{
         console.log(rows);
+        response.write(rows);
+        response.end();
         response.send(rows);
     }
 });
 });
 
-app.get("usuarios/login",jsonParser,(req,response)=> {
-  console.log(req.params);
-    connection.all('SELECT * FROM usuarios where username='+req.body.username+"' AND password='"+req.body.password+"'", (err, rows) => {
-    if (err) {
-        response.send(err.message);
-        console.log("Error GET/usuarios/id");
-    }
-    else{
-      if (rows)
-        console.log(rows);
-        response.send(rows);
-    }
-});
+app.get("/login",jsonParser,(req,response)=> {
+  console.log("recibido")
+  console.log(req.body);
+  // response.writeHead(200,{'Content-Type':'text/plain'});
+  // response.write('index.html');
+  // response.end();
+  response.write('hola');
+  response.end();
+    // connection.all('SELECT * FROM usuarios where username='+req.body.username+"' AND password='"+req.body.password+"'", (err, rows) => {
+    // if (err) {
+    //     response.send(err.message);
+    //     console.log("Error GET/usuarios/id");
+    // }
+    // else{
+    //   if (rows)
+    //     console.log(rows);
+    //     response.send(rows);
+    // }  
+//});
 });
 
 //usuarios POST
