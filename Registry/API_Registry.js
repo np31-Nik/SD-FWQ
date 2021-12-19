@@ -155,7 +155,7 @@ app.post("/usuarios",jsonParser,async (req, response) => {
   const totalUsuarios =  await numUsuarios() +1;
   console.log('Añadiendo usuario:',["u"+totalUsuarios,req.body.username,req.body.password])
 
-  console.log("h")
+  console.log(req.data);
   //cifrado irreversible
   hash=crypto.getHashes();
   cadena=req.body.password;
