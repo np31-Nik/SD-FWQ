@@ -160,6 +160,7 @@ async function prueba(){
         var username=document.getElementById('fname').value;
         var password=document.getElementById('fpass').value;
         if(username.length!=0 || password!=0){
+            const url = 'http://192.168.151.246:3000/usuarios/';
             const http=new XMLHttpRequest();
             const url = 'http://'+ip_registry+':3000/usuarios/';
             http.open("POST",url);
