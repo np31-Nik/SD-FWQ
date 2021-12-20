@@ -132,12 +132,13 @@ def moverse(server,port):
             #  booleano=False
             while booleano:
                 time.sleep(1)
-                filaAtraccion,colAtraccion= buscarAtraccion()
 
                 if filaAtraccion==-1 and colAtraccion==-1:
                         print("Todo cerrado")
                         enviarPaso(-1,-1,server,port)
                         recibirMapa(server,port)
+                        filaAtraccion,colAtraccion= buscarAtraccion()
+
                 else:
                     fila,columna,booleano=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
                     
