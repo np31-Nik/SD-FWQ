@@ -91,23 +91,24 @@ def buscarAtraccion():
                 contador=contador+1
     encontrado=False
     global atraccionActual
-    while not encontrado:
-        atraccion=random.randint(0,contador) #comprobar si funciona
-        
-        contador =0
-        cerradas = 0
-        for row in range(len(matriz)):
-            for col in range(len(matriz[row])):
-                if matriz[row][col]!='---' and matriz[row][col].find('u')==-1 and matriz[row][col]!='X':
-                    if contador==atraccion and row != atraccionActual[0] and col!=atraccionActual[1]:
-                        #print('matriz[r][c]:',matriz[row][col],' atrAct:',atraccionActual) 
-                        atraccionActual[0]=row
-                        atraccionActual[1]=col
-                        encontrado = True
-                        return row,col
-                    contador=contador+1
-        break
-    return (-1,-1)
+    if contador!=0:
+        while not encontrado:
+            atraccion=random.randint(0,contador) #comprobar si funciona
+            
+            contador =0
+            cerradas = 0
+            for row in range(len(matriz)):
+                for col in range(len(matriz[row])):
+                    if matriz[row][col]!='---' and matriz[row][col].find('u')==-1 and matriz[row][col]!='X':
+                        if contador==atraccion and row != atraccionActual[0] and col!=atraccionActual[1]:
+                            #print('matriz[r][c]:',matriz[row][col],' atrAct:',atraccionActual) 
+                            atraccionActual[0]=row
+                            atraccionActual[1]=col
+                            encontrado = True
+                            return row,col
+                        contador=contador+1
+    else:
+        return -1,-1
 
 
 def moverse(server,port):
@@ -131,12 +132,21 @@ def moverse(server,port):
             #  booleano=False
             while booleano:
                 time.sleep(1)
+                if filaAtraccion==-1 and colAtraccion==-1:
+                        print("Todo cerrado")
+                        enviarPaso(-1,-1,server,port)
+                        recibirMapa(server,port)
                 fila,columna,booleano=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
+                
                 #print('fA,cA',filaAtraccion,colAtraccion)
                 #print('f,c,b',fila,columna,booleano)
                 enviarPaso(fila,columna,server,port)
+                print('moviendome a:[',fila,',',columna,'], Atraccion:[',filaAtraccion,',',colAtraccion,']')
                 subir = True
                 recibirMapa(server,port)
+                if matriz[filaAtraccion][colAtraccion]=='X':
+                    print("SE HA CERRADO WEY :( que hace frio")
+                    filaAtraccion,colAtraccion= buscarAtraccion()
                 booleano = subir
 
 
@@ -149,6 +159,7 @@ def moverse(server,port):
 
 def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
     booleano=False
+
     if fila<filaAtraccion:
         fila=fila+1
         return fila,columna,False

@@ -488,7 +488,7 @@ def movimiento(usuario,x,y):
     #print('pos_ant:?',pos_ant)
     #print('x:',int(x),' y:',int(y),' mat[x][y]:', matriz[int(x)][int(y)],' usuario:', usuario)
     #print('movimiento posiciones',posiciones)
-    if x!= -1 and y!=-1:
+    if int(x)!= -1 and int(y)!=-1:
         for u in posiciones:
             #print('u0',u[0],' user:',usuario)
             if u[0]==usuario:
