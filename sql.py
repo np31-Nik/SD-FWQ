@@ -52,7 +52,7 @@ c=conn.cursor()
 # c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m3',13,15,'a4'))
 # c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m3',2,15,'a5'))
 
-c.execute("delete from usuarios")
+#c.execute("delete from usuarios")
 #c.execute("Delete from usuarios where id='u3'")
 
 #c.execute("Select valor,x,y from mapa")
@@ -76,5 +76,8 @@ c.execute("delete from usuarios")
 #c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m2',5,7,'a3'))
 
 #rint(c.execute("""SELECT * from usuarios where id=?""", ['u1']))
+
+
+c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m3',15,2,'a6'))
 conn.commit()
 conn.close()

@@ -44,21 +44,22 @@
     </div>
 </div>
 <script>
+    const ip_registry = '192.168.151.246';
+    const ip_engine = '192.168.151.246';
+
+
     function myFunction() {
         console.log("Hello from Firefox code");
         alert("xhr.response");
     } 
 
-</script>
-
-<script>
 async function prueba(){
 
     const list = document.createDocumentFragment();
 
         var output=document.getElementById("output");
 
-        let response = await fetch('http://localhost:3000/usuarios').then((response) => {
+        let response = await fetch('http://'+ip_registry+':3000/usuarios').then((response) => {
       return response.json();
     })
     .then((data) => {
@@ -81,11 +82,8 @@ async function prueba(){
 
     }
     
-</script>
-
-<script>
     async function comprobarUsuario(username,password){
-        const url = 'http://localhost:3000/login'
+        const url = 'http://'+ip_registry+':3000/login'
         let headers = new Headers();
         let resp = "";
         headers.set('Authorization',btoa(username+":"+password));
@@ -134,7 +132,7 @@ async function prueba(){
     }
 
     async function obtenerMapa(){
-        const url = 'http://localhost:3003/mapa'
+        const url = 'http://'+ip_engine+':3003/mapa'
         let headers = new Headers();
         let resp = "";
         var mapa=document.getElementById("mapa");
@@ -146,7 +144,7 @@ async function prueba(){
         mapa.innerHTML=resp;
     }
     async function obtenerUsuarios(){
-        const url = 'http://localhost:3003/usuarios'
+        const url = 'http://'+ip_engine+':3003/usuarios'
         let headers = new Headers();
         let resp = "";
         var usuarios=document.getElementById("usuarios");
@@ -158,15 +156,12 @@ async function prueba(){
         usuarios.innerHTML=resp;
     }
 
-</script>
-
-<script>
     function register(){ //HACER REQUEST POST!
         var username=document.getElementById('fname').value;
         var password=document.getElementById('fpass').value;
         if(username.length!=0 || password!=0){
             const http=new XMLHttpRequest();
-            const url = 'http://localhost:3000/usuarios/';
+            const url = 'http://'+ip_registry+':3000/usuarios/';
             http.open("POST",url);
             var data = `{
                 "username": "`+username+`",

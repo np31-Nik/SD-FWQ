@@ -7,8 +7,11 @@ import sys
 from concurrent import futures
 import logging
 import grpc
+import random
 
 import os
+
+from six import print_
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'WaitingTimeServer'))
 import TimeServer_pb2
 import TimeServer_pb2_grpc
@@ -30,7 +33,8 @@ puertoK = "0"
 tiempos = []
 #clima:
 temp_threshold= (20,30)
-ciudades = ["Alicante","Buenos aires","Bombay","Nigeria"]
+ciudades = []
+ciudades_old = []
 
 # importing requests and json
 import requests, json
@@ -52,28 +56,46 @@ def leerUsuariosOnline():
             print("not online")
     
 
-def reloj2(ip,puerto,atr):
+def reloj2():
 #print("reloj")
     delay = 1
     next_time = time.time() + delay
     while True:
         time.sleep(max(0, next_time - time.time()))
         try:
-            leerUsuariosOnline()
+            if obtenerClima():
+                print_mapa()
+
         except Exception:
             traceback.print_exc()
         next_time += delay
 
 def actualizarCiudades():
+    global ciudades_old
     archivo = "ciudades.txt"
     f= open(archivo,'r')
 
     r = f.read()
-    print(r)
+    r = r.split(',')
+    c=[]
 
+    if ciudades_old != r:
+        i = 0
+        while i < 4:
+            rand = random.randint(0,len(r)-1)
+            if r[rand] not in c:
+                c.append(r[rand])
+                i += 1
+        ciudades_old = r
+    else:
+        c=ciudades
+
+    # print("r:",r)
+    # print("c:",c)
+    # print("ciudades:",ciudades)
     f.close()
-    return r
 
+    return c
 def climaAtracciones(t,c):
     print("Cambiando estado de atracciones por el clima...")
 
@@ -109,23 +131,31 @@ def obtenerClima():
 
     BASE_URL = "https://api.openweathermap.org/data/2.5/weather?"
     API_KEY = "291383717ab69005393ff7fd27b2605a"
-    #ciudades = actualizarCiudades()
+    global ciudades
+    c = actualizarCiudades()
+    #print("OBTENER C:",c)
+    if c != ciudades:
+        ciudades=c
+        for i in range(len(ciudades)):
+            CITY = ciudades[i]
+            URL = BASE_URL + "q=" + CITY + "&units=metric"+ "&appid=" + API_KEY
+            response = requests.get(URL)
+            
+            if response.status_code == 200:
+                data = response.json()
+                main = data['main']
+                temperature = main['temp']
+                print(f"{CITY:-^30}")
+                print(f"Temperature: {temperature}")
 
-    for i in range(len(ciudades)):
-        CITY = ciudades[i]
-        URL = BASE_URL + "q=" + CITY + "&units=metric"+ "&appid=" + API_KEY
-        response = requests.get(URL)
-        
-        if response.status_code == 200:
-            data = response.json()
-            main = data['main']
-            temperature = main['temp']
-            print(f"{CITY:-^30}")
-            print(f"Temperature: {temperature}")
-
-            climaAtracciones(temperature,i)
-        else:
-            print("Error in the HTTP request")
+                climaAtracciones(temperature,i)
+            else:
+                print("Error in the HTTP request")
+                return False
+        return True
+    else:
+        #sin cambios
+        return False
 
 #Escribir en fichero
 def escribirFichero():
@@ -533,7 +563,7 @@ def main():
 
         c=conn.cursor()
 
-        id_mapa = 'm2'
+        id_mapa = 'm3'
         mapa = get_mapa(c,id_mapa)
         global matriz 
         matriz = rellenar_mapa(mapa)
@@ -543,8 +573,10 @@ def main():
 
         leerPosicionAtracciones(id_mapa) #Guardamos las posiciones de atracciones en la lista
 
-        obtenerClima()
-        print_mapa()
+        if obtenerClima():
+                print_mapa()
+
+
         atr= get_atracciones(c,mapa)
         conn.close()
 
@@ -558,8 +590,7 @@ def main():
         threading.Thread(target = escuchaVisitante, args=(ip_gestor,puerto_gestor)).start()
         threading.Thread(target = salidaVisitante, args=(ip_gestor,puerto_gestor)).start()
         threading.Thread(target = reloj, args=(ip_wts,puerto_wts,atr)).start()
-        #threading.Thread(target = reloj2).start()
-
+        threading.Thread(target = reloj2).start()
 
 
 #------------------------

@@ -87,7 +87,7 @@ def buscarAtraccion():
     contador =0 #Contador de atracciones
     for row in range(len(matriz)):
         for col in range(len(matriz[row])):
-            if matriz[row][col]!='---' and matriz[row][col].find('u')==-1:
+            if matriz[row][col]!='---' and matriz[row][col].find('u')==-1 and matriz[row][col]!='X':
                 contador=contador+1
     encontrado=False
     global atraccionActual
@@ -97,7 +97,7 @@ def buscarAtraccion():
         contador =0
         for row in range(len(matriz)):
             for col in range(len(matriz[row])):
-                if matriz[row][col]!='---' and matriz[row][col].find('u')==-1:
+                if matriz[row][col]!='---' and matriz[row][col].find('u')==-1 and matriz[row][col]!='X':
                     if contador==atraccion and row != atraccionActual[0] and col!=atraccionActual[1]:
                         #print('matriz[r][c]:',matriz[row][col],' atrAct:',atraccionActual) 
                         atraccionActual[0]=row
