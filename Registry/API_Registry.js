@@ -9,6 +9,8 @@ const sqlite3 = require('sqlite3').verbose();
 const {spawn} = require('child_process');
 
 
+const FWQ_Registry= '192.168.151.246'
+
 //Ejemplo de encriptacion de datos 
 const crypto = require("crypto");
 const e = require("express");
@@ -128,7 +130,7 @@ app.get("/login",jsonParser,(req,response)=>{
         // let id = rows[0].id;
         // console.log("id:"+id);
         // escribirUsuario(id);
-        const py = spawn('python3',['./../Visitor/FWQ_Visitor.py', '192.168.0.104', '1111', '192.168.0.104', '9092',username,password])
+        const py = spawn('python3',['./../Visitor/FWQ_Visitor.py', FWQ_Registry, '1111', FWQ_Registry, '9092',username,password])
         py.stdout.on('data', function(data) {
 
           console.log(data.toString());

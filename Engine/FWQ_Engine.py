@@ -254,7 +254,8 @@ def ponerTiemposEnMapa():
             y = int(pos_atr[j][2])
             if id_tiempo == id_pos:
                 #print('cambio en matriz (tiempos)')
-                matriz[x][y]=tiempo
+                if matriz[x][y]!='X':
+                    matriz[x][y]=tiempo
                 #print('matriz[x][y]:',matriz[x][y],' tiempo:',tiempo,' id_t:',id_tiempo,' id_pos:',id_pos)
             
 
@@ -487,37 +488,38 @@ def movimiento(usuario,x,y):
     #print('pos_ant:?',pos_ant)
     #print('x:',int(x),' y:',int(y),' mat[x][y]:', matriz[int(x)][int(y)],' usuario:', usuario)
     #print('movimiento posiciones',posiciones)
-    for u in posiciones:
-        #print('u0',u[0],' user:',usuario)
-        if u[0]==usuario:
-            eliminado=False
-            #print('elim False')
-    if not eliminado:
-        pos_ant = borrarPos(usuario)
-        #print('if not')
-        if matriz[int(pos_ant[1])][int(pos_ant[2])]==usuario:
-            matriz[int(pos_ant[1])][int(pos_ant[2])]='---'
-            #print('borra pos anterior a ---')
-        posiciones = np.append(posiciones,[usuario,x,y]).reshape(len(posiciones)+1,3)
-        #print('x:? \ y:?',x,y)
+    if x!= -1 and y!=-1:
+        for u in posiciones:
+            #print('u0',u[0],' user:',usuario)
+            if u[0]==usuario:
+                eliminado=False
+                #print('elim False')
+        if not eliminado:
+            pos_ant = borrarPos(usuario)
+            #print('if not')
+            if matriz[int(pos_ant[1])][int(pos_ant[2])]==usuario:
+                matriz[int(pos_ant[1])][int(pos_ant[2])]='---'
+                #print('borra pos anterior a ---')
+            posiciones = np.append(posiciones,[usuario,x,y]).reshape(len(posiciones)+1,3)
+            #print('x:? \ y:?',x,y)
 
-        if matriz[int(x)][int(y)] == '---':
-            matriz[int(x)][int(y)] = usuario
-        elif matriz[int(x)][int(y)].startswith('u'):
-            solapado=True
+            if matriz[int(x)][int(y)] == '---':
+                matriz[int(x)][int(y)] = usuario
+            elif matriz[int(x)][int(y)].startswith('u'):
+                solapado=True
+            else:
+                atr_id = obtenerIDatr(x,y)
+                #print('Entrando a la atraccion')
+                enviarSensor(atr_id,usuario)
+                where = np.where(tiempos[:,0]==atr_id)
+                tiempo = tiempos[where][0][1]
+                #print('tiempo|',tiempo)
+                enviarEsperaVisitante(usuario,atr_id,tiempo)
+                enviar_mapa=False
+                #print('cambio de matriz')
+                #print_mapa()
         else:
-            atr_id = obtenerIDatr(x,y)
-            #print('Entrando a la atraccion')
-            enviarSensor(atr_id,usuario)
-            where = np.where(tiempos[:,0]==atr_id)
-            tiempo = tiempos[where][0][1]
-            #print('tiempo|',tiempo)
-            enviarEsperaVisitante(usuario,atr_id,tiempo)
             enviar_mapa=False
-            #print('cambio de matriz')
-            #print_mapa()
-    else:
-        enviar_mapa=False
     return enviar_mapa
 
 def enviarSensor(id_atr,id_user):
