@@ -163,16 +163,20 @@ async function prueba(){
             const http=new XMLHttpRequest();
             const url = 'http://'+ip_registry+':3000/usuarios/';
             http.open("POST",url);
-            var data = `{
-                "username": "`+username+`",
-                "password": `+password+`,
-                }`;
-
-            http.send();
+            var data = {
+                username: username,
+                password: password,
+                };
+            var json = JSON.stringify(data);
+            http.setRequestHeader("Content-Type", "application/json");
+            http.send(json);
+            cad="Usuario registrado";
+            var output=document.getElementById("output");
+            output.innerHTML=cad;
             return;
         }
         else{
-            cad="Debe introducir nombre de usuario y contrasenya";
+            cad="Debe introducir nombre de usuario y contrasenya para registrarse";
             var output=document.getElementById("output");
             output.innerHTML=cad;
         }
