@@ -52,7 +52,7 @@ c=conn.cursor()
 # c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m3',13,15,'a4'))
 # c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m3',2,15,'a5'))
 
-c.execute("delete from usuarios")
+#c.execute("delete from usuarios")
 #c.execute("Delete from usuarios where id='u3'")
 
 #c.execute("Select valor,x,y from mapa")
@@ -79,5 +79,14 @@ c.execute("delete from usuarios")
 
 
 #c.execute("""INSERT INTO Mapa(id,x,y,valor) VALUES (?,?,?,?)""",('m3',15,15,'a9'))
+
+c.execute("""CREATE TABLE IF NOT EXISTS logs(
+    id integer PRIMARY KEY AUTOINCREMENT,
+    fecha datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ip text NOT NULL,
+    accion text NOT NULL,
+    descripcion text
+    )"""
+)
 conn.commit()
 conn.close()
