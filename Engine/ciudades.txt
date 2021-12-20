@@ -1,4 +1,1 @@
-Alicante
-Nigeria
-Buenos aires
-Bombay
+Alicante,Nigeria,Buenos aires,Bombay,Madrid,Valencia,Bogota,New York City
