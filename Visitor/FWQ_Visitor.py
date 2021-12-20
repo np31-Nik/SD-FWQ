@@ -166,28 +166,28 @@ def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
 
     if fila<filaAtraccion:
         fila=fila+1
-        if matriz[fila][columna]!='---' and matriz[fila][columna].find('u')==-1:
+        if matriz[fila][columna]=='X':
             #recalcular
             columna=columna+1
             print('recalculando ruta...')
         return fila,columna,False
     elif fila>filaAtraccion:
         fila=fila-1
-        if matriz[fila][columna]!='---' and matriz[fila][columna].find('u')==-1:
+        if matriz[fila][columna]=='X':
             #recalcular
             columna=columna+1
             print('recalculando ruta...')
         return fila,columna,False
     elif columna>colAtraccion:
         columna=columna-1
-        if matriz[fila][columna]!='---' and matriz[fila][columna].find('u')==-1:
+        if matriz[fila][columna]=='X':
             #recalcular
             fila=fila+1
             print('recalculando ruta...')
         return fila,columna,False
     elif columna<colAtraccion:
         columna=columna+1
-        if matriz[fila][columna]!='---' and matriz[fila][columna].find('u')==-1:
+        if matriz[fila][columna]=='X':
             #recalcular
             fila=fila+1
             print('recalculando ruta...')
