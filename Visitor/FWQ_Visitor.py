@@ -136,18 +136,19 @@ def moverse(server,port):
                         print("Todo cerrado")
                         enviarPaso(-1,-1,server,port)
                         recibirMapa(server,port)
-                fila,columna,booleano=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
-                
-                #print('fA,cA',filaAtraccion,colAtraccion)
-                #print('f,c,b',fila,columna,booleano)
-                enviarPaso(fila,columna,server,port)
-                print('moviendome a:[',fila,',',columna,'], Atraccion:[',filaAtraccion,',',colAtraccion,']')
-                subir = True
-                recibirMapa(server,port)
-                if matriz[filaAtraccion][colAtraccion]=='X':
-                    print("SE HA CERRADO WEY :( que hace frio")
-                    filaAtraccion,colAtraccion= buscarAtraccion()
-                booleano = subir
+                else:
+                    fila,columna,booleano=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
+                    
+                    #print('fA,cA',filaAtraccion,colAtraccion)
+                    #print('f,c,b',fila,columna,booleano)
+                    enviarPaso(fila,columna,server,port)
+                    print('moviendome a:[',fila,',',columna,'], Atraccion:[',filaAtraccion,',',colAtraccion,']')
+                    subir = True
+                    recibirMapa(server,port)
+                    if matriz[filaAtraccion][colAtraccion]=='X':
+                        print("SE HA CERRADO WEY :( que hace frio")
+                        filaAtraccion,colAtraccion= buscarAtraccion()
+                    booleano = subir
 
 
     #----En bucle:
@@ -162,6 +163,9 @@ def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
 
     if fila<filaAtraccion:
         fila=fila+1
+        if matriz[fila][columna]!='---' and matriz[fila][columna].find('u')==-1:
+            #recalcular
+            print('recalculando ruta...')
         return fila,columna,False
     elif fila>filaAtraccion:
         fila=fila-1
