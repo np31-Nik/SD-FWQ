@@ -15,9 +15,15 @@ const FWQ_Registry= '192.168.151.246'
 const crypto = require("crypto");
 const e = require("express");
 const { copyFileSync } = require("fs");
-hash=crypto.getHashes();
-cadena="Hola";
-hashcadena=crypto.createHash('sha1').update(cadena).digest('hex');
+// hash=crypto.getHashes();
+// cadena="Hola";
+// hashcadena=crypto.createHash('sha1').update(cadena).digest('hex');
+// hashcadena2=crypto.createHash('sha1').update(cadena+'secreto').digest('hex');
+// hashcadena3=crypto.createHash('sha256').update('20').digest('hex');
+// console.log(hashcadena);
+// console.log(hashcadena2);
+// console.log(hashcadena3);
+
 //console.log(hashcadena);
 const fs = require('fs')
 
@@ -116,7 +122,7 @@ app.get("/login",jsonParser,(req,response)=>{
 
     hash=crypto.getHashes();
     cadena=req.body.password;
-    password=crypto.createHash('sha1').update(password).digest('hex');
+    password=crypto.createHash('sha256').update(password).digest('hex');
 
     connection.all("SELECT * FROM usuarios WHERE username='"+username+"' AND password='"+password+"'", (err, rows) => {
     if (err) {
@@ -161,7 +167,7 @@ app.post("/usuarios",jsonParser,async (req, response) => {
   //cifrado irreversible
   hash=crypto.getHashes();
   cadena=req.body.password;
-  hashcadena=crypto.createHash('sha1').update(cadena).digest('hex');
+  hashcadena=crypto.createHash('sha256').update(cadena).digest('hex');
 
   console.log('Añadiendo usuario:',["u"+totalUsuarios,req.body.username,req.body.password])
 
@@ -198,7 +204,7 @@ app.put("/usuarios/:id",jsonParser,(req, response) => {
     //cifrado irreversible
     hash=crypto.getHashes();
     cadena=req.body.password;
-    hashcadena=crypto.createHash('sha1').update(cadena).digest('hex');
+    hashcadena=crypto.createHash('sha256').update(cadena).digest('hex');
     console.log(hashcadena);
     
     connection.run('Update usuarios set id=?,username=?, password=? where id=?',[req.body.id,req.body.username,hashcadena,req.body.id], (err, rows) => {
