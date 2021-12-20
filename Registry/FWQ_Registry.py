@@ -21,6 +21,7 @@ def create_connection(db_file):
     return conn
 
 def IniciarSesion(username, password):
+	password= hashlib.sha256(bytes(password,'utf-8')).hexdigest()
 	#conectranos a la BD
 	dir = os.path.join(os.path.dirname(__file__),'..','db.db')
 	conn = create_connection(dir)
