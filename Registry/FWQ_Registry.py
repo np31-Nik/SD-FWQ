@@ -8,6 +8,8 @@ import sqlite3
 import sys
 import os
 
+import hashlib
+
 def create_connection(db_file):
 
     conn = None
@@ -41,8 +43,10 @@ def IniciarSesion(username, password):
 		print ("Ha ocurrido un errror al conectarse a la base de datos(Iniciar Sesion)")
 		
 
-
 def Registro(name, password):
+
+	password= hashlib.sha256(bytes(password,'utf-8')).hexdigest()
+
 	dir = os.path.join(os.path.dirname(__file__),'..','db.db')
 	conn = create_connection(dir)
 	c=conn.cursor()
