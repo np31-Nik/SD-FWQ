@@ -148,10 +148,10 @@ def moverse(server,port):
                     print('moviendome a:[',fila,',',columna,'], Atraccion:[',filaAtraccion,',',colAtraccion,']')
                     subir = True
                     recibirMapa(server,port)
+                    booleano = subir
                     if matriz[filaAtraccion][colAtraccion]=='X':
                         print("SE HA CERRADO WEY :( que hace frio")
                         filaAtraccion,colAtraccion= buscarAtraccion()
-                    booleano = subir
 
 
     #----En bucle:
