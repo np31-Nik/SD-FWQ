@@ -137,6 +137,28 @@ def serve():
 		server.wait_for_termination()
 
 
+
+def guardarLog(ip,accion,descripcion):
+	print('Guardando logs: (',ip,' ',accion,' ',descripcion,')')
+
+	conn = create_connection(dir)
+	c=conn.cursor()
+	
+	c.execute("""INSERT INTO logs (ip, accion, descripcion) VALUES(?,?,?)""",(ip,accion,descripcion))
+	print('Log guardado!')
+	conn.commit()
+	conn.close()
+
+def leerLogs():
+	print('Obteniendo logs...')
+	conn = create_connection(dir)
+	c=conn.cursor()
+	c.execute("""SELECT * from logs""")
+	logs = c.fetchall()
+	print(logs)
+	
+
+
 if __name__ == '__main__':
 	logging.basicConfig()
 	serve()
