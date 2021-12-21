@@ -29,8 +29,7 @@
 <button type="button" onclick="iniciarSesion()" id="login">Iniciar sesion</button>
 <button type="button" onclick="register()" id="Registro">Registrarse</button>
 
-<div id="output">
-</div>
+
 </form>
 </div>
 <div id="parque", style="display:none;">
@@ -43,14 +42,51 @@
 
     </div>
 </div>
+
+<button type="button" onclick="logs()" id="logs">Imprimir logs</button>
+<div id="output">
+</div>
 <script>
     const ip_registry = '192.168.151.77';
     const ip_engine = '192.168.151.77';
 
 
-    function myFunction() {
-        console.log("Hello from Firefox code");
-        alert("xhr.response");
+async function logs(){
+        const list = document.createDocumentFragment();
+
+        var output=document.getElementById("output");
+        console.log('Esperando logs...')
+        let response = await fetch('http://'+ip_registry+':3000/logs').then((response) => {
+            if (response.body==null){
+                console.log('No hay logs!')
+                output.innerHTML='No hay logs.'
+            }
+        return response.json();
+        })
+        .then((data) => {
+            console.log('Imprimiendo logs...')
+           
+        let authors = data;
+
+        authors.map(function(author) {
+        let li = document.createElement('li');
+        let name = document.createElement('h4');
+        let email = document.createElement('span');
+
+        name.innerHTML = `${author.username}`;
+        email.innerHTML = `${author.password}`;
+
+        li.appendChild(name);
+        li.appendChild(email);
+        list.appendChild(li);
+        });
+        });
+        output.appendChild(list);
+            }
+
+            function myFunction() {
+                console.log("Hello from Firefox code");
+                alert("xhr.response");
     } 
 
 async function prueba(){
@@ -58,12 +94,14 @@ async function prueba(){
     const list = document.createDocumentFragment();
 
         var output=document.getElementById("output");
+        console.log('Esperando usuarios...')
 
         let response = await fetch('http://'+ip_registry+':3000/usuarios').then((response) => {
       return response.json();
     })
     .then((data) => {
       let authors = data;
+      console.log('Imprimiendo usuarios...')
 
       authors.map(function(author) {
         let li = document.createElement('li');
@@ -111,6 +149,9 @@ async function prueba(){
 
                 var login=document.getElementById("login");
                 var parque=document.getElementById("parque");
+                var parque=document.getElementById("output");
+               output.innerHTML=""; 
+
                 login.style.display="none";
                 parque.style.display="block";
                 var intervalId = window.setInterval(function(){

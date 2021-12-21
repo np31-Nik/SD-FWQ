@@ -142,7 +142,6 @@ def moverse(server,port):
 
                 else:
                     fila,columna,booleano=calcularPaso(fila,columna,filaAtraccion,colAtraccion)
-                    
                     #print('fA,cA',filaAtraccion,colAtraccion)
                     #print('f,c,b',fila,columna,booleano)
                     enviarPaso(fila,columna,server,port)
@@ -163,7 +162,7 @@ def moverse(server,port):
 
 
 def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
-    booleano=False
+    booleano=True
 
     if fila<filaAtraccion:
         fila=fila+1
@@ -171,31 +170,31 @@ def calcularPaso(fila,columna,filaAtraccion, colAtraccion):
             #recalcular
             columna=columna+1
             print('recalculando ruta...')
-        return fila,columna,False
+        return fila,columna,booleano
     elif fila>filaAtraccion:
         fila=fila-1
         if matriz[fila][columna]=='X' or (matriz[fila][columna].isnumeric() and fila!=filaAtraccion and columna!=colAtraccion):
             #recalcular
             columna=columna+1
             print('recalculando ruta...')
-        return fila,columna,False
+        return fila,columna,booleano
     elif columna>colAtraccion:
         columna=columna-1
         if matriz[fila][columna]=='X' or (matriz[fila][columna].isnumeric() and fila!=filaAtraccion and columna!=colAtraccion):
             #recalcular
             fila=fila+1
             print('recalculando ruta...')
-        return fila,columna,False
+        return fila,columna,booleano
     elif columna<colAtraccion:
         columna=columna+1
         if matriz[fila][columna]=='X' or (matriz[fila][columna].isnumeric() and fila!=filaAtraccion and columna!=colAtraccion):
             #recalcular
             fila=fila+1
             print('recalculando ruta...')
-        return fila,columna,False
+        return fila,columna,booleano
     else:
         if fila==filaAtraccion and columna==colAtraccion:
-            booleano=True
+            booleano=False
             return fila,columna,booleano
 
     # else:   
@@ -325,6 +324,7 @@ def recibeEntradaParque(server,puerto):
     consumer.close()
     
 def login(serverGrpc,puertoGrpc,serverKafka,puertoKafka,usr=-1,pwd=-1):
+    print('Iniciando sesion...')
     if iniciarSesion(serverGrpc,puertoGrpc,usr,pwd):
                     enviaEntradaParque(serverKafka,puertoKafka)
                     recibeEntradaParque(serverKafka,puertoKafka)

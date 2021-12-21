@@ -80,6 +80,17 @@ let connection = new sqlite3.Database('../db.db', sqlite3.OPEN_READWRITE, (err) 
   });
 
 
+app.get("/logs",(req, response) => {
+    connection.all(`SELECT * FROM logs`,[], (err, resultado) => {
+    if (err) {
+      console.log("Error GET/logs");
+        response.send(err.message);
+    }
+        console.log(resultado);
+        response.status(200).send(resultado);
+  });
+});
+
 //usuarios GET
 app.get("/usuarios",(req, response) => {
     connection.all(`SELECT * FROM usuarios`,[], (err, resultado) => {
