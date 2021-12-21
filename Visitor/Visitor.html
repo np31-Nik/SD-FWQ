@@ -70,16 +70,30 @@ async function logs(){
         let authors = data;
 
         authors.map(function(author) {
-        let li = document.createElement('li');
-        let name = document.createElement('h4');
-        let email = document.createElement('span');
+            let li = document.createElement('li');
 
-        name.innerHTML = `${author.username}`;
-        email.innerHTML = `${author.password}`;
+let id = document.createElement('span');
+let fecha = document.createElement('span');
+let ip = document.createElement('span');
+let accion = document.createElement('span');
+let descripcion = document.createElement('span');
 
-        li.appendChild(name);
-        li.appendChild(email);
-        list.appendChild(li);
+id.innerHTML = `${author.id}`+'<br>';
+fecha.innerHTML = `${author.fecha}`+'<br>';
+ip.innerHTML = `${author.ip}`+'<br>';
+accion.innerHTML = `${author.accion}`+'<br>';
+descripcion.innerHTML = `${author.descripcion}`+'<br>';
+
+li.appendChild(id);
+li.appendChild(fecha);
+li.appendChild(ip);
+li.appendChild(accion);
+li.appendChild(descripcion);
+
+list.appendChild(li);
+
+
+
         });
         });
         output.appendChild(list);
@@ -106,25 +120,18 @@ async function prueba(){
       console.log('Imprimiendo usuarios...')
 
       authors.map(function(author) {
-        let id = document.createElement('h4');
-        let fecha = document.createElement('span');
-        let ip = document.createElement('span');
-        let accion = document.createElement('span');
-        let descripcion = document.createElement('span');
+          
+        let li = document.createElement('li');
+        let name = document.createElement('span');
+        let email = document.createElement('span');
 
-        id.innerHTML = `${author.id}`;
-        fecha.innerHTML = `${author.fecha}`;
-        ip.innerHTML = `${author.ip}`;
-        accion.innerHTML = `${author.accion}`;
-        descripcion.innerHTML = `${author.descripcion}`;
+        name.innerHTML = `${author.username}`+'<br>';
+        email.innerHTML = `${author.password}`+'<br>';
 
-        li.appendChild(id);
-        li.appendChild(fecha);
-        li.appendChild(ip);
-        li.appendChild(accion);
-        li.appendChild(descripcion);
-
+        li.appendChild(name);
+        li.appendChild(email);
         list.appendChild(li);
+  
       });
     });
     output.appendChild(list);

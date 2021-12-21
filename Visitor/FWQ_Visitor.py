@@ -326,11 +326,13 @@ def recibeEntradaParque(server,puerto):
 def login(serverGrpc,puertoGrpc,serverKafka,puertoKafka,usr=-1,pwd=-1):
     print('Iniciando sesion...')
     if iniciarSesion(serverGrpc,puertoGrpc,usr,pwd):
+                    print('Has iniciado sesion!')
                     enviaEntradaParque(serverKafka,puertoKafka)
                     recibeEntradaParque(serverKafka,puertoKafka)
                     recibirMapa(serverKafka,puertoKafka)
                     moverse(serverKafka,puertoKafka)
-
+    else:
+        print('no se ha iniciado sesion')
 #Funcion principal
 def run():
     if(len(sys.argv)==7):
