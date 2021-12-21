@@ -7,7 +7,7 @@ const jsonParser = bodyParser.json()
 const port=3000;
 const sqlite3 = require('sqlite3').verbose();
 const {spawn} = require('child_process');
-const requestip=require('request-ip');
+//const requestip=require('request-ip');
 
 
 const FWQ_Registry= '192.168.151.77'
