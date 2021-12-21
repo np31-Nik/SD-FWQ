@@ -37,8 +37,10 @@ def IniciarSesion(username, password):
 				id= i[2]
 				break
 		if login:#consultamos BD con name
+			guardarLog("undefined","Get","Usuario ha iniciado sesion desde consola")
 			return id
 		else: #la contraseña no es correcta
+			guardarLog("undefined","Error","Usuario no ha podido iniciar sesion desde consola")
 			return id
 	except:
 		print ("Ha ocurrido un errror al conectarse a la base de datos(Iniciar Sesion)")
@@ -67,10 +69,12 @@ def Registro(name, password):
 			c.execute("""Insert into usuarios (id,username,password) values(?,?,?)""",
 			("u"+str(cantUsuarios+1),name,password))
 			resultado="Usuario registrado"
+			guardarLog("undefined","Post","Usuario registrado desde consola")
 			conn.commit()
 			conn.close()
 		except:
 			resultado ="Error al insertar"
+			guardarLog("undefined","Post","Usuario no ha podido registrarse desde consola")
 			conn.close()
 		return resultado
 	
