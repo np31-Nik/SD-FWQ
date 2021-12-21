@@ -1,1 +1,1 @@
-Usuarios: <br>
+Usuarios: <br>['u2' '6' '0']<br>['u1' '15' '14']<br>
