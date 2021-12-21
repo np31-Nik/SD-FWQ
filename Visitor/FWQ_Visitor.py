@@ -11,6 +11,7 @@ import time
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'Registry'))
 import Registry_pb2
+import hashlib
 import Registry_pb2_grpc
 
 UserID = -1
@@ -255,6 +256,8 @@ def iniciarSesion(ip,puerto,usr=-1,pwd=-1):
         username,password=(usr,pwd)
     else:
         username,password=AskNamePassword()
+        password= hashlib.sha256(bytes(password,'utf-8')).hexdigest()
+
     response = stub.Login(Registry_pb2.loginRequest(username=username,password=password))
     print(response.response)
     if response.response!="El nombre de usuario o la contraseña no son correctos":

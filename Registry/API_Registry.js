@@ -123,10 +123,9 @@ app.get("/login",jsonParser,(req,response)=>{
     hash=crypto.getHashes();
     cadena=req.body.password;
     password=crypto.createHash('sha256').update(password).digest('hex');
-
+    console.log('password recibido: '+password)
     connection.all("SELECT * FROM usuarios WHERE username='"+username+"' AND password='"+password+"'", (err, rows) => {
     if (err) {
-        response.send(err.message);
         console.log("Error GET/usuarios/id");
     }
     else{
