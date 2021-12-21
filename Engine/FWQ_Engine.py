@@ -470,6 +470,7 @@ def borrarPos(id_user):
     return rem
 
 def enviarEsperaVisitante(usuario,id_atr,tiempo):
+    print('El usuario ',usuario,' debe esperar ',tiempo,'s')
     producer = KafkaProducer(bootstrap_servers=['%s:%s' %(serverK,puertoK)])
     mensaje = bytes('espera:%s:%s'%(id_atr,tiempo),'UTF-8')
     producer.send('%s' %(usuario), mensaje)
