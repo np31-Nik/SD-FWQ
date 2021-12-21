@@ -214,9 +214,9 @@ def ObtenerTiempo(ip,port,atra):
     ej = np.full((response.len,2),'---')
     print('obteniendo tiempos2')
 
-    #print('response.len:',response.len)
+    print('response.len:',response.len)
     tiempos = np.frombuffer(response.times, dtype=ej.dtype)
-    #print('tiempos:',tiempos)
+    print('tiempos:',tiempos)
     tiempos = tiempos.reshape(response.len,2)
     print(tiempos)
     #print('actualizando tiempos:',tiempos)
