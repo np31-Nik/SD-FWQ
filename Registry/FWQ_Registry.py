@@ -29,18 +29,22 @@ def IniciarSesion(username, password):
 	try:
 		c.execute("""SELECT username, password, id from usuarios""")
 		usuario=c.fetchall()
+		print("hola")
 		login=False
 		id="-1"
+		print(username)
+		print(password)
 		for i in usuario:
+			print(i)
 			if i[0] == username and i[1]==password:
 				login=True
 				id= i[2]
 				break
 		if login:#consultamos BD con name
-			guardarLog("undefined","Get","Usuario ha iniciado sesion desde consola")
+			guardarLog(conn,"undefined","Get","Usuario ha iniciado sesion desde consola")
 			return id
 		else: #la contraseña no es correcta
-			guardarLog("undefined","Error","Usuario no ha podido iniciar sesion desde consola")
+			guardarLog(conn,"undefined","Error","Usuario no ha podido iniciar sesion desde consola")
 			return id
 	except:
 		print ("Ha ocurrido un errror al conectarse a la base de datos(Iniciar Sesion)")
@@ -69,12 +73,12 @@ def Registro(name, password):
 			c.execute("""Insert into usuarios (id,username,password) values(?,?,?)""",
 			("u"+str(cantUsuarios+1),name,password))
 			resultado="Usuario registrado"
-			guardarLog("undefined","Post","Usuario registrado desde consola")
+			guardarLog(conn,"undefined","Post","Usuario registrado desde consola")
 			conn.commit()
 			conn.close()
 		except:
 			resultado ="Error al insertar"
-			guardarLog("undefined","Post","Usuario no ha podido registrarse desde consola")
+			guardarLog(conn,"undefined","Post","Usuario no ha podido registrarse desde consola")
 			conn.close()
 		return resultado
 	
@@ -142,19 +146,15 @@ def serve():
 
 
 
-def guardarLog(ip,accion,descripcion):
-	try:
-		print('Guardando logs: (',ip,' ',accion,' ',descripcion,')')
+def guardarLog(conn,ip,accion,descripcion):
+	print('Guardando logs: (',ip,' ',accion,' ',descripcion,')')
 
-		conn = create_connection(dir)
-		c=conn.cursor()
-
-		c.execute("""INSERT INTO logs (ip, accion, descripcion) VALUES(?,?,?)""",(ip,accion,descripcion))
-		print('Log guardado!')
-		conn.commit()
-		conn.close()
-	except:
-		print("Hubo un error al abrir la BD")		
+	c=conn.cursor()
+	
+	c.execute("""INSERT INTO logs (ip, accion, descripcion) VALUES(?,?,?)""",(ip,accion,descripcion))
+	print('Log guardado!')
+	conn.commit()
+	conn.close()
 
 def leerLogs():
 	print('Obteniendo logs...')
