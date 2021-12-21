@@ -143,15 +143,18 @@ def serve():
 
 
 def guardarLog(ip,accion,descripcion):
-	print('Guardando logs: (',ip,' ',accion,' ',descripcion,')')
+	try:
+		print('Guardando logs: (',ip,' ',accion,' ',descripcion,')')
 
-	conn = create_connection(dir)
-	c=conn.cursor()
-	
-	c.execute("""INSERT INTO logs (ip, accion, descripcion) VALUES(?,?,?)""",(ip,accion,descripcion))
-	print('Log guardado!')
-	conn.commit()
-	conn.close()
+		conn = create_connection(dir)
+		c=conn.cursor()
+
+		c.execute("""INSERT INTO logs (ip, accion, descripcion) VALUES(?,?,?)""",(ip,accion,descripcion))
+		print('Log guardado!')
+		conn.commit()
+		conn.close()
+	except:
+		print("Hubo un error al abrir la BD")		
 
 def leerLogs():
 	print('Obteniendo logs...')
