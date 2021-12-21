@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<HTML>
+    <title> 
+        Mapa de administracion
+    </title>
+
+
+    <HEAD>
+        <h1>Pagina de Visitantes</h1>
+    </HEAD>
+    <BODY>
+        <div id="parque", style="display:none;">
+            <h2>Mapa</h2>
+            <div id="mapa">
+        
+            </div>
+            <h2>Usuarios</h2>
+            <div id="usuarios">
+        
+            </div>
+        </div>
+        
+        <button type="button" onclick="getMapa()" id="logs">Mostrar mapa</button>
+
+
+
+
+        <script>
+            var ip_engine="192.168.151.77";
+            function getMapa(){
+                var parque=document.getElementById("parque");
+                parque.style.display="block";
+                var intervalId = window.setInterval(function(){
+                    iniciado();
+                }, 1000);
+            }
+            function iniciado(){
+                obtenerMapa();
+                obtenerUsuarios();
+            }
+
+            async function obtenerMapa(){
+                const url = 'http://'+ip_engine+':3003/mapa'
+                let headers = new Headers();
+                let resp = "";
+                var mapa=document.getElementById("mapa");
+
+                //headers.set('Authorization',btoa(username+":"+password));
+                await fetch(url,{method:'GET'})
+                .then(response => response.text())
+                .then(json => {console.log(json); resp=json;});
+                mapa.innerHTML=resp;
+            }
+            async function obtenerUsuarios(){
+                const url = 'http://'+ip_engine+':3003/usuarios'
+                let headers = new Headers();
+                let resp = "";
+                var usuarios=document.getElementById("usuarios");
+
+                //headers.set('Authorization',btoa(username+":"+password));
+                await fetch(url,{method:'GET'})
+                .then(response => response.text())
+                .then(json => {console.log(json); resp=json;});
+                usuarios.innerHTML=resp;
+            }
+        </script>
+        
+    </BODY>
+</HTML>

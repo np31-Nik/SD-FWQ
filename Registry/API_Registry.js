@@ -7,8 +7,6 @@ const jsonParser = bodyParser.json()
 const port=3000;
 const sqlite3 = require('sqlite3').verbose();
 const {spawn} = require('child_process');
-const requestip=require('request-ip');
-
 
 const FWQ_Registry= '192.168.151.77'
 
@@ -69,16 +67,16 @@ app.listen(port,'0.0.0.0', () => {
 
 // open the database
 let connection = new sqlite3.Database('../db.db', sqlite3.OPEN_READWRITE, (err) => {
-    if (err) {
-      console.error(err.message);
-    }
+  if (err) {
+    console.error(err.message);
+  }else{
     console.log('Connected to the database.');
-  });
+  }
+});
 
-  app.get("/",(req,res) => {
-    res.send("GET /")
-  });
-
+app.get("/",(req,res) => {
+  res.send("GET /")
+});
 
 app.get("/logs",(req, response) => {
     connection.all(`SELECT * FROM logs`,[], (err, resultado) => {

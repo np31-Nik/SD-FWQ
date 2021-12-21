@@ -41,8 +41,9 @@ app.listen(port,'0.0.0.0', () => {
 let connection = new sqlite3.Database('../db.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
       console.error(err.message);
+    }else{
+      console.log('Connected to the database.');
     }
-    console.log('Connected to the database.');
   });
 
   app.get("/",(req,res) => {
