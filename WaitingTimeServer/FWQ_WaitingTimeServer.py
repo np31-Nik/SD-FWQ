@@ -24,6 +24,7 @@ primera = True
 class Time(TimeServer_pb2_grpc.CalculateTimeServicer):
 	def Time(self,request,context):
 		global num_atr,atr,tiempos
+		print(tiempos)
 		resul=tiempos.tobytes()
 		ej = np.full((num_atr,3),'---')
 		
