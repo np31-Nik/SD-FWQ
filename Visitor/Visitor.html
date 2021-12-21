@@ -53,8 +53,9 @@
 
 async function logs(){
         const list = document.createDocumentFragment();
-
         var output=document.getElementById("output");
+        output.innerHTML=""; 
+
         console.log('Esperando logs...')
         let response = await fetch('http://'+ip_registry+':3000/logs').then((response) => {
             if (response.body==null){
@@ -94,6 +95,7 @@ async function prueba(){
     const list = document.createDocumentFragment();
 
         var output=document.getElementById("output");
+        output.innerHTML=""; 
         console.log('Esperando usuarios...')
 
         let response = await fetch('http://'+ip_registry+':3000/usuarios').then((response) => {
@@ -149,8 +151,8 @@ async function prueba(){
 
                 var login=document.getElementById("login");
                 var parque=document.getElementById("parque");
-                var parque=document.getElementById("output");
-               output.innerHTML=""; 
+                var output=document.getElementById("output");
+                output.innerHTML=""; 
 
                 login.style.display="none";
                 parque.style.display="block";
