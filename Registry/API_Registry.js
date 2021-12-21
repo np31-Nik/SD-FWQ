@@ -7,9 +7,10 @@ const jsonParser = bodyParser.json()
 const port=3000;
 const sqlite3 = require('sqlite3').verbose();
 const {spawn} = require('child_process');
+const requestip=require('request-ip');
 
 
-const FWQ_Registry= '192.168.151.246'
+const FWQ_Registry= '192.168.151.77'
 
 //Ejemplo de encriptacion de datos 
 const crypto = require("crypto");
@@ -112,8 +113,11 @@ app.get("/usuarios/:id",(req, response) => {
 
 app.get("/login",jsonParser,(req,response)=>{
     
+    var ip = req.headers['x-forwarded-for'] ||
+        req.socket.remoteAddress ||
+        null;
 
-    console.log("recibido")
+    console.log("recibido");
     console.log(req.headers);
     auth = atob(req.headers.authorization).split(":");
     username = auth[0];
@@ -127,25 +131,29 @@ app.get("/login",jsonParser,(req,response)=>{
     connection.all("SELECT * FROM usuarios WHERE username='"+username+"' AND password='"+password+"'", (err, rows) => {
     if (err) {
         console.log("Error GET/usuarios/id");
+        addLog(ip,"Error","Error al iniciar sesion desde API");
     }
     else{
       if (rows.length>0){
         console.log(rows);
-
+        addLog(ip,"Get","Sesion iniciada desde API");
         // let id = rows[0].id;
         // console.log("id:"+id);
         // escribirUsuario(id);
         const py = spawn('python3',['./../Visitor/FWQ_Visitor.py', FWQ_Registry, '1111', FWQ_Registry, '9092',username,password])
         py.stdout.on('data', function(data) {
+            
+            console.log(data.toString());
+        });
 
-          console.log(data.toString());
-      });
         response.send("200");
       }else{
+        addLog(ip,"Error","No se ha podido iniciar sesion desde API");
         response.send("404")
       }
         
-    } 
+    }
+     
 });
 
   // response.writeHead(200,{'Content-Type':'text/plain'});
@@ -157,30 +165,42 @@ app.get("/login",jsonParser,(req,response)=>{
 // var totalUsuarios=numUsuarios();
 // console.log(totalUsuarios);
 
+
+
 //usuarios POST
 app.post("/usuarios",jsonParser,async (req, response) => {
-  const totalUsuarios =  await numUsuarios() +1;
-  console.log('Añadiendo usuario:',["u"+totalUsuarios,req.body.username,req.body.password])
 
-  console.log(req.data);
-  //cifrado irreversible
-  hash=crypto.getHashes();
-  cadena=req.body.password;
-  hashcadena=crypto.createHash('sha256').update(cadena).digest('hex');
+    //Obtenemos IP del cliente
+    var ip = req.headers['x-forwarded-for'] ||
+        req.socket.remoteAddress ||
+        null;
 
-  console.log('Añadiendo usuario:',["u"+totalUsuarios,req.body.username,req.body.password])
 
-  try{
-    connection.run(`INSERT INTO usuarios VALUES(?, ?, ?)`,["u"+totalUsuarios,req.body.username,hashcadena], (err, rows) => {
-    if (err) {
-        response.send(err.message);
-        console.log("Error POST/usuarios")
-    }else{
-    console.log("Usuario añadido.")
-    response.send("Usuario añadido.")
-    }
-    });
-  }catch(e){} //comprobar
+    hash=crypto.getHashes();
+    cadena=req.body.password;
+    hashcadena=crypto.createHash('sha256').update(cadena).digest('hex');
+    const totalUsuarios =  await numUsuarios() +1;
+    var insertado=false;
+    console.log('Añadiendo usuario:',["u"+totalUsuarios,req.body.username,req.body.password])
+
+    try{
+        connection.run(`INSERT INTO usuarios VALUES(?, ?, ?)`,["u"+totalUsuarios,req.body.username,hashcadena], (err, rows) => {
+        if (err) {
+            response.send(err.message);
+            console.log("Error POST/usuarios");
+        }else{
+            insertado=true
+            console.log("Usuario añadido.");
+            response.send("Usuario añadido.");
+        }
+        });
+        if (insertado==false){
+            addLog(ip,"Error","Error al anyadir usuario desde API");
+        }
+        else if(insertado==true){
+            addLog(ip,"Post","Usuario anyadido desde API");
+        }
+    }catch(e){} //comprobar
 });
 
 function numUsuarios(){
@@ -193,6 +213,20 @@ function numUsuarios(){
         else {
             console.log("return "+rows[0].total)
             resolve (rows[0].total);
+        }
+    }));
+}
+
+function addLog(ip,accion,descripcion){
+    insert='INSERT INTO logs (ip, accion, descripcion) VALUES(?,?,?)';
+    return new Promise((resolve,reject) => connection.run(insert,[ip,accion,descripcion], (err,rows)=>{
+        if (err){
+            console.log("Error al insertar log desde API");
+            reject(-1)
+        } 
+        else {
+            console.log("Log de API insertado")
+            resolve (1);
         }
     }));
 }
