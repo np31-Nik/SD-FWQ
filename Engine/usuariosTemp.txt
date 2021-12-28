@@ -1,9 +1,1 @@
-<<<<<<< HEAD
-Usuarios: <br>['u3' '14' '4']<br>
-=======
-<<<<<<< HEAD
-Usuarios: <br>
-=======
-Usuarios: <br>['u1' '1' '0']<br>
->>>>>>> 51e96a83488178c8b3d90c42f793411c0e4d8688
->>>>>>> 655265cdaa74487804870337fd7d00dcecd0abaf
+Usuarios: <br>['u1' '10' '16']<br>
