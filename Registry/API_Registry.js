@@ -8,7 +8,7 @@ const port=3000;
 const sqlite3 = require('sqlite3').verbose();
 const {spawn} = require('child_process');
 
-const FWQ_Registry= '192.168.151.77'
+const FWQ_Registry= '192.168.151.246'
 
 //Ejemplo de encriptacion de datos 
 const crypto = require("crypto");

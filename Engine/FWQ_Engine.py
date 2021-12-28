@@ -90,12 +90,10 @@ def actualizarCiudades():
     else:
         c=ciudades
 
-    # print("r:",r)
-    # print("c:",c)
-    # print("ciudades:",ciudades)
     f.close()
 
     return c
+
 def climaAtracciones(t,c):
     print("Cambiando estado de atracciones por el clima...")
 
@@ -132,8 +130,8 @@ def obtenerClima():
     BASE_URL = "https://api.openweathermap.org/data/2.5/weather?"
     API_KEY = "291383717ab69005393ff7fd27b2605a"
     global ciudades
-    c = actualizarCiudades()
-    #print("OBTENER C:",c)
+    c = actualizarCiudades() # Lista de ciudades leida del fichero
+
     if c != ciudades:
         ciudades=c
         for i in range(len(ciudades)):
@@ -148,13 +146,13 @@ def obtenerClima():
                 print(f"{CITY:-^30}")
                 print(f"Temperature: {temperature}")
 
-                climaAtracciones(temperature,i)
+                climaAtracciones(temperature,i) # Se actualiza el mapa acorde al clima
             else:
                 print("Error in the HTTP request")
                 return False
         return True
     else:
-        #sin cambios
+        # Sin cambios:
         return False
 
 #Escribir en fichero
@@ -205,7 +203,7 @@ def ObtenerTiempo(ip,port,atra):
     error = 0
     global tiempos
     try:
-        print('obteniendo tiempos')
+        #print('obteniendo tiempos')
         #channel = grpc.insecure_channel('localhost:50051')
         channel = grpc.insecure_channel('%s:%s' %(ip,port))
         stub = TimeServer_pb2_grpc.CalculateTimeStub(channel)
